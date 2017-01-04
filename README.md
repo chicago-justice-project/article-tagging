@@ -7,3 +7,9 @@ Let's compare the amount different types of crimes are reported in certain areas
 Under the `src` folder you can find the source code.
 
 The `load_data.py` file will load the data from the CSV files (stored not in GitHub). Specifically, look at the `load_data.load_data()` method, this returns a `k`-hot encoded tagging and the article data.
+
+# See Also
+
+* [Chicago Justice Project](http://chicagojustice.org/)
+* [Database Repo](https://github.com/kyaroch/chicago-justice)
+* [Chi Hack Night Group Description](https://github.com/chihacknight/breakout-groups/issues/61)
