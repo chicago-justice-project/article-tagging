@@ -47,6 +47,7 @@ def load_data():
     value of the numerical cateogry_id column."""
 
     df = load_articles()
+    df['relevant'] = df['relevant'] == 't'
     df.rename(columns={'id': 'article_id'}, inplace=True)
     df.set_index('article_id', drop=True, inplace=True)
     # hopefully this will save some memory/space, can add back if needed
