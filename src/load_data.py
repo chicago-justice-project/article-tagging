@@ -59,7 +59,7 @@ def load_data():
     categories_df = load_categories()
     categories_df.set_index('id', drop=True, inplace=True)
 
-    for i in range(tags_df['category_id'].max() - 1):
+    for i in range(tags_df['category_id'].max()):
         # cat_name = 'cat_' + str(i+1)
         cat_name = categories_df.loc[i+1, 'abbreviation']
         df[cat_name] = 0
