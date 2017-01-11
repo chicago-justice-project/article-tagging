@@ -15,7 +15,8 @@ def load_articles():
                     'created',
                     'last_modified']
 
-    return pd.read_csv(os.path.join(DATA_FOLDER, 'newsarticles_article.csv'),
+    return pd.read_csv(os.path.join(DATA_FOLDER,
+                                    'newsarticles_article.csv'),
                        header=None,
                        names=column_names)
 
@@ -24,7 +25,8 @@ def load_categorizations():
     """Loads the categorizations of the articles."""
     column_names = ['id', 'article_id', 'category_id']
 
-    return pd.read_csv(os.path.join(DATA_FOLDER, 'newsarticles_article_categories.csv'),
+    return pd.read_csv(os.path.join(DATA_FOLDER,
+                                    'newsarticles_article_categories.csv'),
                        header=None,
                        names=column_names)
 
@@ -47,18 +49,25 @@ def load_data():
     df = load_articles()
     df.rename(columns={'id': 'article_id'}, inplace=True)
     df.set_index('article_id', drop=True, inplace=True)
-    del(df['orig_html']) # hopefully this will save some memory/space, can add back if needed
+    # hopefully this will save some memory/space, can add back if needed
+    del(df['orig_html'])
 
-    categorizations_df = load_categorizations()
-    categorizations_df.sort_values(by='article_id', inplace=True) # will help cacheing
+    tags_df = load_categorizations()
+    # will help cacheing
+    tags_df.sort_values(by='article_id', inplace=True)
 
-    for i in range(categorizations_df['category_id'].max() - 1): # - 1 since 1-indexed
-        cat_name = 'cat_' + str(i+1)
+    categories_df = load_categories()
+    categories_df.set_index('id', drop=True, inplace=True)
+
+    for i in range(tags_df['category_id'].max() - 1):
+        # cat_name = 'cat_' + str(i+1)
+        cat_name = categories_df.loc[i+1, 'abbreviation']
         df[cat_name] = 0
         df[cat_name] = df[cat_name].astype('int8') # save on that memory!
 
-    categorizations_df['category_id'] = categorizations_df['category_id'].astype(str)
-    for _, row in categorizations_df.iterrows():
+    # tags_df['category_id'] = tags_df['category_id'].astype(str)
+    tags_df['category_id'] = categories_df['abbreviation'][tags_df['category_id']]
+    for _, row in tags_df.iterrows():
         df.loc[row['article_id'], 'cat_' + row['category_id']] = 1
 
     return df
