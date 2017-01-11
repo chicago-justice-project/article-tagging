@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-DATA_FOLDER = '../cjp-db/'
+DATA_FOLDER = '../data/'
 
 def load_articles():
     """Loads the articles CSV."""
@@ -66,8 +66,8 @@ def load_data():
         df[cat_name] = df[cat_name].astype('int8') # save on that memory!
 
     # tags_df['category_id'] = tags_df['category_id'].astype(str)
-    tags_df['category_id'] = categories_df['abbreviation'][tags_df['category_id']]
+    tags_df['category_abbreviation'] = categories_df['abbreviation'][tags_df['category_id']].values
     for _, row in tags_df.iterrows():
-        df.loc[row['article_id'], 'cat_' + row['category_id']] = 1
+        df.loc[row['article_id'], row['category_abbreviation']] = 1
 
     return df
