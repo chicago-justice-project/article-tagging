@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-def get_kfold_split(N, k=10):
+def get_kfold_split(N, k=4):
     """
     Create groups used for k-fold cross validation.
 
@@ -30,7 +30,7 @@ def get_kfold_split(N, k=10):
     return index_pairs
 
 
-def benchmark(clf_factory, X, Y, clf_params_dict=None, k=10):
+def benchmark(clf_factory, X, Y, clf_params_dict=None, k=4):
     """
     benchmark a classifier on preprocessed data.
 
@@ -65,7 +65,7 @@ def benchmark(clf_factory, X, Y, clf_params_dict=None, k=10):
         clf.fit(x_trn, y_trn)
         y_hat = clf.predict(x_tst)
 
-        acc.append(x_tst.shape[0] - np.sum(np.abs(y_tst.ravel() - y_hat)))
+        acc.append((np.sum(y_tst == y_hat)) / float(y_tst.size))
         # TODO: acc is just a placeholder, replace with TPR, FPR, etc.
 
     return acc

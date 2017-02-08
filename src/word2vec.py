@@ -198,16 +198,17 @@ with tf.Session(graph=graph) as session:
             print("Average loss at step ", step, ": ", average_loss)
             average_loss = 0
 
-        # Note that this is expensive (~20% slowdown if computed every 500 steps)
-        if step % 10000 == 0:
-            sim = similarity.eval()
-            for i in range(valid_size):
-                valid_word = reverse_dictionary[valid_examples[i]]
-                nearest = (-sim[i, :]).argsort()[1:top_k + 1]
-                log_str = "Nearest to %s:" % valid_word
-                for k in range(top_k):
-                    close_word = reverse_dictionary[nearest[k]]
-                    log_str = "%s %s," % (log_str.encode("utf-8"), close_word.encode("utf-8"))
-                print(log_str)
+        # This is not working, some sort of encoding error I don't care to fix
+        # # Note that this is expensive (~20% slowdown if computed every 500 steps)
+        # if step % 10000 == 0:
+        #     sim = similarity.eval()
+        #     for i in range(valid_size):
+        #         valid_word = reverse_dictionary[valid_examples[i]]
+        #         nearest = (-sim[i, :]).argsort()[1:top_k + 1]
+        #         log_str = "Nearest to %s:" % valid_word
+        #         for k in range(top_k):
+        #             close_word = reverse_dictionary[nearest[k]]
+        #             log_str = "%s %s," % (log_str.encode("utf-8"), close_word.encode("utf-8"))
+        #         print(log_str)
 
     final_embeddings = normalized_embeddings.eval()
