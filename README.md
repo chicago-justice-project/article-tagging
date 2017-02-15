@@ -27,6 +27,12 @@ We also need to automatically find the geographic area of the crime the article 
 
 Unfortunately, we do not currently have labeled training data for this task, although it's possible there might be some open data source somewhere.
 
+Things to checkout:
+
+* [Mapzen](https://mapzen.com/)
+* [US Adress parser](https://github.com/datamade/usaddress)
+* [libpostal](https://github.com/openvenues/libpostal)
+
 ## Things to consider
 
 Some articles may discuss multiple crimes. Some crimes may occur in multiple areas, whereas others may not be associated with any geographic information (e.g. some kinds of fraud).
