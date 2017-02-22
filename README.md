@@ -54,7 +54,7 @@ Thusfar, most of the work has been done in Python, but there's no reason that al
 ### Are there concepts that will be helpful for me to understand?
 Definitely!  [This sklearn user guide](http://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction) details a number of the text analysis methodologies this project uses (sklearn is a Python library, but the user guide is great for understanding machine learning text analysis in general).  Also, see the section above on 'Automated Article Tagging' for more detailed literature on some of the relevant concepts.
 ### I want to contribute to Chicago Justice Project but I don’t want to work on tagging article subjects OR geolocating articles. What can I do?
-Help [the team scraping articles](https://github.com/chicago-justice-project/chicago-justice) (that's where this team gets its data) or help [the team building a front-end to share our insights with Chicago](https://github.com/chicago-justice-project/chicago-justice-client). Or just show up Tuesday nights and ask what you can do!
+Help [the team scraping articles](https://github.com/chicago-justice-project/chicago-justice) (that's where this team gets its data) or help [the team building a front-end](https://github.com/chicago-justice-project/chicago-justice-client)to share this project's insights with Chicago and the world. Or just show up Tuesday nights and ask what you can do!
 # See Also
 
 * [Chicago Justice Project](http://chicagojustice.org/)
