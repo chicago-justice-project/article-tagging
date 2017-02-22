@@ -43,6 +43,12 @@ Under the `src` folder you can find the source code.
 
 The `load_data.py` file will load the data from the CSV files (stored not in GitHub). Specifically, look at the `load_data.load_data()` method, this returns a `k`-hot encoded tagging and article data.
 
+# FAQ About Contributing
+
+* How can I stay up to date on what you're doing with article-tagging?
+Check this document for updates and subscribe to the #quantifyingjusticenews channel on Chi Hack Night's team on Slack.
+* Second bullet
+
 # See Also
 
 * [Chicago Justice Project](http://chicagojustice.org/)
