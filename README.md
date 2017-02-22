@@ -45,10 +45,10 @@ The `load_data.py` file will load the data from the CSV files (stored not in Git
 
 # FAQ About Contributing
 
-* How can I stay up to date on what you're doing with article-tagging?
+## How can I stay up to date on what you're doing with article-tagging?
 
 Check this document for updates and subscribe to the #quantifyingjusticenews channel on Chi Hack Night's team on Slack.
-* Second bullet
+## Second bullet
 
 # See Also
 
