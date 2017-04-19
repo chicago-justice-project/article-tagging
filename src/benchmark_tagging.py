@@ -41,7 +41,8 @@ def benchmark(clf_factory, X, Y, clf_params_dict=None, k=4):
         a `fit` method and a `predict` method. The parameters
         clf_params will be passed into this function.
     X : NxM matrix of features
-    Y : NxL matrix of features
+    Y : NxL matrix of binary values. Y[i,j] indicates whether or
+        not the j'th tag applies to the i'th article.
     clf_params_dict :
         dictionary of parameters passed to the classifier factory.
         If None, no parameters are passed.
@@ -50,10 +51,16 @@ def benchmark(clf_factory, X, Y, clf_params_dict=None, k=4):
     if clf_params_dict is None:
         clf_params_dict = {}
 
-    fold_indexes = get_kfold_split(X.shape[0], k)
-    acc = []
+    L = Y.shape[1]
 
-    for idx_trn, idx_tst in fold_indexes:
+    fold_indexes = get_kfold_split(X.shape[0], k)
+    acc = np.zeros(k)
+    tpr = np.zeros((k, L))
+    fpr = np.zeros((k, L))
+    ppv = np.zeros((k, L))
+
+    clfs = []
+    for i, (idx_trn, idx_tst) in enumerate(fold_indexes):
         clf = clf_factory(**clf_params_dict)
 
         x_trn = X[idx_trn, :]
@@ -63,9 +70,41 @@ def benchmark(clf_factory, X, Y, clf_params_dict=None, k=4):
         y_tst = Y[idx_tst, :]
 
         clf.fit(x_trn, y_trn)
-        y_hat = clf.predict(x_tst)
+        y_hat = clf.predict_proba(x_tst)
+        y_hat = y_hat > 0.5
 
-        acc.append((np.sum(y_tst == y_hat)) / float(y_tst.size))
-        # TODO: acc is just a placeholder, replace with TPR, FPR, etc.
+        y_hat.dtype = np.int8
+        y_tst.dtype = np.int8
 
-    return acc
+        acc[i] = (np.sum(y_tst == y_hat)) / float(y_tst.size)
+        for j in range(L):
+            tpr[i, j] = np.sum((y_tst[:,j]) & (y_hat[:,j])) / np.sum(y_tst[:,j])
+            fpr[i, j] = (np.sum(np.logical_not(y_tst[:,j]) & (y_hat[:,j]))
+                         / np.sum(np.logical_not(y_tst[:,j])))
+            ppv[i, j] = np.sum((y_tst[:,j]) & (y_hat[:,j])) / np.sum(y_hat[:,j])
+
+        clfs.append(clf)
+
+    return {'acc': acc, 'tpr': tpr, 'fpr': fpr, 'ppv': ppv, 'clfs': clfs}
+
+
+def predict_articles(clf, vectorizer, df, n=100, seed=1029384756):
+    np.random.seed(seed)
+
+    pd.set_option('display.max_columns', 100)
+    pd.set_option('display.float_format', lambda x: '%.6f' % x)
+
+    random_subset = np.random.choice(np.arange(df.shape[0]), size=n, replace=False)
+
+    preds = clf.predict_proba(vectorizer.transform(df.iloc[random_subset,3].values))
+    preds = pd.DataFrame(preds)
+    preds.columns = df.columns[7:]
+
+    for i, rand_i in enumerate(random_subset):
+        s = 'Article ID: ' + str(df.index[rand_i])
+        s += '\n' + df.iloc[rand_i, 3]
+        s += '\n Predicted Tags: ' + str(preds.iloc[i, :].index[preds.iloc[i, :] > 0.5].values)
+        s += '\n' + str(preds.iloc[i, :])
+        s += '\n'
+        with open('test-tag-' + str(df.index[rand_i]) + '.txt', 'w', encoding='utf-8') as f:
+            f.write(s)
