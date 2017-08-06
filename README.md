@@ -10,7 +10,7 @@ The [Chicago Justice Project](http://chicagojustice.org/) has been scraping RSS 
 
 This part of this project aims to automate the category tagging using a specific branch of Machine Learning known as Natural Language Processing.
 
-Possible models to try include
+Possible models to use (some of which we have tried!) include
 
 * [Bag of words](https://en.wikipedia.org/wiki/Bag-of-words_model)
 * [*n*-gram models](https://en.wikipedia.org/wiki/N-gram)
@@ -23,9 +23,9 @@ It might be useful to have an additional corpus of news articles that we can use
 
 ## Automated Geolocation
 
-We also need to automatically find the geographic area of the crime the article is talking about. A group called [Everyblock](http://www.everyblock.com/) got funding from the [Knight Foundation](http://www.knightfoundation.org/) to geolocate news articles. They were required to open source their code. A brief investigation seems to show that their geolocating is actually just a giant [Regular Expression](https://github.com/kbrose/everyblock/blob/master/ebdata/ebdata/nlp/addresses.py). Whether or not this will be good enough remains to be seen.
+We also need to automatically find the geographic area of the crime the article is talking about. We have just recently updated the tagging interface to also allow highlighting geospatial information inside of articles and are collecting ground truth data. Once we have collected this data, we need to automate the process of detecting location information inside articles. An important note, we are relying on the power of current geocoders to take unstructured location information and output a latitude/longitude pair.
 
-Unfortunately, we do not currently have labeled training data for this task, although it's possible there might be some open data source somewhere.
+One possible path forward appeared to involve an approach developed by  [Everyblock](http://www.everyblock.com/). They got funding from the [Knight Foundation](http://www.knightfoundation.org/) to geolocate news articles and were required to open source their code. A brief investigation seems to show that their geolocating is actually just a giant [Regular Expression](https://github.com/kbrose/everyblock/blob/master/ebdata/ebdata/nlp/addresses.py). Investigation showed that it was not accurate enough on its own for our purposes.
 
 Things to checkout:
 
