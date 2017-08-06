@@ -37,9 +37,9 @@ def benchmark(clf_factory, X, Y, clf_params_dict=None, k=4):
     Parameters
     ----------
     clf_factory :
-        Function which returns a classifier. Needs to implement
+        Function which returns a classifier. Classifiers implement
         a `fit` method and a `predict` method. The parameters
-        clf_params will be passed into this function.
+        clf_params will be passed to clf_factory.
     X : NxM matrix of features
     Y : NxL matrix of binary values. Y[i,j] indicates whether or
         not the j'th tag applies to the i'th article.
