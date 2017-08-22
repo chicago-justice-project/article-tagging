@@ -1,3 +1,6 @@
 *.pyc
 *.ipynb_checkpoints*
 *.pkl
+lib/newstag.egg-info
+build/
+dist/

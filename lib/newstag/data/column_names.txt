@@ -1,0 +1,36 @@
+                                                         Table "public.newsarticles_article"
+    Column     |           Type           |                             Modifiers                             | Storage  | Stats target | Description 
+---------------+--------------------------+-------------------------------------------------------------------+----------+--------------+-------------
+ id            | integer                  | not null default nextval('newsarticles_article_id_seq'::regclass) | plain    |              | 
+ feedname      | character varying(1)     | not null                                                          | extended |              | 
+ url           | character varying(1024)  | not null                                                          | extended |              | 
+ orig_html     | text                     | not null                                                          | extended |              | 
+ title         | text                     | not null                                                          | extended |              | 
+ bodytext      | text                     | not null                                                          | extended |              | 
+ relevant      | boolean                  | not null                                                          | plain    |              | 
+ created       | timestamp with time zone | not null                                                          | plain    |              | 
+ last_modified | timestamp with time zone | not null                                                          | plain    |              | 
+
+                                               Table "public.newsarticles_article_categories"
+   Column    |  Type   |                                  Modifiers                                   | Storage | Stats target | Description 
+-------------+---------+------------------------------------------------------------------------------+---------+--------------+-------------
+ id          | integer | not null default nextval('newsarticles_article_categories_id_seq'::regclass) | plain   |              | 
+ article_id  | integer | not null                                                                     | plain   |              | 
+ category_id | integer | not null                                                                     | plain   |              | 
+
+                                                         Table "public.newsarticles_category"
+    Column     |           Type           |                             Modifiers                              | Storage  | Stats target | Description 
+---------------+--------------------------+--------------------------------------------------------------------+----------+--------------+-------------
+ id            | integer                  | not null default nextval('newsarticles_category_id_seq'::regclass) | plain    |              | 
+ category_name | character varying(256)   | not null                                                           | extended |              | 
+ abbreviation  | character varying(5)     | not null                                                           | extended |              | 
+ created       | timestamp with time zone | not null                                                           | plain    |              | 
+
+                                                       Table "public.newsarticles_feedlog"
+  Column  |           Type           |                             Modifiers                             | Storage  | Stats target | Description 
+----------+--------------------------+-------------------------------------------------------------------+----------+--------------+-------------
+ id       | integer                  | not null default nextval('newsarticles_feedlog_id_seq'::regclass) | plain    |              | 
+ loglevel | character varying(1)     | not null                                                          | extended |              | 
+ feedname | character varying(1)     | not null                                                          | extended |              | 
+ message  | text                     | not null                                                          | extended |              | 
+ created  | timestamp with time zone | not null                                                          | plain    |              | 
