@@ -2,6 +2,8 @@
 
 Let's compare the amount different types of crimes are reported in certain areas vs. the actual occurrence amount in those areas. Are some crimes under-represented in certain areas but over-represented in others? To accomplish this, we'll need to be able to extract type-of-crime tag and geospatial data from news articles. We meet every Tuesday at [Chi Hack Night](https://chihacknight.org/), and you can find out more about [this specific project here](https://github.com/chihacknight/breakout-groups/issues/61).
 
+For installation instructions, see [INSTALLATION.md](./INSTALLATION.md)
+
 # Details
 
 The [Chicago Justice Project](http://chicagojustice.org/) has been scraping RSS feeds of articles written by Chicago area news outlets for several years, allowing them to collect almost 300,000 articles. At the same time, an amazing group of [volunteers](http://chicagojustice.org/volunteer-for-cjp/) have helped them tag these articles. The tags include crime categories like "Gun Violence", "Drugs", "Sexual Assault", but also organizations such as "Cook County State's Attorney's Office", "Illinois State Police", "Chicago Police Department", and other miscellaneous categories such as "LGBTQ", "Immigration".
@@ -39,7 +41,7 @@ Some articles may discuss multiple crimes. Some crimes may occur in multiple are
 
 # The Code
 
-Under the `src` folder you can find the source code.
+Under the `lib` folder you can find the source code.
 
 The `load_data.py` file will load the data from the CSV files (stored not in GitHub). Specifically, look at the `load_data.load_data()` method, this returns a `k`-hot encoded tagging and article data.
 
@@ -60,3 +62,7 @@ Help [the team scraping articles](https://github.com/chicago-justice-project/chi
 * [Chicago Justice Project](http://chicagojustice.org/)
 * [Database Repo](https://github.com/kyaroch/chicago-justice)
 * [Chi Hack Night Group Description](https://github.com/chihacknight/breakout-groups/issues/61)
+
+# Saving a new model
+
+Working with pickle is difficult. In order to sanely be able load things, I'm running python files that pickle the model using the `-m` flag, e.g. `python -m newstag.crimetype.models.binary_stemmed_logistic.model`.
