@@ -14,7 +14,7 @@ This file can also be run as a module, with
 """
 
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
-                              'models/binary_stemmed_logistic/')
+                              os.path.join('models', 'binary_stemmed_logistic'))
 
 TAGS = ['OEMC', 'CPD', 'SAO', 'CCCC', 'CCJ', 'CCSP',
         'CPUB', 'IDOC', 'DOMV', 'SEXA', 'POLB', 'POLM',
