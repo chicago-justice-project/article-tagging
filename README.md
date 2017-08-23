@@ -1,14 +1,85 @@
-# Overview
+# Background
 
-Let's compare the amount different types of crimes are reported in certain areas vs. the actual occurrence amount in those areas. Are some crimes under-represented in certain areas but over-represented in others? To accomplish this, we'll need to be able to extract type-of-crime tag and geospatial data from news articles. We meet every Tuesday at [Chi Hack Night](https://chihacknight.org/), and you can find out more about [this specific project here](https://github.com/chihacknight/breakout-groups/issues/61).
+Let's compare the amount different types of crimes are reported in certain areas vs. the actual occurrence amount in those areas. Are some crimes under-represented in certain areas but over-represented in others? To accomplish this, we'll need to be able to extract a type-of-crime tag and geospatial data from news articles.
 
-For installation instructions, see [INSTALLATION.md](./INSTALLATION.md)
-
-# Details
+We meet every Tuesday at [Chi Hack Night](https://chihacknight.org/), and you can find out more about [this specific project here](https://github.com/chihacknight/breakout-groups/issues/61).
 
 The [Chicago Justice Project](http://chicagojustice.org/) has been scraping RSS feeds of articles written by Chicago area news outlets for several years, allowing them to collect almost 300,000 articles. At the same time, an amazing group of [volunteers](http://chicagojustice.org/volunteer-for-cjp/) have helped them tag these articles. The tags include crime categories like "Gun Violence", "Drugs", "Sexual Assault", but also organizations such as "Cook County State's Attorney's Office", "Illinois State Police", "Chicago Police Department", and other miscellaneous categories such as "LGBTQ", "Immigration".
 
-## Automated Article Tagging
+# Installation and Usage
+
+## Requirements
+
+To install this library, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/), [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). We recommend using [Anaconda](https://www.continuum.io/downloads):
+
+```bash
+$ # create a new anaconda environment with required packages
+$ conda create -n article-tagging nltk numpy scikit-learn pandas
+$ source activate article-tagging
+(article-tagging) $ ...
+```
+
+## Installation
+
+Download the code from git, `cd` into the directory, and run the setup.py file.
+
+```bash
+$ git clone git@github.com:chicago-justice-project/article-tagging.git
+$ cd article-tagging
+$ python setup.py install
+```
+
+As long as the nltk package is already installed, running the setup.py file should automatically download the required nltk corpora.
+
+## Testing
+
+You will additionally need `pytest` installed to run the tests.
+
+TODO
+
+## Usage
+
+### Inside python
+
+The main class is `newstag.crimetype.tag.Tagger`:
+
+```python
+>>> import newstag
+>>> tagger = newstag.crimetype.tag.Tagger()
+>>> article_text = 'This is an article about lots of crimes. Crimes about drugs.'
+>>> tagger.relevant(article_text, prob_thresh=0.1)
+True
+>>> tagger.tagtext(article_text, prob_thresh=0.5)
+['DRUG', 'CPD']
+>>> tagger.tagtext_prob(article_text)
+<pandas series>
+```
+
+### Command line interface
+
+The installation comes with a command line interface, which without any arguments defaults to reading from the stdin.
+
+```bash
+$ python -m newstag.crimetype.cli
+Go ahead and start typing. Hit ctrl-d when done.
+<type here>
+```
+
+Or you can provide an article to tag.
+
+```bash
+$ python -m newstag.crimetype.cli sample-article.txt
+$ cat sample-article.txt.tagged
+GUNV, 0.9877
+HOMI, 0.8765
+...
+```
+
+Note that the `-m` flag is required.
+
+# Areas of research
+
+## Type-of-Crime Article Tagging
 
 This part of this project aims to automate the category tagging using a specific branch of Machine Learning known as Natural Language Processing.
 
