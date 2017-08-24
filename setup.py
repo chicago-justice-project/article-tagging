@@ -14,16 +14,16 @@ class Install(_install):
         for nltk_package in required_nltk_packages:
             nltk.download(nltk_package)
 
-setup(name='newstag',
+setup(name='tagnews',
       version='0.0.5',
       description='automatically tag articles with justice-related categories',
       author='Kevin Rose',
       url='https://github.com/chicago-justice-project/article-tagging',
       package_dir={'': 'lib'},
-      packages=['newstag', 'newstag.utils', 'newstag.crimetype'],
+      packages=['tagnews', 'tagnews.utils', 'tagnews.crimetype'],
       install_requires=['nltk', 'numpy', 'scikit-learn', 'pandas'],
       tests_require=['pytest'],
-      package_data={'newstag': ['crimetype/models/binary_stemmed_logistic/*.pkl',
+      package_data={'tagnews': ['crimetype/models/binary_stemmed_logistic/*.pkl',
                                 'data/*.csv']},
       cmdclass={'install': Install},
       setup_requires=['nltk'],
