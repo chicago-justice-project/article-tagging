@@ -1,11 +1,3 @@
-# Background
-
-Let's compare the amount different types of crimes are reported in certain areas vs. the actual occurrence amount in those areas. Are some crimes under-represented in certain areas but over-represented in others? To accomplish this, we'll need to be able to extract a type-of-crime tag and geospatial data from news articles.
-
-We meet every Tuesday at [Chi Hack Night](https://chihacknight.org/), and you can find out more about [this specific project here](https://github.com/chihacknight/breakout-groups/issues/61).
-
-The [Chicago Justice Project](http://chicagojustice.org/) has been scraping RSS feeds of articles written by Chicago area news outlets for several years, allowing them to collect almost 300,000 articles. At the same time, an amazing group of [volunteers](http://chicagojustice.org/volunteer-for-cjp/) have helped them tag these articles. The tags include crime categories like "Gun Violence", "Drugs", "Sexual Assault", but also organizations such as "Cook County State's Attorney's Office", "Illinois State Police", "Chicago Police Department", and other miscellaneous categories such as "LGBTQ", "Immigration".
-
 # Installation and Usage
 
 ## Requirements
@@ -14,14 +6,14 @@ To install this library, you will need at least the python packages [nltk](http:
 
 ```bash
 $ # create a new anaconda environment with required packages
-$ conda create -n article-tagging nltk numpy scikit-learn pandas
+$ conda create -n article-tagging nltk numpy scikit-learn pandas pytest
 $ source activate article-tagging
 (article-tagging) $ ...
 ```
 
 ## Installation
 
-Download the code from git, `cd` into the directory, and run the setup.py file.
+Download the code from git, `cd` into the directory, and run the setup.py file. If you created an Anaconda environment, then make sure that environment is active before running the setup file.
 
 ```bash
 $ git clone git@github.com:chicago-justice-project/article-tagging.git
@@ -29,7 +21,9 @@ $ cd article-tagging
 $ python setup.py install
 ```
 
-As long as the nltk package is already installed, running the setup.py file should automatically download the required nltk corpora.
+### nltk
+
+As long as the nltk package is already installed, running the setup.py file should automatically download the required nltk corpora. If that does not work for some reason, then you will need to download the corpora manually. See the list `required_nltk_packages` in setup.py. Each corpus can be downloaded by running `nltk.download(corpus_name)`
 
 ## Testing
 
@@ -76,6 +70,14 @@ HOMI, 0.8765
 ```
 
 Note that the `-m` flag is required.
+
+# Background
+
+We want to compare the amount different types of crimes are reported in certain areas vs. the actual occurrence amount in those areas. Are some crimes under-represented in certain areas but over-represented in others? To accomplish this, we'll need to be able to extract a type-of-crime tag and geospatial data from news articles.
+
+We meet every Tuesday at [Chi Hack Night](https://chihacknight.org/), and you can find out more about [this specific project here](https://github.com/chihacknight/breakout-groups/issues/61).
+
+The [Chicago Justice Project](http://chicagojustice.org/) has been scraping RSS feeds of articles written by Chicago area news outlets for several years, allowing them to collect almost 300,000 articles. At the same time, an amazing group of [volunteers](http://chicagojustice.org/volunteer-for-cjp/) have helped them tag these articles. The tags include crime categories like "Gun Violence", "Drugs", "Sexual Assault", but also organizations such as "Cook County State's Attorney's Office", "Illinois State Police", "Chicago Police Department", and other miscellaneous categories such as "LGBTQ", "Immigration". The volunteer UI was also recently updated to allow highlighting of geographic information.
 
 # Areas of research
 
