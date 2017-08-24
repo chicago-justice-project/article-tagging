@@ -1,2 +1,2 @@
 1. Run `python setup.py install`.
-2. Verify the installation, with `python -m newstag.crimetype.cli`.
+2. Verify the installation, with `python -m tagnews.crimetype.cli`.

@@ -10,7 +10,7 @@ from ..utils.model_helpers import LemmaTokenizer
 Contains the Tagger class that allows tagging of articles.
 
 This file can also be run as a module, with
-`python -m newstag.crimetype.tag`
+`python -m tagnews.crimetype.tag`
 """
 
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],

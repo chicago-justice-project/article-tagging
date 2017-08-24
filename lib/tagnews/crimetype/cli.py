@@ -6,7 +6,7 @@ from .tag import Tagger
 
 """
 A command line interface to the automatic article tagger.
-Run with `python -m newstag.crimetype.cli`
+Run with `python -m tagnews.crimetype.cli`
 """
 
 if __name__ == '__main__':
@@ -21,7 +21,7 @@ if __name__ == '__main__':
             print('{: >5}, {:.9f}'.format(tag, prob))
     else:
         if sys.argv[1] in ['-h', '--help']:
-            h = 'python -m newstag.crimetype.tag [filename [filename [...]]]\n'
+            h = 'python -m tagnews.crimetype.tag [filename [filename [...]]]\n'
             h += '\n'
             h += 'If no filenames are provided, read and tag from stdin.\n'
             h += '(Use ctrl-d to stop inputting to stdin.)\n'

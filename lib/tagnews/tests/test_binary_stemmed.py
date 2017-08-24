@@ -1,10 +1,10 @@
 import pytest
 import numpy as np
 
-import newstag
+import tagnews
 
 def test_binary_stemmed_model():
-    tagger = newstag.crimetype.tag.Tagger()
+    tagger = tagnews.crimetype.tag.Tagger()
     computed = tagger.tagtext_proba(('This is an article about drugs and'
                                      ' gangs. Copyright Kevin Rose.'))
 

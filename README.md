@@ -35,11 +35,11 @@ TODO
 
 ### Inside python
 
-The main class is `newstag.crimetype.tag.Tagger`:
+The main class is `tagnews.crimetype.tag.Tagger`:
 
 ```python
->>> import newstag
->>> tagger = newstag.crimetype.tag.Tagger()
+>>> import tagnews
+>>> tagger = tagnews.crimetype.tag.Tagger()
 >>> article_text = 'This is an article about lots of crimes. Crimes about drugs.'
 >>> tagger.relevant(article_text, prob_thresh=0.1)
 True
@@ -54,7 +54,7 @@ True
 The installation comes with a command line interface, which without any arguments defaults to reading from the stdin.
 
 ```bash
-$ python -m newstag.crimetype.cli
+$ python -m tagnews.crimetype.cli
 Go ahead and start typing. Hit ctrl-d when done.
 <type here>
 ```
@@ -62,7 +62,7 @@ Go ahead and start typing. Hit ctrl-d when done.
 Or you can provide an article to tag.
 
 ```bash
-$ python -m newstag.crimetype.cli sample-article.txt
+$ python -m tagnews.crimetype.cli sample-article.txt
 $ cat sample-article.txt.tagged
 GUNV, 0.9877
 HOMI, 0.8765
@@ -138,4 +138,4 @@ Help [the team scraping articles](https://github.com/chicago-justice-project/chi
 
 # Saving a new model
 
-Working with pickle is difficult. In order to sanely be able load things, I'm running python files that pickle the model using the `-m` flag, e.g. `python -m newstag.crimetype.models.binary_stemmed_logistic.model`.
+Working with pickle is difficult. In order to sanely be able load things, I'm running python files that pickle the model using the `-m` flag, e.g. `python -m tagnews.crimetype.models.binary_stemmed_logistic.model`.
