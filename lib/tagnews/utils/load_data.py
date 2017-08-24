@@ -85,12 +85,6 @@ def load_data(data_folder=__data_folder, nrows=None):
     categories_df = load_categories(data_folder)
     categories_df.set_index('id', drop=True, inplace=True)
 
-    for i in range(tags_df['category_id'].max()):
-        # cat_name = 'cat_' + str(i+1)
-        cat_name = categories_df.loc[i+1, 'abbreviation']
-        df[cat_name] = 0
-        df[cat_name] = df[cat_name].astype('int8') # save on that memory!
-
     # tags_df['category_id'] = tags_df['category_id'].astype(str)
     tags_df['category_abbreviation'] = (categories_df
                                         ['abbreviation']
@@ -102,8 +96,19 @@ def load_data(data_folder=__data_folder, nrows=None):
 
     article_ids = tags_df['article_id'].values
     cat_abbreviations = tags_df['category_abbreviation'].values
+
+    # for some reason, some articles that are tagged don't show up
+    # in the articles CSV. filter those out.
     existing_ids_filter = np.isin(article_ids, df.index.values)
-    df.loc[article_ids[existing_ids_filter], cat_abbreviations[existing_ids_filter]] = 1
+
+    article_ids = article_ids[existing_ids_filter]
+    cat_abbreviations = cat_abbreviations[existing_ids_filter]
+
+    for i in range(tags_df['category_id'].max()):
+        cat_name = categories_df.loc[i+1, 'abbreviation']
+        df[cat_name] = 0
+        df[cat_name] = df[cat_name].astype('int8') # save on that memory!
+        df.loc[article_ids[cat_abbreviations == cat_name], cat_name] = 1
 
     return df
 
