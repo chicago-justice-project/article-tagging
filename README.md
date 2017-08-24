@@ -29,7 +29,14 @@ As long as the nltk package is already installed, running the setup.py file shou
 
 You will additionally need `pytest` installed to run the tests.
 
-TODO
+To test an installation, you can run
+
+```python
+import tagnews
+tagnews.test()
+```
+
+to run the tests. During development, you can run `py.test` from the top level of this repo. Either way, you should see a couple tests pass.
 
 ## Usage
 
