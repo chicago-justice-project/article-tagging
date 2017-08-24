@@ -5,3 +5,4 @@ lib/tagnews.egg-info
 build/
 dist/
 .eggs/
+.cache/

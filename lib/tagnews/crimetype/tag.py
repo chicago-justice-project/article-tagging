@@ -74,6 +74,23 @@ class Tagger():
         return preds[preds > prob_thresh].index.values.tolist()
 
 
+    def relevant_proba(self, text):
+        """
+        Outputs the probability that the given text is relevant.
+        This probability is computed naively as the maximum of
+        the probabilities each tag applies to the text.
+
+        A more nuanced method would compute a joint probability.
+
+        inputs:
+            text: A python string.
+
+        returns:
+            relevant_proba: Probability the text is relevant.
+        """
+        return max(self.tagtext_proba(text))
+
+
     def relevant(self, text, prob_thresh=0.05):
         """
         Determines whether given text is relevant or not. Relevance
