@@ -2,7 +2,7 @@
 
 ## Requirements
 
-To install this library, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/), [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). We recommend using [Anaconda](https://www.continuum.io/downloads):
+To install this library, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/), [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). We recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments:
 
 ```bash
 $ # create a new anaconda environment with required packages
@@ -33,25 +33,31 @@ TODO
 
 ## Usage
 
-### Inside python
+### From python
 
 The main class is `tagnews.crimetype.tag.Tagger`:
 
 ```python
 >>> import tagnews
 >>> tagger = tagnews.crimetype.tag.Tagger()
->>> article_text = 'This is an article about lots of crimes. Crimes about drugs.'
+>>> article_text = 'A short article. About drugs and police.'
 >>> tagger.relevant(article_text, prob_thresh=0.1)
 True
 >>> tagger.tagtext(article_text, prob_thresh=0.5)
 ['DRUG', 'CPD']
->>> tagger.tagtext_prob(article_text)
-<pandas series>
+>>> tagger.tagtext_proba(article_text)
+DRUG     0.747944
+CPD      0.617198
+VIOL     0.183003
+UNSPC    0.145019
+ILSP     0.114254
+POLM     0.059985
+...
 ```
 
-### Command line interface
+### From the command line
 
-The installation comes with a command line interface, which without any arguments defaults to reading from the stdin.
+The installation comes with a *very* rudimentary command line interface, which without any arguments defaults to reading from the stdin.
 
 ```bash
 $ python -m tagnews.crimetype.cli
@@ -59,13 +65,16 @@ Go ahead and start typing. Hit ctrl-d when done.
 <type here>
 ```
 
-Or you can provide an article to tag.
+Or you can provide a list of articles to tag, a CSV of the probability of each tag is output to `<article name>.tagged`.
 
 ```bash
-$ python -m tagnews.crimetype.cli sample-article.txt
-$ cat sample-article.txt.tagged
-GUNV, 0.9877
-HOMI, 0.8765
+$ python -m tagnews.crimetype.cli sample-article-1.txt sample-article-2.txt
+$ cat sample-article-1.txt.tagged
+  CPD, 0.912382307
+UNSPC, 0.051873838
+ SEXA, 0.031065436
+ BEAT, 0.023119570
+ DRUG, 0.017140532
 ...
 ```
 
@@ -78,6 +87,10 @@ We want to compare the amount different types of crimes are reported in certain 
 We meet every Tuesday at [Chi Hack Night](https://chihacknight.org/), and you can find out more about [this specific project here](https://github.com/chihacknight/breakout-groups/issues/61).
 
 The [Chicago Justice Project](http://chicagojustice.org/) has been scraping RSS feeds of articles written by Chicago area news outlets for several years, allowing them to collect almost 300,000 articles. At the same time, an amazing group of [volunteers](http://chicagojustice.org/volunteer-for-cjp/) have helped them tag these articles. The tags include crime categories like "Gun Violence", "Drugs", "Sexual Assault", but also organizations such as "Cook County State's Attorney's Office", "Illinois State Police", "Chicago Police Department", and other miscellaneous categories such as "LGBTQ", "Immigration". The volunteer UI was also recently updated to allow highlighting of geographic information.
+
+# Contributing
+
+You want to contribute? Great! Check out the [CONTRIBUTING.md](./CONTRIBUTING.md) file for more info.
 
 # Areas of research
 
@@ -112,30 +125,8 @@ Things to checkout:
 
 Some articles may discuss multiple crimes. Some crimes may occur in multiple areas, whereas others may not be associated with any geographic information (e.g. some kinds of fraud).
 
-# The Code
-
-Under the `lib` folder you can find the source code.
-
-The `load_data.py` file will load the data from the CSV files (stored not in GitHub). Specifically, look at the `load_data.load_data()` method, this returns a `k`-hot encoded tagging and article data.
-
-# How to Contribute FAQ
-
-### How can I stay up to date on what you're doing with article-tagging?
-Check this document for updates and subscribe to the #quantifyingjusticenews channel on Chi Hack Night's team on Slack.
-### Where is this scraped data that you're using and how do I get it?
-The scraped data is NOT housed in a Github repositiory - it's on a flash drive.  Come to Chi Hack Night in person and save it onto your computer!
-### Do I have to use a specific language to participate in article-tagging?
-Thusfar, most of the work has been done in Python, but there's no reason that always has to be the case. If there is another language that would be perfect for this project or that you have expertise in, that works too.
-### Are there concepts that will be helpful for me to understand?
-Definitely!  [This sklearn user guide](http://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction) details a number of the text analysis methodologies this project uses (sklearn is a Python library, but the user guide is great for understanding machine learning text analysis in general).  Also, see the section above on 'Automated Article Tagging' for more detailed literature on some of the relevant concepts.
-### I want to contribute to Chicago Justice Project but I don’t want to work on tagging article subjects OR geolocating articles. What can I do?
-Help [the team scraping articles](https://github.com/chicago-justice-project/chicago-justice) (that's where this team gets its data) or help [the team building a front-end](https://github.com/chicago-justice-project/chicago-justice-client)to share this project's insights with Chicago and the world. Or just show up Tuesday nights and ask what you can do!
 # See Also
 
 * [Chicago Justice Project](http://chicagojustice.org/)
 * [Database Repo](https://github.com/kyaroch/chicago-justice)
 * [Chi Hack Night Group Description](https://github.com/chihacknight/breakout-groups/issues/61)
-
-# Saving a new model
-
-Working with pickle is difficult. In order to sanely be able load things, I'm running python files that pickle the model using the `-m` flag, e.g. `python -m tagnews.crimetype.models.binary_stemmed_logistic.model`.
