@@ -33,7 +33,8 @@ def load_categorizations():
 
 def load_categories():
     """Loads the mapping of id to names/abbrevations of categories"""
-    column_names = ['id', 'category_name', 'abbreviation', 'created']
+    column_names = ['id', 'category_name', 'abbreviation', 'created',
+                    'unknown', 'group']
 
     return pd.read_csv(os.path.join(DATA_FOLDER, 'newsarticles_category.csv'),
                        header=None,
