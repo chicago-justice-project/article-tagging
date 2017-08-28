@@ -110,6 +110,8 @@ def load_data(data_folder=__data_folder, nrows=None):
         df[cat_name] = df[cat_name].astype('int8') # save on that memory!
         df.loc[article_ids[cat_abbreviations == cat_name], cat_name] = 1
 
+    df.loc[df['bodytext'].isnull(), 'bodytext'] = ''
+
     return df
 
 
