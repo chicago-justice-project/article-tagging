@@ -8,24 +8,17 @@ import sklearn
 import sklearn.feature_extraction.text
 import sklearn.multiclass
 import sklearn.linear_model
+from nltk import word_tokenize
+from nltk.stem import WordNetLemmatizer
 
 df = ld.load_data()
 
 crime_df = df.ix[df.loc[:, 'OEMC':'TASR'].any(1), :]
-print(crime_df.shape)
 crime_df = crime_df.append(df.ix[~df['relevant'], :].sample(n=3000, axis=0))
-print(crime_df.shape)
 
 idx = np.random.permutation(crime_df.shape[0])
 trn = crime_df.iloc[idx[:int(crime_df.shape[0] * 0.7)], :]
 tst = crime_df.iloc[idx[int(crime_df.shape[0] * 0.7):], :]
-print(trn.shape)
-print(tst.shape)
-
-# vectorize data
-from nltk import word_tokenize
-from nltk.stem import WordNetLemmatizer
-
 
 vectorizer = sklearn.feature_extraction.text.CountVectorizer(tokenizer=LemmaTokenizer(),
                                                              binary=True)
@@ -41,12 +34,6 @@ X = vectorizer.transform(crime_df['bodytext'].values)
 Y = crime_df.loc[:, 'OEMC':'TASR'].values
 
 clf.fit(X, Y)
-
-print(pd.DataFrame(
-    clf.predict_proba(vectorizer.transform(['marijuana'])),
-    columns=df.columns[7:]
-).T.sort_values(0, ascending=False))
-
 
 import pickle
 
