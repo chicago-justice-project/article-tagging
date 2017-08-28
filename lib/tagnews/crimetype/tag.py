@@ -25,6 +25,11 @@ TAGS = ['OEMC', 'CPD', 'SAO', 'CCCC', 'CCJ', 'CCSP',
 
 
 def load_model(location=MODEL_LOCATION):
+    """
+    Load a model from the given folder `location`.
+    There should be a file named model.pkl and
+    a file named vectorizer.pkl inside the folder.
+    """
     with open(os.path.join(location, 'model.pkl'), 'rb') as f:
         clf = pickle.load(f)
 
@@ -39,6 +44,10 @@ class Tagger():
     Taggers let you tag articles. Neat!
     """
     def __init__(self, model_directory=MODEL_LOCATION):
+        """
+        Load a model from the given `model_directory`.
+        See `load_model` for more information.
+        """
         self.clf, self.vectorizer = load_model(model_directory)
 
     def tagtext_proba(self, text):
@@ -107,3 +116,43 @@ class Tagger():
             relevant: Boolean. Is the text "relevant"?
         """
         return len(self.tagtext(text, prob_thresh)) > 0
+
+
+    def get_contributions(self, text):
+        """
+        Rank the words in the text by their contribution to each
+        category. This function assumes that clf has an attribute
+        `coef_` and that vectorizer has an attribute
+        `inverse_transform`.
+
+        inputs:
+            text: A python string.
+        returns:
+            contributions: Pandas panel keyed off [category, word].
+
+        Example:
+        >>> s = 'This is an article about drugs and gangs.'
+        >>> s += ' Copyright Kevin Rose.'
+        >>> p = tagger.get_contributions(s)
+        >>> p['DRUG'].sort_values('weight', ascending=False)
+                     weight
+        drug       5.549870
+        copyright  0.366905
+        gang       0.194773
+        this       0.124590
+        an        -0.004484
+        article   -0.052026
+        is        -0.085534
+        about     -0.154800
+        kevin     -0.219028
+        rose      -0.238296
+        and       -0.316201
+        .         -0.853208
+        """
+        p = {}
+        vec = self.vectorizer.transform([text])
+        vec_inv = self.vectorizer.inverse_transform(vec)
+        for i, tag in enumerate(TAGS):
+            p[tag] = pd.DataFrame(index=vec_env,
+                                  data={'weight': self.clf.coef_[i, vec.nonzero()[1]]})
+        return pd.Panel(p)
