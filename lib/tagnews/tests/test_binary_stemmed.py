@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 import tagnews
 
@@ -8,25 +9,25 @@ def test_binary_stemmed_model():
                                      ' gangs. Copyright Kevin Rose.'))
 
     expected_values = np.array(
-        [0.97203727,  0.88789787,  0.2082669 ,  0.14037048,  0.10828103,
-         0.09304668,  0.08045448,  0.07426908,  0.06969677,  0.06545745,
-         0.06261077,  0.05765306,  0.05581387,  0.05180351,  0.04338474,
-         0.03787152,  0.0372484 ,  0.03544577,  0.03451235,  0.03348183,
-         0.03332619,  0.03229261,  0.02849745,  0.02814688,  0.02736295,
-         0.02692241,  0.02479671,  0.02193516,  0.02170981,  0.02148271,
-         0.02139072,  0.02041881,  0.01952591,  0.01899151,  0.01520583,
-         0.0151583 ,  0.00705791,  0.00525071])
-
-    np.testing.assert_array_almost_equal(computed.values,
-                                         expected_values,
-                                         decimal=4)
+        [0.974812, 0.899625, 0.246876, 0.133746, 0.106545, 0.104717,
+         0.087247, 0.085050, 0.083862, 0.070980, 0.070646, 0.068562,
+         0.056926, 0.049988, 0.046514, 0.045374, 0.042793, 0.041884,
+         0.038661, 0.037252, 0.036225, 0.034859, 0.033933, 0.033609,
+         0.028948, 0.025361, 0.025335, 0.024939, 0.023819, 0.022974,
+         0.022706, 0.021454, 0.019619, 0.019261, 0.016800, 0.016401,
+         0.009044, 0.006117]
+    )
 
     expected_columns = [
-        'GANG', 'DRUG', 'VIOL', 'IMMG', 'UNSPC', 'REEN', 'PARL', 'CPS',
-        'GUNV', 'ILSC', 'IPRA', 'DUI', 'CCJ', 'GLBTQ', 'BEAT', 'POLM',
-        'ILSP', 'CCSP', 'CPLY', 'ENVI', 'OEMC', 'TASR', 'CPBD', 'CPD',
-        'HOMI', 'JUVE', 'ARSN', 'BURG', 'SEXA', 'IDOC', 'SAO', 'CPUB',
-        'POLB', 'PROB', 'ROBB', 'FRUD', 'DOMV', 'CCCC'
+        'GANG', 'DRUG', 'VIOL', 'IMMG', 'GUNV', 'REEN', 'UNSPC', 'PARL',
+        'CPS', 'ILSC', 'IPRA', 'GLBTQ', 'CCJ', 'BEAT', 'DUI', 'ENVI',
+        'POLM', 'ILSP', 'TASR', 'OEMC', 'HOMI', 'CPLY', 'ARSN', 'CPBD',
+        'CCSP', 'BURG', 'JUVE', 'IDOC', 'SAO', 'PROB', 'CPUB', 'POLB',
+        'CPD', 'FRUD', 'ROBB', 'SEXA', 'DOMV', 'CCCC'
     ]
 
-    assert computed.index.values.tolist() == expected_columns
+    expected = pd.Series(data=expected_values, index=expected_columns)
+
+    np.testing.assert_array_almost_equal(computed[expected.index].values,
+                                         expected.values,
+                                         decimal=3)

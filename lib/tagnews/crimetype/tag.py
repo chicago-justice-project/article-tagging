@@ -1,5 +1,7 @@
 import os
 import pickle
+import glob
+import time
 import pandas as pd
 
 # not used explicitly, but this needs to be imported like this
@@ -8,9 +10,6 @@ from ..utils.model_helpers import LemmaTokenizer
 
 """
 Contains the Tagger class that allows tagging of articles.
-
-This file can also be run as a module, with
-`python -m tagnews.crimetype.tag`
 """
 
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
@@ -27,13 +26,25 @@ TAGS = ['OEMC', 'CPD', 'SAO', 'CCCC', 'CCJ', 'CCSP',
 def load_model(location=MODEL_LOCATION):
     """
     Load a model from the given folder `location`.
-    There should be a file named model.pkl and
-    a file named vectorizer.pkl inside the folder.
+    There should be at least one file named model-TIME.pkl and
+    a file named vectorizer-TIME.pkl inside the folder.
+
+    The files with the most recent timestamp are loaded.
     """
-    with open(os.path.join(location, 'model.pkl'), 'rb') as f:
+    models = glob.glob(os.path.join(location, 'model*.pkl'))
+    model = models.pop()
+    while models:
+        model_time = time.strptime(model[-19:-4], '%Y%m%d-%H%M%S')
+        new_model_time = time.strptime(models[0][-19:-4], '%Y%m%d-%H%M%S')
+        if model_time < new_model_time:
+            model = models[0]
+        models = models[1:]
+
+    with open(model, 'rb') as f:
         clf = pickle.load(f)
 
-    with open(os.path.join(location, 'vectorizer.pkl'), 'rb') as f:
+    with open(os.path.join(location, 'vectorizer-' + model[-19:-4] + '.pkl'),
+              'rb') as f:
         vectorizer = pickle.load(f)
 
     return clf, vectorizer
@@ -43,12 +54,24 @@ class Tagger():
     """
     Taggers let you tag articles. Neat!
     """
-    def __init__(self, model_directory=MODEL_LOCATION):
+    def __init__(self,
+                 model_directory=MODEL_LOCATION,
+                 clf=None,
+                 vectorizer=None):
         """
         Load a model from the given `model_directory`.
         See `load_model` for more information.
+
+        Alternatively, the classifier and vectorizer can be
+        provided. If one is provided, then both must be provided.
         """
-        self.clf, self.vectorizer = load_model(model_directory)
+        if clf is None and vectorizer is None:
+            self.clf, self.vectorizer = load_model(model_directory)
+        elif clf is None or vectorizer is None:
+            raise ValueError(('clf and vectorizer must both be None,'
+                              ' or both be not None'))
+        else:
+            self.clf, self.vectorizer = clf, vectorizer
 
     def tagtext_proba(self, text):
         """
