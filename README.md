@@ -6,9 +6,9 @@ To install this library, you will need at least the python packages [nltk](http:
 
 ```bash
 $ # create a new anaconda environment with required packages
-$ conda create -n article-tagging nltk numpy scikit-learn pandas pytest
-$ source activate article-tagging
-(article-tagging) $ ...
+$ conda create -n cjp-ap nltk numpy scikit-learn pandas pytest
+$ source activate cjp-ap
+(cjp-ap) $ ...
 ```
 
 ## Installation
@@ -21,9 +21,31 @@ $ cd article-tagging
 $ python setup.py install
 ```
 
+In an attempt to keep the git repo from blowing up in size, we do not package the models. (This also helps to avoid problems with different pickling protocols being used by different python versions.) This means you will have to build the model from scratch. This takes roughly 4 GB of RAM.
+
+```bash
+$ python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
+```
+
+### All together
+
+```bash
+$ # clone the repo
+$ git clone git@github.com:chicago-justice-project/article-tagging.git
+$ cd article-tagging
+$ # create a new anaconda environment with required packages
+$ conda create -n cjp-ap nltk numpy scikit-learn pandas pytest
+$ source activate cjp-ap
+(cjp-ap) $ cd lib
+(cjp-ap) $ # make/save the model, this may take a while...
+(cjp-ap) $ python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
+(cjp-ap) $ cd ..
+(cjp-ap) $ python setup.py install
+```
+
 ### nltk
 
-As long as the nltk package is already installed, running the setup.py file should automatically download the required nltk corpora. If that does not work for some reason, then you will need to download the corpora manually. See the list `required_nltk_packages` in setup.py. Each corpus can be downloaded by running `nltk.download(corpus_name)`
+As long as the nltk package is already installed, running the setup.py file should automatically download the required nltk corpora. If that does not work for some reason, then you will need to download the corpora manually. See the list `required_nltk_packages` in setup.py. Each corpus can be downloaded by running `nltk.download(corpus_name)`.
 
 ## Testing
 

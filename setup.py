@@ -15,7 +15,7 @@ class Install(_install):
             nltk.download(nltk_package)
 
 setup(name='tagnews',
-      version='0.2.0',
+      version='0.3.0',
       description='automatically tag articles with justice-related categories',
       author='Kevin Rose',
       url='https://github.com/chicago-justice-project/article-tagging',
@@ -23,6 +23,7 @@ setup(name='tagnews',
       packages=['tagnews',
                 'tagnews.utils',
                 'tagnews.crimetype',
+                'tagnews.crimetype.models.binary_stemmed_logistic',
                 'tagnews.tests'],
       install_requires=['nltk', 'numpy>=1.13', 'scikit-learn', 'pandas'],
       tests_require=['pytest'],
