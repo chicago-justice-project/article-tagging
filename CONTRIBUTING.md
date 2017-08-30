@@ -2,7 +2,11 @@
 
 Fork this repo, download it, and navigate to it. If you're going to be developing it doesn't necessarily make sense to install as a package, but you'll still need to install the dependencies. Head over to the [README](README.md) for instructions on installing the required dependencies.
 
-Done? Great, welcome back. A good place to start is the [notebooks](./lib/notebooks). Reading through these should help you get up to speed, and running them is a pretty good test to make sure everything is installed correctly. You will need the data to run the notebooks. There is no current cloud-based data sharing solution being used. Instead, it is contained on a USB drive, come to the Chi Hack Night meeting to get it! If this will be a problem for you but you are still interested, contact one of the maintainers.
+# Getting Started
+
+Welcome back.
+
+A good place to start is the [notebooks](./lib/notebooks). Reading through these should help you get up to speed, and running them is a pretty good test to make sure everything is installed correctly. You will need the data to run the notebooks. There is no current cloud-based data sharing solution being used. Instead, it is contained on a [USB drive](https://en.wikipedia.org/wiki/Sneakernet), come to the Chi Hack Night meeting to get it! If this will be a problem for you but you are still interested, contact one of the maintainers.
 
 # What can I do?
 

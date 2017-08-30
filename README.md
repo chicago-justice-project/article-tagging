@@ -1,8 +1,28 @@
-# Installation and Usage
+Automatically classify news articles with type-of-crime tags? Neat!
+
+```python
+>>> import tagnews
+>>> tagger = tagnews.crimetype.tag.Tagger()
+>>> article_text = 'A short article. About drugs and police.'
+>>> tagger.tagtext_proba(article_text)
+DRUG     0.747944
+CPD      0.617198
+VIOL     0.183003
+UNSPC    0.145019
+ILSP     0.114254
+POLM     0.059985
+...
+>>> tagger.tagtext(article_text, prob_thresh=0.5)
+['DRUG', 'CPD']
+```
+
+***The documentation for this project is a work in progress. If something is unclear, or worse yet, incorrect, please report that as an [issue](https://github.com/chicago-justice-project/article-tagging/issues).***
+
+# Setup and Usage
 
 ## Requirements
 
-To install this library, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/), [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). We recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments:
+To use this code, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/), [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). We recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments:
 
 ```bash
 $ # create a new anaconda environment with required packages
@@ -13,52 +33,7 @@ $ source activate cjp-ap
 
 ## Installation
 
-Download the code from git, `cd` into the directory, and run the setup.py file. If you created an Anaconda environment, then make sure that environment is active before running the setup file.
-
-```bash
-$ git clone git@github.com:chicago-justice-project/article-tagging.git
-$ cd article-tagging
-$ python setup.py install
-```
-
-In an attempt to keep the git repo from blowing up in size, we do not package the models. (This also helps to avoid problems with different pickling protocols being used by different python versions.) This means you will have to build the model from scratch. This takes roughly 4 GB of RAM.
-
-```bash
-$ python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
-```
-
-### All together
-
-```bash
-$ # clone the repo
-$ git clone git@github.com:chicago-justice-project/article-tagging.git
-$ cd article-tagging
-$ # create a new anaconda environment with required packages
-$ conda create -n cjp-ap nltk numpy scikit-learn pandas pytest
-$ source activate cjp-ap
-(cjp-ap) $ cd lib
-(cjp-ap) $ # make/save the model, this may take a while...
-(cjp-ap) $ python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
-(cjp-ap) $ cd ..
-(cjp-ap) $ python setup.py install
-```
-
-### nltk
-
-As long as the nltk package is already installed, running the setup.py file should automatically download the required nltk corpora. If that does not work for some reason, then you will need to download the corpora manually. See the list `required_nltk_packages` in setup.py. Each corpus can be downloaded by running `nltk.download(corpus_name)`.
-
-## Testing
-
-You will additionally need `pytest` installed to run the tests.
-
-To test an installation, you can run
-
-```python
-import tagnews
-tagnews.test()
-```
-
-to run the tests. During development, you can run `py.test` from the top level of this repo. Either way, you should see a couple tests pass.
+Now that you've got the requirements resolved, you're ready to install the library. If you are wanting to install this to use as a client that can deliver NLP results, then please see [INSTALLATION.md](INSTALLATION.md). If you are wanting to roll up your sleeves and do some data science, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Usage
 
