@@ -1,17 +1,10 @@
 # Installation
 
-This document contains instructions for installing this library as a system package which can then be used to deliver NLP-based tagging results. If you are just looking to hack on the NLP/library, follow the instructions in the [README.md](README.md).
+This document contains instructions for installing this library as a system package which can then be used to deliver NLP-based tagging results. If you are just looking to hack on the NLP/library, follow the instructions in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## Requirements
 
-To use this code, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/), [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). We recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments, but this is by no means reuqired.
-
-```bash
-$ # create a new anaconda environment with required packages
-$ conda create -n article-tagging nltk numpy scikit-learn pandas pytest
-$ source activate article-tagging
-(article-tagging) $ ...
-```
+Requirements are covered in the [README.md](README.md).
 
 ## Setup
 
