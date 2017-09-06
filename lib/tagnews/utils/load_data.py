@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import json
 import os
 
 """
@@ -18,7 +19,7 @@ def load_articles(data_folder=__data_folder, nrows=None):
     `nrows` number of rows.
     """
     column_names = ['id',
-                    'unknown1',
+                    'feedname',
                     'url',
                     'orig_html',
                     'title',
@@ -26,8 +27,8 @@ def load_articles(data_folder=__data_folder, nrows=None):
                     'relevant',
                     'created',
                     'last_modified',
-                    'unknown2',
-                    'feedname']
+                    'news_source_id',
+                    'author']
 
     return pd.read_csv(os.path.join(data_folder,
                                     'newsarticles_article.csv'),
@@ -36,20 +37,49 @@ def load_articles(data_folder=__data_folder, nrows=None):
                        nrows=nrows)
 
 
-def load_categorizations(data_folder=__data_folder):
-    """Loads the categorizations of the articles."""
-    column_names = ['id', 'article_id', 'category_id']
+def load_taggings(data_folder=__data_folder):
+    """Loads the type-of-crime human tagging of the articles."""
+    uc_column_names = ['id', 'date', 'relevant',
+                       'article_id', 'user_id', 'locations']
 
-    return pd.read_csv(os.path.join(data_folder,
-                                    'newsarticles_article_categories.csv'),
-                       header=None,
-                       names=column_names)
+    uc = pd.read_csv(os.path.join(data_folder,
+                                  'newsarticles_usercoding.csv'),
+                     header=None,
+                     names=uc_column_names)
+
+    uc.set_index('id', drop=True, inplace=True)
+
+    uc_tags_column_names = ['id', 'usercoding_id', 'category_id']
+
+    uc_tags = pd.read_csv(os.path.join(data_folder,
+                                       'newsarticles_usercoding_categories.csv'),
+                          header=None,
+                          names=uc_tags_column_names)
+    uc_tags.set_index('usercoding_id', drop=True, inplace=True)
+
+    uc_tags['article_id'] = uc.loc[uc_tags.index, 'article_id']
+    return uc_tags
+
+
+def load_locations(data_folder=__data_folder):
+    """Load the human-extracted locations from the articles."""
+    uc_column_names = ['id', 'date', 'relevant',
+                       'article_id', 'user_id', 'locations']
+
+    uc = pd.read_csv(os.path.join(data_folder,
+                                  'newsarticles_usercoding.csv'),
+                     header=None,
+                     names=uc_column_names)
+
+    uc['locations'] = uc['locations'].apply(lambda x: json.loads(x))
+
+    return uc
 
 
 def load_categories(data_folder=__data_folder):
     """Loads the mapping of id to names/abbrevations of categories"""
     column_names = ['id', 'category_name', 'abbreviation', 'created',
-                    'unknown', 'group']
+                    'active', 'kind']
 
     return pd.read_csv(os.path.join(data_folder, 'newsarticles_category.csv'),
                        header=None,
@@ -78,9 +108,16 @@ def load_data(data_folder=__data_folder, nrows=None):
     # hopefully this will save some memory/space, can add back if needed
     del(df['orig_html'])
 
-    tags_df = load_categorizations(data_folder)
+    tags_df = load_taggings(data_folder)
     # will help cacheing
     tags_df.sort_values(by='article_id', inplace=True)
+
+    locs_df = load_locations(data_folder)
+    locs_df.sort_values(by='article_id', inplace=True)
+
+    # init with empty lists
+    df['locations'] = np.empty([df.shape[0], 0]).tolist()
+    df.loc[locs_df['article_id'].values, 'locations'] = locs_df['locations'].values
 
     categories_df = load_categories(data_folder)
     categories_df.set_index('id', drop=True, inplace=True)
