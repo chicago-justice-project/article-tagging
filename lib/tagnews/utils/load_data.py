@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
+import re
 import json
 import os
+import warnings
 
 """
 Helper functions to load the article data. The main method to use
@@ -12,6 +14,16 @@ is load_data().
 # default arguments are populated with this reference at creation
 # time, so post-hoc modifications will do nothing.
 __data_folder = os.path.join(os.path.split(__file__)[0], '..', 'data')
+
+
+def clean_string(s):
+    """
+    Clean all the HTML/Unicode nastiness out of a string.
+    Replaces newlines with spaces.
+    """
+
+    return s.replace('\r', '').replace('\n', ' ').replace('\xa0', ' ').strip()
+
 
 def load_articles(data_folder=__data_folder, nrows=None):
     """
@@ -34,7 +46,8 @@ def load_articles(data_folder=__data_folder, nrows=None):
                                     'newsarticles_article.csv'),
                        header=None,
                        names=column_names,
-                       nrows=nrows)
+                       nrows=nrows,
+                       dtype={'orig_html': str, 'author': str})
 
 
 def load_taggings(data_folder=__data_folder):
@@ -119,6 +132,56 @@ def load_data(data_folder=__data_folder, nrows=None):
     df['locations'] = np.empty([df.shape[0], 0]).tolist()
     df.loc[locs_df['article_id'].values, 'locations'] = locs_df['locations'].values
 
+    def find_loc_in_string(locs, string):
+        """
+        The locations are generated from JavaScript, which means there's
+        going to be some problems getting things to line up exactly and
+        neatly. This function will hopefully performa all necessary
+        transformations to find the given location text within the
+        larger string.
+
+        Inputs:
+            locs: list of locations as loaded by load_locations
+            string: bodytext of article in which to find locs
+        Returns:
+            updated_locs: list of locations as loaded by
+                load_locations, but with a couple
+                extra fields ('cleaned text' and 'cleaned span').
+        """
+
+        for i, loc in enumerate(locs):
+            loc_text = loc['text']
+
+            loc_text = clean_string(loc_text)
+            string = clean_string(string)
+
+            loc['cleaned text'] = loc_text
+
+            spans = [x.span() for x in re.finditer(re.escape(loc_text), string)]
+            if spans:
+                # The string may have occurred multiple times, and since the spans
+                # don't line up perfectly we can't know which one is the "correct" one.
+                # Best we can do is find the python span closest to the expected
+                # javascript span.
+                closest = np.abs(np.argmin(np.array([x[0] for x in spans]) - loc['start']))
+                loc['cleaned span'] = spans[closest]
+
+            locs[i] = loc
+
+        return locs
+
+    df['locations'] = df.apply(
+        lambda r: find_loc_in_string(r['locations'], r['bodytext']),
+        axis=1
+    )
+
+    num_no_match = df['locations'].apply(
+        lambda locs: any([('cleaned span' not in loc) for loc in locs])
+    ).sum()
+    if num_no_match:
+        warnings.warn(str(num_no_match) + ' location strings were not found in the bodytext.',
+                      RuntimeWarning)
+
     categories_df = load_categories(data_folder)
     categories_df.set_index('id', drop=True, inplace=True)
 
@@ -129,7 +192,8 @@ def load_data(data_folder=__data_folder, nrows=None):
                                         .values)
 
     if np.setdiff1d(tags_df['article_id'].values, df.index.values).size:
-        print('Warning, tags were found for article IDs that do not exist.')
+        warnings.warn('Tags were found for article IDs that do not exist.',
+                      RuntimeWarning)
 
     article_ids = tags_df['article_id'].values
     cat_abbreviations = tags_df['category_abbreviation'].values
