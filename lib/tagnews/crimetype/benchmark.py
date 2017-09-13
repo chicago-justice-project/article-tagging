@@ -105,7 +105,7 @@ def predict_articles(clf, vectorizer, df, n=100, seed=1029384756):
 
     preds = clf.predict_proba(vectorizer.transform(df.iloc[random_subset,3].values))
     preds = pd.DataFrame(preds)
-    preds.columns = df.loc[:, 'OEMC'::].columns
+    preds.columns = df.loc[:, 'OEMC':'TASR'].columns
 
     for i, rand_i in enumerate(random_subset):
         s = 'Article ID: ' + str(df.index[rand_i])

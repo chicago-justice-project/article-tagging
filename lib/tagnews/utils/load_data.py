@@ -254,8 +254,7 @@ def load_crime_data(data_folder=__data_folder):
     crime_string += (iucr.loc[crimes['IUCR'], 'SECONDARY DESCRIPTION']
                      .fillna('')
                      .values
-                     + ' '
-)
+                     + ' ')
     community_areas = pd.read_csv(os.path.join(data_folder, 'CommAreas.csv'))
     community_areas.set_index('AREA_NUM_1', inplace=True, drop=True)
     crime_string += (community_areas.loc[crimes['Community Area'], 'COMMUNITY']
