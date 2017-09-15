@@ -3,8 +3,6 @@ import time
 
 from ....utils import load_data as ld
 from ....utils.model_helpers import LemmaTokenizer
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import sklearn
