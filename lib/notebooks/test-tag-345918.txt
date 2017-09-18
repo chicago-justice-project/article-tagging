@@ -1,0 +1,66 @@
+Article ID: 345918
+CHICAGO --
+
+A special prosecutor says a judge is biased and should be removed from the case
+of police officers accused of covering up what happened when a white Chicago
+officer fatally shot black teenager Laquan McDonald.  
+  
+Patricia Brown Holmes filed a motion Thursday in Cook County saying Judge Diane
+Cannon is biased against the prosecution. Cannon would make the decision about
+whether to bump herself off the case. If she refuses, Holmes can appeal.  
+
+  
+Thursday's motion offers no justification for the bias claim. Some attorneys
+pointed to Cannon's 2015 acquittal of a police commander charged after allegedly
+shoving a gun down a suspect's throat.  
+  
+Cannon was assigned to the McDonald case Monday after another judge recused
+herself. The one current and two ex-officers in the McDonald case later pleaded
+not guilty.
+
+[ Report a Typo ][1]
+
+   [1]: mailto:WLS-TV.Website@abc.com?Subject=Report a Typo&body=Prosecutor
+wants judge in McDonald cover up case
+removed%0D%0A%0D%0Ahttp://abc7chicago.com/news/prosecutor-wants-judge-in-
+mcdonald-cover-up-case-removed/2214484/
+ Predicted Tags: ['CPD' 'GUNV']
+OEMC    0.000360
+CPD     0.992056
+SAO     0.325791
+CCCC    0.290075
+CCJ     0.001475
+CCSP    0.000023
+CPUB    0.000452
+IDOC    0.000024
+DOMV    0.000842
+SEXA    0.002117
+POLB    0.139811
+POLM    0.329185
+GUNV    0.989057
+GLBTQ   0.000058
+JUVE    0.011068
+REEN    0.000013
+VIOL    0.367349
+BEAT    0.000153
+PROB    0.000244
+PARL    0.000220
+CPLY    0.030793
+DRUG    0.000207
+CPS     0.000311
+GANG    0.000101
+ILSP    0.000003
+HOMI    0.213968
+IPRA    0.000008
+CPBD    0.009477
+IMMG    0.000502
+ENVI    0.000073
+UNSPC   0.000358
+ILSC    0.000113
+ARSN    0.000016
+BURG    0.000339
+DUI     0.000004
+FRUD    0.002642
+ROBB    0.001064
+TASR    0.000297
+Name: 7, dtype: float64
