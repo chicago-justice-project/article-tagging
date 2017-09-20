@@ -30,13 +30,13 @@ Pre-trained models are not saved in Git since they are large binary files. Saved
 python -m tagnews.crimetype.models.binary_stemmed_logistic.model
 ```
 
-which will save two files, `model.pkl` and `vectorizer.pkl` to your current directory. Generating a model locally will require having the data (see below).
+Generating a model locally will require having the data (see below).
 
 Wherever these two files end up being located (either by downloading or creating locally), you can reference this folder when creating your `Tagger` instance (see simple usage below).
 
 ## Data
 
-The data is not stored in the Git repo since it would take up a considerable amount of space. Instead, the data is dumped daily on the server and can be accessed using a SFTP client. The data is only necessary if you wish to create your own model.
+The data is not stored in the Git repo since it would take up a considerable amount of space. Instead, the data is dumped daily on the server and can be accessed using a SFTP client. The data is only necessary if you wish to create your own model. Come to ChiHackNight to learn more about the data and how to get it.
 
 # Simple Usage
 
