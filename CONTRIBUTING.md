@@ -1,25 +1,36 @@
 # Setup
 
-Fork this repo, download it, and navigate to it. If you're going to be developing it doesn't necessarily make sense to install as a package, but you'll still need to install the dependencies. Head over to the [README](README.md) for instructions on installing the required dependencies.
+Fork this repo, clone your fork, and navigate to it. If you're going to be developing it doesn't necessarily make sense to install as a package, but you'll still need to install the dependencies. If you have not already installed the dependencies, then see the instructions in the [README](README.md).
+
+## The Data
+
+Due mainly to the file size, the data is not included in the GitHub repo. Instead, it is available on a USB drive at Chi Hack Night, so you'll need to get it there. Extract the data from the archive on the USB drive. Copy the contents into the folder `lib/tagnews/data/`. After this is done, your directory should look something like this:
+
+```bash
+(cjp-at) .../article-tagging/lib/tagnews/data$ ls -l
+total 2117928
+-rw-r--r-- 1 kevin.rose 1049089       6071 Sep 19 23:45 column_names.txt
+-rw-r--r-- 1 kevin.rose 1049089 2156442023 Sep 18 21:02 newsarticles_article.csv
+-rw-r--r-- 1 kevin.rose 1049089       2642 Sep 18 21:02 newsarticles_category.csv
+-rw-r--r-- 1 kevin.rose 1049089   10569986 Sep 18 21:02 newsarticles_usercoding.csv
+-rw-r--r-- 1 kevin.rose 1049089    1726739 Sep 18 21:02 newsarticles_usercoding_categories.csv
+```
 
 # Getting Started
 
-Welcome back.
-
-A good place to start is the [notebooks](./lib/notebooks). Reading through these should help you get up to speed, and running them is a pretty good test to make sure everything is installed correctly. You will need the data to run the notebooks. There is no current cloud-based data sharing solution being used. Instead, it is contained on a [USB drive](https://en.wikipedia.org/wiki/Sneakernet), come to the Chi Hack Night meeting to get it! If this will be a problem for you but you are still interested, contact one of the maintainers.
+A good place to start is the [notebooks](./lib/notebooks). We recommend starting with the explorations notebook -- it should give you a sense of what the data looks like. After reading through that, the bag-of-words-count-stemmed-binary notebook should give you a sense of what the NLP model for tagging looks like. Reading through these should help you get up to speed, and running them is a pretty good test to make sure everything is installed correctly.
 
 # What can I do?
 
-You can check out the [open issues](https://github.com/chicago-justice-project/article-tagging/issues) and see if there's anything you'd like to tackle there.
+It's important to keep in mind that it can take a significant amount of time to make sure everything is installed and working correctly, and to get a handle on everything that's going on. It's normal to be confused and have questions. Once you feel comfortable with things, then you can:
+
+Check out the [open issues](https://github.com/chicago-justice-project/article-tagging/issues) and see if there's anything you'd like to tackle there.
 
 If not, you can try and improve upon the existing model(s), but be warned, measuring performance in a multi-label task is non-trivial. See the `bag-of-words-count-stemmed-binary.ipynb` notebook for an attempt at doing so. Tweaking that notebook and seeing how performance changes might be a good place to start tinkering with the NLP code. You can also read the `tagnews.crimetype.benchmark.py` file to get an idea of how the cross validation is being performed.
 
 Further yet, you can help improve this very documentation.
 
 # FAQ
-
-### Where is this scraped data that you're using and how do I get it?
-The scraped data is NOT housed in a Github repositiory - it's on a flash drive.  Come to Chi Hack Night in person and save it onto your computer!
 
 ### Do I have to use a specific language to participate in article-tagging?
 
