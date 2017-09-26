@@ -1,0 +1,69 @@
+Article ID: 286691
+####  Related Stories
+
+  * [ Warm weather sets record Friday at O'Hare ][1]
+  * [ Man charged in shooting that killed 2-year-old boy ][2]
+  * [ 2 killed, 8 wounded in holiday weekend shootings ][3]
+  * [ Police say unborn baby involved in shooting 'fine' ][4]
+
+A new flavor of Oreo is heading to a Walmart store near you.
+
+Nabisco is releasing "Peeps Oreo Sandwich Cookies" that combine the flavors of
+golden Oreo cookies with a marshmallow Peeps-flavored filling.
+
+The new snacks are coming to Walmart store shelves on February 22.
+
+Walmart lists the cookies online for about $4.49 per 10.7-ounce package.
+
+And have no fear, as Peeps-flavored milk already exists for your Oreo dipping
+pleasure.
+
+** NEXT ARTICLE: [ McDonald's bringing Chocolate Shamrock Shake to its menu ][5]
+ **
+
+   [1]: /news/local/236597803-story
+   [2]: /news/crime/236595975-story
+   [3]: /news/crime/236592991-story
+   [4]: /news/local/236557434-story
+   [5]: http://www.fox5atlanta.com/news/233429572-story
+
+ Predicted Tags: ['JUVE']
+OEMC    0.000017
+CPD     0.378464
+SAO     0.000641
+CCCC    0.025058
+CCJ     0.000005
+CCSP    0.000068
+CPUB    0.000023
+IDOC    0.000092
+DOMV    0.000187
+SEXA    0.000055
+POLB    0.000691
+POLM    0.000330
+GUNV    0.060316
+GLBTQ   0.000614
+JUVE    0.542556
+REEN    0.000195
+VIOL    0.000830
+BEAT    0.001838
+PROB    0.000100
+PARL    0.000080
+CPLY    0.000992
+DRUG    0.000029
+CPS     0.000037
+GANG    0.003735
+ILSP    0.000030
+HOMI    0.002954
+IPRA    0.000071
+CPBD    0.001834
+IMMG    0.000059
+ENVI    0.000082
+UNSPC   0.019311
+ILSC    0.000417
+ARSN    0.000031
+BURG    0.001158
+DUI     0.000257
+FRUD    0.000060
+ROBB    0.000294
+TASR    0.000130
+Name: 6, dtype: float64

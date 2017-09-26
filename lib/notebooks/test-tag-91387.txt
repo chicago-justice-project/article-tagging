@@ -1,0 +1,78 @@
+Article ID: 91387
+![ ][1]
+
+  (  Tribune illustration  ) 
+
+By Adam Sege  Staff report
+
+2:43 a.m. CDT  ,  April 24, 2013
+
+A 20-year-old man has been hospitalized after police in the Far South Side's
+West Pullman neighborhood found him bleeding from a gunshot wound.
+
+Shortly before midnight, police were called to the 12300 block of South Union
+Avenue and found a man shot in the right side of the abdomen, Chicago Police
+Department News Affairs Officer Hector Alfaro said.
+
+Paramedics rushed the man to Advocate Christ Medical Center in Oak Lawn, where
+he was listed in serious condition.
+
+The man told police had been shot in the 6900 block of South Halsted Street,
+in the Englewood neighborhood, but officers found no shell casings or crime
+scene there, according to police.
+
+Police said the man was not cooperating with authorities.
+
+Area South detectives are investigating the shooting and have no one in
+custody.
+
+[ ** asege@tribune.com ** ][2]
+
+** Twitter: @AdamSege **
+
+ 
+
+   [1]: http://www.trbimg.com/img-513cec6c/turbine/chi-generic-images-ambulance/
+580/580x327 ( )
+   [2]: mailto:asege@tribune.com
+
+ Predicted Tags: ['CPD' 'GUNV']
+OEMC    0.003597
+CPD     0.996458
+SAO     0.000114
+CCCC    0.000041
+CCJ     0.000000
+CCSP    0.000017
+CPUB    0.000013
+IDOC    0.000219
+DOMV    0.002488
+SEXA    0.000040
+POLB    0.000142
+POLM    0.000496
+GUNV    0.999907
+GLBTQ   0.000022
+JUVE    0.001814
+REEN    0.000005
+VIOL    0.401853
+BEAT    0.000031
+PROB    0.000111
+PARL    0.000709
+CPLY    0.000011
+DRUG    0.003790
+CPS     0.000662
+GANG    0.000040
+ILSP    0.000679
+HOMI    0.016607
+IPRA    0.000467
+CPBD    0.002466
+IMMG    0.000011
+ENVI    0.000037
+UNSPC   0.010651
+ILSC    0.000072
+ARSN    0.000038
+BURG    0.001774
+DUI     0.000003
+FRUD    0.000019
+ROBB    0.015061
+TASR    0.000377
+Name: 3, dtype: float64

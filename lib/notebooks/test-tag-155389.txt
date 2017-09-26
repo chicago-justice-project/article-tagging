@@ -1,0 +1,56 @@
+Article ID: 155389
+**(CBS)** March means one thing for The Boers and Bernstein Show. It's time to f
+ind our who or what is the worst of the worst.
+
+Boers and Bernstein are holding their annual Tournament of Bad competition, in
+which listeners and readers decide the absolute worst of all things bad. We
+started with 68 entrants, and you'll decide the bottom of the barrel.
+
+You can stay involved on Twitter using #TOB2014 and find [tournament
+headquarters here.][1]
+
+This is the bracket of the people, so we need your help as we contest the
+first-round games today. Let us know below: Which is worse?
+
+   [1]: http://chicago.cbslocal.com/tournament-of-bad/
+
+ Predicted Tags: []
+OEMC    0.000041
+CPD     0.008186
+SAO     0.002137
+CCCC    0.000111
+CCJ     0.000014
+CCSP    0.001233
+CPUB    0.000209
+IDOC    0.000044
+DOMV    0.000427
+SEXA    0.000291
+POLB    0.000153
+POLM    0.000016
+GUNV    0.002065
+GLBTQ   0.006404
+JUVE    0.007594
+REEN    0.000130
+VIOL    0.027106
+BEAT    0.000093
+PROB    0.000131
+PARL    0.000172
+CPLY    0.002713
+DRUG    0.000108
+CPS     0.000072
+GANG    0.000541
+ILSP    0.000013
+HOMI    0.002236
+IPRA    0.000127
+CPBD    0.000227
+IMMG    0.000537
+ENVI    0.000200
+UNSPC   0.001438
+ILSC    0.000086
+ARSN    0.000844
+BURG    0.000965
+DUI     0.000027
+FRUD    0.000544
+ROBB    0.014210
+TASR    0.000049
+Name: 8, dtype: float64
