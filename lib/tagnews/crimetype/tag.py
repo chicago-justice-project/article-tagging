@@ -32,6 +32,10 @@ def load_model(location=MODEL_LOCATION):
     The files with the most recent timestamp are loaded.
     """
     models = glob.glob(os.path.join(location, 'model*.pkl'))
+    if not models:
+        raise RuntimeError(('No models to load. Run'
+                            ' "python -m tagnews.crimetype.models.'
+                            'binary_stemmed_logistic.save_model"'))
     model = models.pop()
     while models:
         model_time = time.strptime(model[-19:-4], '%Y%m%d-%H%M%S')
