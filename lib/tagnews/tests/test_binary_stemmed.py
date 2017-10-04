@@ -9,21 +9,20 @@ def test_binary_stemmed_model():
                                      ' gangs. Copyright Kevin Rose.'))
 
     expected_values = np.array(
-        [0.974812, 0.899625, 0.246876, 0.133746, 0.106545, 0.104717,
-         0.087247, 0.085050, 0.083862, 0.070980, 0.070646, 0.068562,
-         0.056926, 0.049988, 0.046514, 0.045374, 0.042793, 0.041884,
-         0.038661, 0.037252, 0.036225, 0.034859, 0.033933, 0.033609,
-         0.028948, 0.025361, 0.025335, 0.024939, 0.023819, 0.022974,
-         0.022706, 0.021454, 0.019619, 0.019261, 0.016800, 0.016401,
-         0.009044, 0.006117]
+        [0.960377, 0.865116, 0.138769, 0.125116, 0.074569, 0.064486, 0.062537,
+         0.059940, 0.059029, 0.056022, 0.054410, 0.051550, 0.051503, 0.051264,
+         0.044280, 0.042587, 0.039910, 0.036244, 0.031521, 0.031099, 0.030935,
+         0.029413, 0.029372, 0.028972, 0.025446, 0.024925, 0.024656, 0.022577,
+         0.022063, 0.021167, 0.020440, 0.018791, 0.018558, 0.018489, 0.017413,
+         0.014794, 0.007131, 0.004737, ]
     )
 
     expected_columns = [
-        'GANG', 'DRUG', 'VIOL', 'IMMG', 'GUNV', 'REEN', 'UNSPC', 'PARL',
-        'CPS', 'ILSC', 'IPRA', 'GLBTQ', 'CCJ', 'BEAT', 'DUI', 'ENVI',
-        'POLM', 'ILSP', 'TASR', 'OEMC', 'HOMI', 'CPLY', 'ARSN', 'CPBD',
-        'CCSP', 'BURG', 'JUVE', 'IDOC', 'SAO', 'PROB', 'CPUB', 'POLB',
-        'CPD', 'FRUD', 'ROBB', 'SEXA', 'DOMV', 'CCCC'
+        'GANG', 'DRUG', 'IMMG', 'VIOL', 'REEN', 'GLBTQ', 'GUNV', 'UNSPC',
+        'PARL', 'ILSC', 'BEAT', 'CCJ', 'IPRA', 'POLM', 'CPS', 'CPD', 'DUI',
+        'ENVI', 'OEMC', 'CPBD', 'ILSP', 'TASR', 'CPLY', 'ARSN', 'JUVE',
+        'FRUD', 'ROBB', 'BURG', 'CCSP', 'IDOC', 'HOMI', 'SEXA', 'POLB',
+        'PROB', 'SAO', 'CPUB', 'DOMV', 'CCCC'
     ]
 
     expected = pd.Series(data=expected_values, index=expected_columns)
