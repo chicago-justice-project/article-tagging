@@ -16,7 +16,7 @@ from nltk.stem import WordNetLemmatizer
 np.random.seed(1029384756)
 
 if len(sys.argv) == 2:
-    df = ld.load_data(nrows=sys.argv[1])
+    df = ld.load_data(nrows=int(sys.argv[1]))
 elif len(sys.argv) == 1:
     df = ld.load_data()
 else:
