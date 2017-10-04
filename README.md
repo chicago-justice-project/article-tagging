@@ -22,13 +22,25 @@ POLM     0.059985
 
 ## Requirements
 
-To use this code, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/) at version 1.13 or higher, [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). We recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments:
+This code requires python 3.5 or greater.
+
+To use this code, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/) at version 1.13 or higher, [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). We recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments. If you are unfamiliar with Anaconda, you should read about it at the linked site above.
+
+Once it is installed, you can create a new environment. If you are using bash (mac or linux):
 
 ```bash
 $ # create a new anaconda environment with required packages
-$ conda create -n cjp-at nltk "numpy>=1.13" scikit-learn pandas pytest
+$ conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
 $ source activate cjp-at
 (cjp-at) $ ...
+```
+
+If you are using cmd (windows):
+
+```cmd
+> conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
+> activate cjp-at
+(cjp-at) > ...
 ```
 
 ## Installation
