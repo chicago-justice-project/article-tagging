@@ -124,9 +124,11 @@ def load_data(data_folder=__data_folder, nrows=None):
     tags_df = load_taggings(data_folder)
     # will help cacheing
     tags_df.sort_values(by='article_id', inplace=True)
+    tags_df = tags_df.loc[tags_df['article_id'].isin(df.index.intersection(tags_df['article_id']))]
 
     locs_df = load_locations(data_folder)
     locs_df.sort_values(by='article_id', inplace=True)
+    locs_df = locs_df.loc[locs_df['article_id'].isin(df.index.intersection(locs_df['article_id']))]
 
     # init with empty lists
     df['locations'] = np.empty([df.shape[0], 0]).tolist()
