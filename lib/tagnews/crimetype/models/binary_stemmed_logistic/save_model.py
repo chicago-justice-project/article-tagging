@@ -1,5 +1,6 @@
 import os
 import time
+import sys
 
 from ....utils import load_data as ld
 from ....utils.model_helpers import LemmaTokenizer
@@ -14,7 +15,12 @@ from nltk.stem import WordNetLemmatizer
 
 np.random.seed(1029384756)
 
-df = ld.load_data()
+if len(sys.argv) == 2:
+    df = ld.load_data(nrows=sys.argv[1])
+elif len(sys.argv) == 1:
+    df = ld.load_data()
+else:
+    raise Exception('BAD ARGUMENTS')
 
 crime_df = df.ix[df.loc[:, 'OEMC':'TASR'].any(1), :]
 crime_df = crime_df.append(df.ix[~df['relevant'], :].sample(n=3000, axis=0))
