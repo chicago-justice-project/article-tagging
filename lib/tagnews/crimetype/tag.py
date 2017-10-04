@@ -180,6 +180,6 @@ class Tagger():
         vec = self.vectorizer.transform([text])
         vec_inv = self.vectorizer.inverse_transform(vec)
         for i, tag in enumerate(TAGS):
-            p[tag] = pd.DataFrame(index=vec_env,
+            p[tag] = pd.DataFrame(index=vec_inv,
                                   data={'weight': self.clf.coef_[i, vec.nonzero()[1]]})
         return pd.Panel(p)
