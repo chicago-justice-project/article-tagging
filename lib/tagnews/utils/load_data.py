@@ -207,7 +207,7 @@ def load_data(data_folder=__data_folder, nrows=None):
     article_ids = article_ids[existing_ids_filter]
     cat_abbreviations = cat_abbreviations[existing_ids_filter]
 
-    for i in range(tags_df['category_id'].max()):
+    for i in range(categories_df.shape[0]):
         cat_name = categories_df.loc[i+1, 'abbreviation']
         df[cat_name] = 0
         df[cat_name] = df[cat_name].astype('int8') # save on that memory!

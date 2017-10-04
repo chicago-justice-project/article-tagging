@@ -23,7 +23,8 @@ else:
     raise Exception('BAD ARGUMENTS')
 
 crime_df = df.ix[df.loc[:, 'OEMC':'TASR'].any(1), :]
-crime_df = crime_df.append(df.ix[~df['relevant'], :].sample(n=3000, axis=0))
+crime_df = crime_df.append(df.ix[~df['relevant'], :].sample(n=min(3000, (~df['relevant']).sum()),
+                                                            axis=0))
 
 vectorizer = sklearn.feature_extraction.text.CountVectorizer(tokenizer=LemmaTokenizer(),
                                                              binary=True)
