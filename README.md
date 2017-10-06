@@ -2,7 +2,7 @@ Automatically classify news articles with type-of-crime tags? Neat!
 
 ```python
 >>> import tagnews
->>> tagger = tagnews.crimetype.tag.Tagger()
+>>> tagger = tagnews.Tagger()
 >>> article_text = 'A short article. About drugs and police.'
 >>> tagger.tagtext_proba(article_text)
 DRUG     0.747944
@@ -18,40 +18,15 @@ POLM     0.059985
 
 ***The documentation for this project is a work in progress. If something is unclear, or worse yet, incorrect, please report that as an [issue](https://github.com/chicago-justice-project/article-tagging/issues).***
 
-# Setup and Usage
-
-## Requirements
-
-This code requires python 3.5 or greater.
-
-To use this code, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/) at version 1.13 or higher, [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). We recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments. If you are unfamiliar with Anaconda, you should read about it at the linked site above.
-
-Once it is installed, you can create a new environment. If you are using bash (mac or linux):
-
-```bash
-$ # create a new anaconda environment with required packages
-$ conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
-$ source activate cjp-at
-(cjp-at) $ ...
-```
-
-If you are using cmd (windows):
-
-```cmd
-> conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
-> activate cjp-at
-(cjp-at) > ...
-```
-
-## Installation
+# Installation
 
 Now that you've got the requirements resolved, you're ready to install the library. If you are wanting to install this to use as a client that can deliver NLP results, then please see [INSTALLATION.md](INSTALLATION.md). If you are wanting to roll up your sleeves and do some data science, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Usage
+# Usage
 
 Below are sample usages when you want to just use this as a library to make predictions.
 
-### From python
+## From python
 
 The main class is `tagnews.crimetype.tag.Tagger`:
 
@@ -73,7 +48,7 @@ POLM     0.059985
 ...
 ```
 
-### From the command line
+## From the command line
 
 The installation comes with a *very* rudimentary command line interface, which without any arguments defaults to reading from the stdin.
 

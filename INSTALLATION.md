@@ -2,47 +2,25 @@
 
 This document contains instructions for installing this library as a system package which can then be used to deliver NLP-based tagging results. If you are just looking to hack on the NLP/library, follow the instructions in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
-## Requirements
+## Dependencies
 
-Requirements are covered in the [README.md](README.md).
+***This code requires python 3.5 or greater.***
 
-## Setup
+Additionally, to use this code, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/) at version 1.13 or higher, [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). If you need detailed instructions, see below.
 
-Download the code from git, `cd` into the directory, and run the setup.py file. If you created an Anaconda environment, then make sure that environment is active before running the setup file. Please make sure the nltk package is installed before running the setup.py file. See below for why.
+## Pip Install
 
-```bash
-$ git clone git@github.com:chicago-justice-project/article-tagging.git
-$ cd article-tagging
-$ python setup.py install
-```
-
-(If you do not want to clone, you could also `wget` the zip file GitHub provides.)
-
-### nltk
-
-As long as the nltk package is already installed, running the setup.py file should automatically download the required nltk corpora. If that does not work for some reason, or you do not want to run the setup.py file, then you will need to download the corpora manually. See the list `required_nltk_packages` in setup.py. Each corpus can be downloaded by running `nltk.download(corpus_name)`.
-
-## The NLP Model
-
-Pre-trained models are not saved in Git since they are large binary files. Saved models can be downloaded from INSERT DOWNLOAD LOCATION. Alternatively, models can be generated locally by running
+Once requirements are installed, simply pip install the package:
 
 ```
-python -m tagnews.crimetype.models.binary_stemmed_logistic.model
+pip install tagnews
 ```
 
-Generating a model locally will require having the data (see below).
-
-Wherever these two files end up being located (either by downloading or creating locally), you can reference this folder when creating your `Tagger` instance (see simple usage below).
-
-## Data
-
-The data is not stored in the Git repo since it would take up a considerable amount of space. Instead, the data is dumped daily on the server and can be accessed using a SFTP client. The data is only necessary if you wish to create your own model. Come to ChiHackNight to learn more about the data and how to get it.
-
-# Simple Usage
+To give it a test run, try running the following:
 
 ```python
 >>> import tagnews
->>> tagger = tagnews.crimetype.tag.Tagger(model_directory='path/to/folder/containing/pickles/')
+>>> tagger = tagnews.Tagger()
 >>> article_text = 'A short article. About drugs and police.'
 >>> tagger.tagtext_proba(article_text)
 DRUG     0.747944
@@ -52,17 +30,67 @@ UNSPC    0.145019
 ILSP     0.114254
 POLM     0.059985
 ...
+>>> tagger.tagtext(article_text, prob_thresh=0.5)
+['DRUG', 'CPD']
 ```
 
-# Testing
+If you get an error that looks something like
 
-You will additionally need the pytest library installed to run the tests.
+```
+Traceback (most recent call last):
+  <snip>
+LookupError:
+**********************************************************************
+  Resource 'tokenizers/punkt/PY3/english.pickle' not found.
+  Please use the NLTK Downloader to obtain the resource:  >>>
+  nltk.download()
+  Searched in:
+    - '/home/kevin/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+    - ''
+**********************************************************************
+```
 
-To test an installation, you can run
+then you need to download some nltk data. See the NLTK section below for more information.
+
+## Further Setup
+
+### Requirements ctd.
+
+If you are having trouble installing the requirements, then we recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments. If you are unfamiliar with Anaconda, you should read about it at the linked site above.
+
+Once it is installed, you can create a new environment. If you are using bash (mac or linux):
+
+```bash
+$ # create a new anaconda environment with required packages
+$ conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
+$ source activate cjp-at
+(cjp-at) $ ...
+```
+
+If you are using cmd (windows):
+
+```cmd
+> conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
+> activate cjp-at
+(cjp-at) > ...
+```
+
+### nltk
+
+The easiest way to download nltk data is to just run
 
 ```python
-import tagnews
-tagnews.test()
+>>> import nltk
+>>> nltk.download()
 ```
 
-to run the tests.
+and use the GUI. If you wish to do this programatically, then you can run `nltk.download('corpus_name')`. Right now there are only two dependencies:
+
+```python
+>>> nltk.download('punkt')
+>>> nltk.download('wordnet')
+```

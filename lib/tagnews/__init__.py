@@ -1,7 +1,10 @@
 from . import utils
 from . import crimetype
 
-__version__ = '0.3.5'
+from .crimetype.tag import Tagger
+from .utils.load_data import load_data
+
+__version__ = '0.5.0'
 
 def test(verbosity=None, **kwargs):
     """run the test suite"""
