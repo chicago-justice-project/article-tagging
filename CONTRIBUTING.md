@@ -46,4 +46,11 @@ You can help out the [the team scraping articles/maintaining the volunteers' web
 
 ### How do I productize a model?
 
-You [pickle](https://docs.python.org/3.6/library/pickle.html) it. But working with pickle is difficult. In order to sanely be able load things, I'm running python files that pickle the model using the `-m` flag, e.g. `python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model` will run code that generates the pickles of the model. All modules should be imported in the same way they will exist when unpickling the model from `tagnews.crimetype.tag`.
+You [pickle](https://docs.python.org/3.6/library/pickle.html) it. But working with pickle is difficult. In order to sanely be able load things, I'm running python files that pickle the model using the `-m` flag, e.g. `python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model` will run code that generates the pickles of the model. (Note that you need to be in the `lib` folder to do that.) All modules should be imported in the same way they will exist when unpickling the model from `tagnews.crimetype.tag`.
+
+### How is this published to pypi?
+
+```bash
+python setup.py sdist
+twine upload dist/tagnews-version.number.you.want.to.upload.tar.gz
+```
