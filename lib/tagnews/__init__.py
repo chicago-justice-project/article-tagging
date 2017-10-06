@@ -1,7 +1,7 @@
 from . import utils
 from . import crimetype
 
-__version__ = '0.2.0'
+__version__ = '0.3.5'
 
 def test(verbosity=None, **kwargs):
     """run the test suite"""
