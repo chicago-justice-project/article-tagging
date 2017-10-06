@@ -7,7 +7,7 @@ from setuptools.command.install import install as _install
 
 
 setup(name='tagnews',
-      version='0.4.0',
+      version='0.5.0',
       description='automatically tag articles with justice-related categories',
       author='Kevin Rose',
       url='https://github.com/chicago-justice-project/article-tagging',
