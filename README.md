@@ -32,12 +32,8 @@ The main class is `tagnews.Tagger`:
 
 ```python
 >>> import tagnews
->>> tagger = tagnews.crimetype.tag.Tagger()
+>>> tagger = tagnews.Tagger()
 >>> article_text = 'A short article. About drugs and police.'
->>> tagger.relevant(article_text, prob_thresh=0.1)
-True
->>> tagger.tagtext(article_text, prob_thresh=0.5)
-['DRUG', 'CPD']
 >>> tagger.tagtext_proba(article_text)
 DRUG     0.747944
 CPD      0.617198
@@ -46,6 +42,8 @@ UNSPC    0.145019
 ILSP     0.114254
 POLM     0.059985
 ...
+>>> tagger.tagtext(article_text, prob_thresh=0.5)
+['DRUG', 'CPD']
 ```
 
 ## From the command line
