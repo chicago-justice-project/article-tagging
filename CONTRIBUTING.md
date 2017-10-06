@@ -2,6 +2,13 @@
 
 Fork this repo, clone your fork, and navigate to it. If you're going to be developing it doesn't necessarily make sense to install as a package, but you'll still need to install the dependencies. If you have not already installed the dependencies, then see the instructions in the [README](README.md).
 
+## Dependencies
+
+***This code requires python 3.5 or greater.***
+
+Additionally, to use this code, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/) at version 1.13 or higher, [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). If you need detailed instructions, see below.
+
+
 ## The Data
 
 Due mainly to the file size, the data is not included in the GitHub repo. Instead, it is available on a USB drive at Chi Hack Night, so you'll need to get it there. Extract the data from the archive on the USB drive. Copy the contents into the folder `lib/tagnews/data/`. After this is done, your directory should look something like this:
@@ -14,6 +21,13 @@ total 2117928
 -rw-r--r-- 1 kevin.rose 1049089       2642 Sep 18 21:02 newsarticles_category.csv
 -rw-r--r-- 1 kevin.rose 1049089   10569986 Sep 18 21:02 newsarticles_usercoding.csv
 -rw-r--r-- 1 kevin.rose 1049089    1726739 Sep 18 21:02 newsarticles_usercoding_categories.csv
+```
+
+Once extracted to the correct place, you can load the data as follows:
+
+```python
+>>> import tagnews
+>>> df = tagnews.load_data(nrows=None) # change to int to load subset
 ```
 
 # Getting Started
@@ -31,6 +45,62 @@ If not, you can try and improve upon the existing model(s), but be warned, measu
 Further yet, you can help improve this very documentation.
 
 # FAQ
+
+### How do I get the dependencies?
+
+If you are having trouble installing the requirements, then we recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments. If you are unfamiliar with Anaconda, you should read about it at the linked site above.
+
+Once it is installed, you can create a new environment. If you are using bash (mac or linux):
+
+```bash
+$ # create a new anaconda environment with required packages
+$ conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
+$ source activate cjp-at
+(cjp-at) $ ...
+```
+
+If you are using cmd (windows):
+
+```cmd
+> conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
+> activate cjp-at
+(cjp-at) > ...
+```
+
+### How do I fix errors from NLTK about missing data?
+If you get an error that looks something like
+
+```
+Traceback (most recent call last):
+  <snip>
+LookupError:
+**********************************************************************
+  Resource 'tokenizers/punkt/PY3/english.pickle' not found.
+  Please use the NLTK Downloader to obtain the resource:  >>>
+  nltk.download()
+  Searched in:
+    - '/home/kevin/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+    - ''
+**********************************************************************
+```
+
+then you need to download some nltk data. The easiest way to download nltk data is to just run
+
+```python
+>>> import nltk
+>>> nltk.download()
+```
+
+and use the GUI. If you wish to do this programatically, then you can run `nltk.download('corpus_name')`. Right now there are only two dependencies:
+
+```python
+>>> nltk.download('punkt')
+>>> nltk.download('wordnet')
+```
 
 ### Do I have to use a specific language to participate in article-tagging?
 

@@ -46,7 +46,7 @@ from ...tag import Tagger
 tagger = Tagger(clf=clf, vectorizer=vectorizer)
 
 print(tagger.tagtext_proba(('This is an article about drugs and'
-                            ' gangs. Copyright Kevin Rose.')))
+                            ' gangs.')))
 
 import pickle
 
