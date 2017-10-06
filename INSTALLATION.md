@@ -79,7 +79,7 @@ If you are using cmd (windows):
 (cjp-at) > ...
 ```
 
-### nltk
+### NLTK data
 
 The easiest way to download nltk data is to just run
 

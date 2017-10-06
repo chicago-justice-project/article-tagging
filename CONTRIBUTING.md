@@ -1,6 +1,6 @@
 # Setup
 
-Fork this repo, clone your fork, and navigate to it. If you're going to be developing it doesn't necessarily make sense to install as a package, but you'll still need to install the dependencies. If you have not already installed the dependencies, then see the instructions in the [README](README.md).
+Fork this repo, clone your fork, and navigate to it. If you're going to be developing it doesn't necessarily make sense to install as a package, but you'll still need to install the dependencies:
 
 ## Dependencies
 

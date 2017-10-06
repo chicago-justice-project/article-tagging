@@ -20,7 +20,7 @@ POLM     0.059985
 
 # Installation
 
-Now that you've got the requirements resolved, you're ready to install the library. If you are wanting to install this to use as a client that can deliver NLP results, then please see [INSTALLATION.md](INSTALLATION.md). If you are wanting to roll up your sleeves and do some data science, please see [CONTRIBUTING.md](CONTRIBUTING.md).
+If you are wanting to install this to use as a package that can deliver NLP results out of the box, then please see [INSTALLATION.md](INSTALLATION.md). If you are wanting to roll up your sleeves and do some data science, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 # Usage
 
@@ -28,7 +28,7 @@ Below are sample usages when you want to just use this as a library to make pred
 
 ## From python
 
-The main class is `tagnews.crimetype.tag.Tagger`:
+The main class is `tagnews.Tagger`:
 
 ```python
 >>> import tagnews
