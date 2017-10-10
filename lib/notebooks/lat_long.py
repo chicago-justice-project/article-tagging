@@ -1,7 +1,6 @@
 from geopy.geocoders import GoogleV3
 import time
 import progressbar
-import random
 
 def get_loc_list(dframe, test=False):
     ''' Search through dframe and collect articles that don't yet have lat/long coordinates. Only return articles
@@ -41,7 +40,7 @@ def get_loc_list(dframe, test=False):
    # 
     return ll_list_2
 
-def get_lat_long(dframe, test=False, api_key):
+def get_lat_long(dframe, api_key, test=False):
     ''' Find all addresses associated with each news article in the dataframe and return the list of dictionaries
         for the address info with the lat/long coords added as a key/value pair to it's associated dict. '''
     
@@ -62,7 +61,6 @@ def get_lat_long(dframe, test=False, api_key):
     location = []
     
     if test:
-        #loc_list_batch = loc_list[:test_batch]
         count = 0
         for i in loc_list:
             count += len(i)
@@ -91,7 +89,7 @@ def get_lat_long(dframe, test=False, api_key):
                     loc_list[i][j]['lat_long'] = location
                     count1 += 1
             count2 += 1
-            time.sleep(0.01)
+            time.sleep(0.1)
             bar.update(count2)
                 
     return loc_list
