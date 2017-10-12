@@ -1,3 +1,4 @@
 *.csv
 *.tgz
 *.bin
+glove*
