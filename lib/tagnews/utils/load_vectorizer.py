@@ -58,5 +58,9 @@ def load_glove(vectors_file, normalize=True):
             vectors[i] = [float(x) for x in line[1:]]
 
     vectors = pd.DataFrame(vectors, index=words, copy=False)
+    vectors = vectors.loc[~vectors.index.duplicated()]
 
-    return vectors.loc[~vectors.index.duplicated()]
+    if normalize:
+        sklearn.preprocessing.normalize(vectors, copy=False)
+
+    return vectors
