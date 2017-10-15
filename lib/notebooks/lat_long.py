@@ -1,6 +1,7 @@
 from geopy.geocoders import GoogleV3
 import time
 import progressbar
+import pandas as pd
 
 def get_loc_list(dframe, test=False):
     ''' Search through dframe and collect articles that don't yet have lat/long coordinates. Only return articles
@@ -8,36 +9,22 @@ def get_loc_list(dframe, test=False):
     
     # Slice all lists from dframe.locations that have locations data
     
-    ll_list = list(dframe.locations[dframe.locations.apply(len) > 0].values)
+    ll_list = dframe.locations[dframe.locations.apply(lambda x: bool(x))]
     
-    count1 = 0
-    count2 = 0
-    count3 = 0
-    count4 = 0
-    count5 = 0
+    count = 0
     
     if test:
         total = 30
     else:
         total = 2500
         
-    ll_list_2 = []
-    for i in ll_list:
-        if count2 < total:
-            if 'lat_long' not in i[0].keys():
-                ll_list_2.append(i)
-                count1 += len(i)
-                count2 += 1
-   #     count5 += 1
-   # 
-   # print(len(ll_list), count3, count4, count5)
-   # print('List has {} articles and {} addresses.'.format(count2, count1))
-   # 
-   # count = 0
-   # for i in ll_list:
-   #     count += len(i)
-   # print('For test mode, {} articles with {} addresses will be processed.'.format(len(ll_list),count))
-   # 
+    ll_list_2 = pd.Series()
+    for i,j in ll_list.iteritems():
+        if count < total:
+            if 'lat_long' not in j[0].keys():
+                ll_list_2.loc[i] = j
+                count += len(j)
+    
     return ll_list_2
 
 def get_lat_long(dframe, api_key, test=False):
@@ -77,16 +64,16 @@ def get_lat_long(dframe, api_key, test=False):
         max_value = batch2
         
     with progressbar.ProgressBar(max_value=max_value) as bar:
-        for i,l in enumerate(loc_list):
-            for j,m in enumerate(l):
+        for i,j in loc_list.iteritems():
+            for k,l in enumerate(j):
                 if count1 >= batch1:
                     count1 = 0
                     time.sleep(0.5)
                     #break
                 else:
-                    addr = m.get('cleaned text').rstrip('?,.:; ')
+                    addr = l.get('cleaned text').rstrip('?,.:; ')
                     location = g.geocode(addr, components={'locality':'Chicago'})
-                    loc_list[i][j]['lat_long'] = location
+                    loc_list.loc[i][k]['lat_long'] = location
                     count1 += 1
             count2 += 1
             time.sleep(0.1)
