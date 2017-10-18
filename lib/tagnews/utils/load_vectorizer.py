@@ -8,7 +8,10 @@ def load_glove(vectors_file, normalize=True):
         <word_0><space><vec_0,0><space><vec_0,1><space>...<newline>
         <word_1><space><vec_1,0><space><vec_1,1><space>...<newline>
         ...
-    See https://github.com/stanfordnlp/GloVe for more info.
+    See https://github.com/stanfordnlp/GloVe for more information.
+    That link also has information on how to download the pre-trained
+    word vectorizer models. If the file you download is compressed,
+    you will need to uncompress it before using this function.
 
     Note that the loading speed and memory usage is highly depdendent
     on what model you use. The downloadable model "glove.840B.300d.txt"
