@@ -1,7 +1,4 @@
 import sys
-import os
-import pickle
-from ..utils.model_helpers import LemmaTokenizer
 from .tag import Tagger
 
 """
