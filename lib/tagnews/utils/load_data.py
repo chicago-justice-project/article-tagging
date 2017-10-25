@@ -280,7 +280,7 @@ def load_ner_data(data_folder=__data_folder):
                      error_bad_lines=False)
 
     df.dropna(subset=['word', 'tag'], inplace=True)
-    df.reset_index(inplace=True)
+    df.reset_index(inplace=True, drop=True)
     df['stag'] = (df['tag'] == 'B-geo') | (df['tag'] == 'I-geo')
 
     return df
