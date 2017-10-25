@@ -3,6 +3,8 @@ from . import crimetype
 
 from .crimetype.tag import Tagger
 from .utils.load_data import load_data
+from .utils.load_data import load_ner_data
+from .utils.load_vectorizer import load_glove
 
 __version__ = '0.5.0'
 
