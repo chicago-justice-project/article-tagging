@@ -265,3 +265,22 @@ def load_crime_data(data_folder=__data_folder):
                      + ' ')
 
     return crimes, crime_string
+
+
+def load_ner_data(data_folder=__data_folder):
+    """
+    Loads ner.csv from the specified data folder.
+
+    The column 'stag' is a binary value indicating whether or not
+    the row corresponds to the entity "geo". Typically, you will
+    want to use column 'word' to predict the column 'stag'.
+    """
+    df = pd.read_csv(os.path.join(data_folder, 'ner.csv'),
+                     encoding="ISO-8859-1",
+                     error_bad_lines=False)
+
+    df.dropna(subset=['word', 'tag'], inplace=True)
+    df.reset_index(inplace=True)
+    df['stag'] = (df['tag'] == 'B-geo') | (df['tag'] == 'I-geo')
+
+    return df
