@@ -2,9 +2,11 @@ import numpy as np
 import pandas as pd
 import sklearn.preprocessing
 
+
 def load_glove(vectors_file, normalize=True):
     """
     Load a GloVe formatted file, which is simply of the format
+
         <word_0><space><vec_0,0><space><vec_0,1><space>...<newline>
         <word_1><space><vec_1,0><space><vec_1,1><space>...<newline>
         ...
@@ -21,18 +23,18 @@ def load_glove(vectors_file, normalize=True):
 
     Sample usage:
 
-    >>> vectors = load_glove('tagnews/data/glove.6B.50d.txt')
-    >>> text = 'This is a sentence and stuff.'
-    >>> # you should use an actual tokenizer for this step.
-    >>> vectorized_text = vectors.loc[[word.lower() for word in text.split()]]
-    >>> print(vectorized_text.shape)
-        (6, 300)
-    >>> k = 5
-    >>> import numpy as np
-    >>> def euc(word):
-    ...   return np.sum((vectors.values - vectors.loc[word].values) ** 2.0, 1)
-    ...
-    >>> vectors.index[np.argpartition(euc('murder'), range(k))[:k]]
+        >>> vectors = load_glove('tagnews/data/glove.6B.50d.txt')
+        >>> text = 'This is a sentence and stuff.'
+        >>> # you should use an actual tokenizer for this step.
+        >>> vectorized_text = vectors.loc[[word.lower() for word in text.split()]]
+        >>> print(vectorized_text.shape)
+            (6, 300)
+        >>> k = 5
+        >>> import numpy as np
+        >>> def euc(word):
+        ...   return np.sum((vectors.values - vectors.loc[word].values) ** 2.0, 1)
+        ...
+        >>> vectors.index[np.argpartition(euc('murder'), range(k))[:k]]
 
     Inputs:
         vectors_file: path to file that contains GloVe formatted word
