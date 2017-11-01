@@ -277,10 +277,14 @@ def load_ner_data(data_folder=__data_folder):
     """
     df = pd.read_csv(os.path.join(data_folder, 'ner.csv'),
                      encoding="ISO-8859-1",
-                     error_bad_lines=False)
+                     error_bad_lines=False,
+                     index_col=0)
 
     df.dropna(subset=['word', 'tag'], inplace=True)
     df.reset_index(inplace=True, drop=True)
     df['stag'] = (df['tag'] == 'B-geo') | (df['tag'] == 'I-geo')
+    df['all_tags'] = df['tag']
+    df['tag'] = df['stag']
+    df = df[['word', 'all_tags', 'tag']]
 
     return df
