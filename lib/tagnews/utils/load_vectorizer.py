@@ -3,7 +3,7 @@ import pandas as pd
 import sklearn.preprocessing
 
 
-def load_glove(vectors_file, normalize=True):
+def load_glove(vectors_file, normalize=False):
     """
     Load a GloVe formatted file, which is simply of the format
 
