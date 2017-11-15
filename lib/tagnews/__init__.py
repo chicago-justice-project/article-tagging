@@ -6,7 +6,7 @@ from .utils.load_data import load_data
 from .utils.load_data import load_ner_data
 from .utils.load_vectorizer import load_glove
 
-__version__ = '0.5.0'
+__version__ = '0.6.0'
 
 def test(verbosity=None, **kwargs):
     """run the test suite"""
