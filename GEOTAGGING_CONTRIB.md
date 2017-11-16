@@ -28,11 +28,13 @@ The Chicago Justice Project's Quantifying Justice News Project aims to identify 
 
 **What's going on here?**
 
-The process of extracting the address strings is called [Named Entity Recognition](https://en.wikipedia.org/wiki/Named-entity_recognition), which is a subset of [Natural Language Processing](https://en.wikipedia.org/wiki/natural_language_processing) .
+The process of extracting the address strings is called [Named Entity Recognition](https://en.wikipedia.org/wiki/Named-entity_recognition), which is a subset of [Natural Language Processing](https://en.wikipedia.org/wiki/natural_language_processing) . For example,
+
 [Jim]<sub>Person</sub> bought 300 shares of [Acme Corp.]<sub>Organization</sub> in [2006]<sub>Time</sub>.
+
 We want to recognize the location entities in the crime articles.
 
-The GloVe vectors are word embeddings. They are vectors that represent words and the relationships between them. For example, in the Glove link, you can see the first picture shows the `man`, `woman`, `king`, and `queen` vectors (in 2D). What's cool and useful is the capability of the vectors to contain relationships between words that reflect their semantic definitions. In this example, `king - man + woman = queen`.
+How do we train a model with words as inputs? The GloVe vectors are word embeddings. They are vectors that represent words and the relationships between them. For example, in the Glove link, you can see the first picture shows the `man`, `woman`, `king`, and `queen` vectors (in 2D). What's cool and useful is the capability of the vectors to contain relationships between words that reflect their semantic definitions. In this example, `king - man + woman = queen`.
 
 Using these vectors, we can train a model to pick out which vectors represent location words. [scikit-learn](http://scikit-learn.org/) makes some models fairly easy to try out.
 
