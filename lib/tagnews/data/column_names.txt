@@ -30,6 +30,7 @@ Foreign-key constraints:
 Referenced by:
     TABLE "newsarticles_article_categories" CONSTRAINT "newsarti_article_id_438886c21ec59122_fk_newsarticles_article_id" FOREIGN KEY (article_id) REFERENCES newsarticles_article(id) DEFERRABLE INITIALLY DEFERRED
     TABLE "newsarticles_usercoding" CONSTRAINT "newsarti_article_id_54d685c1a8b57e2c_fk_newsarticles_article_id" FOREIGN KEY (article_id) REFERENCES newsarticles_article(id) DEFERRABLE INITIALLY DEFERRED
+    TABLE "newsarticles_trainedcoding" CONSTRAINT "newsarticles_trained_article_id_5b9c0111_fk_newsartic" FOREIGN KEY (article_id) REFERENCES newsarticles_article(id) DEFERRABLE INITIALLY DEFERRED
 
                                     Table "public.newsarticles_usercoding"
    Column   |           Type           |                              Modifiers
@@ -65,6 +66,7 @@ Indexes:
 Referenced by:
     TABLE "newsarticles_usercoding_categories" CONSTRAINT "newsar_category_id_6f8bff226c05e06b_fk_newsarticles_category_id" FOREIGN KEY (category_id) REFERENCES newsarticles_category(id) DEFERRABLE INITIALLY DEFERRED
     TABLE "newsarticles_article_categories" CONSTRAINT "newsarti_category_id_5876ea9f7b91a1_fk_newsarticles_category_id" FOREIGN KEY (category_id) REFERENCES newsarticles_category(id) DEFERRABLE INITIALLY DEFERRED
+    TABLE "newsarticles_trainedcategoryrelevance" CONSTRAINT "newsarticles_trained_category_id_d3c4a714_fk_newsartic" FOREIGN KEY (category_id) REFERENCES newsarticles_category(id) DEFERRABLE INITIALLY DEFERRED
 
                              Table "public.newsarticles_usercoding_categories"
     Column     |  Type   |                                    Modifiers
