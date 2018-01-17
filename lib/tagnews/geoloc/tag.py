@@ -57,6 +57,23 @@ class Extractor():
 
 
 
-    def extract_geostrings(self, s):
+    def extract_geostring_probs(self, s):
         words, data = self.pre_process(s)
-        return words, self.model.predict(data)[0][:,1]
+        probs = self.model.predict(data)[0][:,1]
+        return words, probs
+
+
+    def extract_geostrings(self, s, prob_thresh=0.5):
+        words, probs = self.extract_geostring_probs(s)
+        above_thresh = probs >= prob_thresh
+
+        words = ['filler'] + words + ['filler']
+        above_thresh = np.concatenate([[False], above_thresh, [False]]).astype(np.int32)
+        switch_ons = np.where(np.diff(above_thresh) == 1)[0] + 1
+        switch_offs = np.where(np.diff(above_thresh) == -1)[0] + 1
+
+        geostrings = []
+        for on, off in zip(switch_ons, switch_offs):
+            geostrings.append(words[on:off])
+
+        return geostrings
