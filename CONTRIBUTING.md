@@ -6,7 +6,18 @@ Fork this repo, clone your fork, and navigate to it. If you're going to be devel
 
 ***This code requires python 3.5 or greater.***
 
-Additionally, to use this code, you will need at least the python packages [nltk](http://www.nltk.org/), [numpy](http://www.numpy.org/) at version 1.13 or higher, [scikit-learn](http://scikit-learn.org/), and [pandas](http://pandas.pydata.org/). If you need detailed instructions, see below.
+Additionally, to use this code, you will need at least the python packages
+
+* [nltk](http://www.nltk.org/),
+* [numpy](http://www.numpy.org/) at version 1.13 or higher,
+* [scikit-learn](http://scikit-learn.org/),
+* [tensorflow](https://www.tensorflow.org/) at version 1.4 or greater,
+* [keras](https://keras.io/), and
+* [pandas](http://pandas.pydata.org/).
+
+If you need detailed instructions, see the "How do I get the dependencies?" section in the FAQ below.
+
+(See the `install_requires` line in setup.py for the definitive list.)
 
 
 ## The Data
@@ -56,7 +67,9 @@ Once it is installed, you can create a new environment. If you are using bash (m
 $ # create a new anaconda environment with required packages
 $ conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
 $ source activate cjp-at
-(cjp-at) $ ...
+(cjp-at) $ pip install "tensorflow>=1.4"
+(cjp-at) $ pip install keras
+(cjp-at) > ...
 ```
 
 If you are using cmd (windows):
@@ -64,8 +77,12 @@ If you are using cmd (windows):
 ```cmd
 > conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
 > activate cjp-at
+(cjp-at) $ pip install "tensorflow>=1.4"
+(cjp-at) $ pip install keras
 (cjp-at) > ...
 ```
+
+If you have an NVIDIA GPU on your machine then you may wish to use `pip install "tensorflow-gpu>=1.4"` instead.
 
 ### How do I fix errors from NLTK about missing data?
 If you get an error that looks something like
