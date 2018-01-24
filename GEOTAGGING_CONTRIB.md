@@ -9,7 +9,7 @@ The Chicago Justice Project's Quantifying Justice News Project aims to identify 
 3. Identify where the crime occured. This part has two steps.
 
   1. Identify which words describe the location of the crime.*
-  2. Pass this string through [a python geocoder package](https://pypi.python.org/pypi/geocoder).
+  2. Pass this string through [a python geocoder package](https://pypi.python.org/pypi/geocoder).*
 
 \*This is where you can help!
 
@@ -19,6 +19,29 @@ The Chicago Justice Project's Quantifying Justice News Project aims to identify 
 3. Also download the [ner.csv](https://www.kaggle.com/abhinavwalia95/entity-annotated-corpus/downloads/ner.csv) dataset from kaggle. Put this in the same place as 2.
 4. Open up the jupyter notebook called [extract-geostring-example.ipynb](lib/notebooks).
 5. Have fun!
+
+If you wish to train the existing model, first of all make sure the data and package dependencies are all set, and then run the following command from the `lib` directory:
+
+```
+python -m tagnews.geoloc.models.lstm.save_model
+```
+
+This will train and save a model. A saved model can be loaded with
+
+```python
+>>> import tagnews.geoloc.tag
+>>> geoextractor = tagnews.geoloc.tag.Extractor()
+>>> article_text = 'The murder occurred at the 1700 block of S. Halsted. It happened just after midnight. Another murder occurred at the intersection of 55th and Woodlawn, where a lone gunman...'
+>>> geoextractor.extract_geostrings(article_text)
+[['1700', 'block', 'of', 'S.', 'Halsted.'], ['intersection', 'of', '55th', 'and', 'Woodlawn,']]
+>>> prob_out = geoextractor.extract_geostring_probs(article_text)
+>>> import matplotlib.pyplot as plt
+>>> plt.plot(prob_out[1])
+>>> for x, text in enumerate(prob_out[0]):
+...     plt.text(x, -.2, text, horizontalalignment='center')
+>>> plt.ylim([-.4, 1])
+>>> plt.show()
+```
 
 # a little more detail
 1. Don't have python? Check out [anaconda](https://conda.io/docs/user-guide/install/index.html).
