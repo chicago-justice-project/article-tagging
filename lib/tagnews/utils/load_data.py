@@ -165,7 +165,7 @@ def load_data(data_folder=__data_folder, nrows=None):
                 # don't line up perfectly we can't know which one is the "correct" one.
                 # Best we can do is find the python span closest to the expected
                 # javascript span.
-                closest = np.abs(np.argmin(np.array([x[0] for x in spans]) - loc['start']))
+                closest = np.argmin(np.abs(np.array([x[0] for x in spans]) - loc['start']))
                 loc['cleaned span'] = spans[closest]
 
             locs[i] = loc
