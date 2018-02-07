@@ -1,3 +1,21 @@
+import os
+
+os.chdir(os.path.split(__file__)[0])
+
+import glob
+saved_files = glob.glob('saved/weights*.hdf5')
+if saved_files:
+    delete = input('This will delete existing saved weight files, proceed? [y/n] ')
+    while delete not in ['y', 'n']:
+        delete = input('This will delete existing saved weight files, proceed? [y/n] ')
+    if delete == 'y':
+        for f in saved_files:
+            os.remove(f)
+    else:
+        print('Exiting.')
+        exit()
+
+
 from .... import utils
 import pandas as pd
 from keras.models import Sequential
