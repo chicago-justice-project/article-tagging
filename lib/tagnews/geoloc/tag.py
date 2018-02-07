@@ -56,7 +56,6 @@ class Extractor():
         return words, np.expand_dims(data, axis=0)
 
 
-
     def extract_geostring_probs(self, s):
         words, data = self.pre_process(s)
         probs = self.model.predict(data)[0][:,1]
