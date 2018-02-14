@@ -45,7 +45,8 @@ def load_model(location=MODEL_LOCATION):
 class GeoCoder():
     def __init__(self):
         self.model = load_model()
-        self.glove = utils.load_vectorizer.load_glove('tagnews/data/glove.6B.50d.txt')
+        self.glove = utils.load_vectorizer.load_glove(os.path.join(os.path.split(__file__)[0],
+                                                                   '../data/glove.6B.50d.txt'))
 
 
     def pre_process(self, s):
