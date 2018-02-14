@@ -41,12 +41,12 @@ Y = crime_df.loc[:, 'OEMC':'TASR'].values
 
 clf.fit(X, Y)
 
-from ...tag import Tagger
+from ...tag import CrimeTags
 
-tagger = Tagger(clf=clf, vectorizer=vectorizer)
+crimetags = CrimeTags(clf=clf, vectorizer=vectorizer)
 
-print(tagger.tagtext_proba(('This is an article about drugs and'
-                            ' gangs.')))
+print(crimetags.tagtext_proba(('This is an article about drugs and'
+                               ' gangs.')))
 
 import pickle
 

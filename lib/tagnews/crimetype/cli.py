@@ -1,20 +1,20 @@
 import sys
-from .tag import Tagger
+from .tag import CrimeTags
 
 """
-A command line interface to the automatic article tagger.
+A command line interface to the automatic article crime taging.
 Run with `python -m tagnews.crimetype.cli`
 """
 
 if __name__ == '__main__':
-    tagger = Tagger()
+    crimetags = CrimeTags()
 
     if len(sys.argv) == 1:
         print(('Go ahead and start typing.'
                '\nIf you are on a UNIX machine, hit ctrl-d when done.'
                '\nIf you are on a Windows machine, hit ctrl-Z and then Enter when done.'))
         s = sys.stdin.read()
-        preds = tagger.tagtext_proba(s)
+        preds = crimetags.tagtext_proba(s)
         preds = preds.sort_values(ascending=False)
         for tag, prob in zip(preds.index, preds.values):
             print('{: >5}, {:.9f}'.format(tag, prob))
@@ -31,7 +31,7 @@ if __name__ == '__main__':
             quit()
         for filename in sys.argv[1:]:
             with open(filename) as f_in:
-                preds = tagger.tagtext_proba(f_in.read())
+                preds = crimetags.tagtext_proba(f_in.read())
             preds = preds.sort_values(ascending=False)
             with open(filename + '.tagged', 'w') as f_out:
                 for tag, prob in zip(preds.index, preds.values):

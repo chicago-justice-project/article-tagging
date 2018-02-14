@@ -4,9 +4,9 @@ import pandas as pd
 import tagnews
 
 def test_binary_stemmed_model():
-    tagger = tagnews.crimetype.tag.Tagger()
-    computed = tagger.tagtext_proba(('This is an article about drugs and'
-                                     ' gangs. Copyright Kevin Rose.'))
+    crimetags = tagnews.crimetype.tag.CrimeTags()
+    computed = crimetags.tagtext_proba(('This is an article about drugs and'
+                                        ' gangs. Copyright Kevin Rose.'))
 
     expected_values = np.array(
         [0.960377, 0.865116, 0.138769, 0.125116, 0.074569, 0.064486, 0.062537,
