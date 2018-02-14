@@ -7,7 +7,7 @@ def lat_longs_from_geo_strings(lst):
         g = geocoder.google(addr_str)
         if g.latlng is None:
             time.sleep(.5)
-            return lat_longs_from_geo_strings([addr_str])
+            lats_lons.extend(lat_longs_from_geo_strings([addr_str]))
         else:
             lats_lons.append(g.latlng)
     return lats_lons
