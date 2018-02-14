@@ -16,7 +16,7 @@ with ExitStack() as stack:
     import keras
 
 """
-Contains the Tagger class that allows tagging of articles.
+Contains the CrimeTags class that allows tagging of articles.
 """
 
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
@@ -42,7 +42,7 @@ def load_model(location=MODEL_LOCATION):
     return model
 
 
-class Extractor():
+class GeoCoder():
     def __init__(self):
         self.model = load_model()
         self.glove = utils.load_vectorizer.load_glove('tagnews/data/glove.6B.50d.txt')
