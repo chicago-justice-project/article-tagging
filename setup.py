@@ -7,7 +7,7 @@ from setuptools.command.install import install as _install
 
 
 setup(name='tagnews',
-      version='1.0.0',
+      version='1.0.1',
       description=('automatically tag articles with justice-related categories'
                    ' and extract location information'),
       author='Kevin Rose',
