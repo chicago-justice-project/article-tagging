@@ -12,6 +12,7 @@ def lat_longs_from_geo_strings(lst):
             lats_lons.append(g.latlng)
     return lats_lons
 
+
 def multi_option_lat_longs(lst, provider='arcgis'):
     providers = ['arcgis', 'google', 'yandex', 'geocodefarm', 'osm']
     assert provider in providers, \
@@ -26,3 +27,4 @@ def multi_option_lat_longs(lst, provider='arcgis'):
         else:
             lats_lons.append(g.latlng)
     return lats_lons
+  

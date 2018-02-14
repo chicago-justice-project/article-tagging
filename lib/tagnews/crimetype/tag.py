@@ -9,7 +9,7 @@ import pandas as pd
 from ..utils.model_helpers import LemmaTokenizer
 
 """
-Contains the Tagger class that allows tagging of articles.
+Contains the CrimeTags class that allows tagging of articles.
 """
 
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
@@ -54,9 +54,9 @@ def load_model(location=MODEL_LOCATION):
     return clf, vectorizer
 
 
-class Tagger():
+class CrimeTags():
     """
-    Taggers let you tag articles. Neat!
+    CrimeTags let you tag articles. Neat!
     """
     def __init__(self,
                  model_directory=MODEL_LOCATION,

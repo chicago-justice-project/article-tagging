@@ -1,12 +1,13 @@
 from . import utils
 from . import crimetype
 
-from .crimetype.tag import Tagger
+from .crimetype.tag import CrimeTags
+from .geoloc.tag import GeoCoder
 from .utils.load_data import load_data
 from .utils.load_data import load_ner_data
 from .utils.load_vectorizer import load_glove
 
-__version__ = '0.6.0'
+__version__ = '1.0.1'
 
 def test(verbosity=None, **kwargs):
     """run the test suite"""

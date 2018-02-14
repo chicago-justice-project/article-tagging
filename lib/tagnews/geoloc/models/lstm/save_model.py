@@ -1,3 +1,21 @@
+import os
+
+os.chdir(os.path.split(__file__)[0])
+
+import glob
+saved_files = glob.glob('saved/weights*.hdf5')
+if saved_files:
+    delete = input('This will delete existing saved weight files, proceed? [y/n] ')
+    while delete not in ['y', 'n']:
+        delete = input('This will delete existing saved weight files, proceed? [y/n] ')
+    if delete == 'y':
+        for f in saved_files:
+            os.remove(f)
+    else:
+        print('Exiting.')
+        exit()
+
+
 from .... import utils
 import pandas as pd
 from keras.models import Sequential
@@ -8,21 +26,19 @@ import numpy as np
 import json
 import requests
 import keras
-import os
 
-glove = utils.load_vectorizer.load_glove('tagnews/data/glove.6B.50d.txt')
-ner = utils.load_data.load_ner_data('tagnews/data/')
-
-os.chdir(os.path.split(__file__)[0])
+glove = utils.load_vectorizer.load_glove('../../../data/glove.6B.50d.txt')
+# ner = utils.load_data.load_ner_data('../../../data/')
 
 with open('training.txt', encoding='utf-8') as f:
     training_data = f.read()
 
-training_df = pd.DataFrame([x.split() for x in training_data.split('\n')], columns=['word', 'tag'])
+training_df = pd.DataFrame([x.split() for x in training_data.split('\n') if x],
+                           columns=['word', 'tag'])
 training_df.iloc[:,1] = training_df.iloc[:,1].apply(int)
 training_df['all_tags'] = 'NA'
 
-ner = training_df # pd.concat([training_df, ner]).reset_in dex(drop=True)
+ner = training_df # pd.concat([training_df, ner]).reset_index(drop=True)
 ner = ner[['word', 'all_tags', 'tag']]
 
 ner = pd.concat([ner,
@@ -59,7 +75,8 @@ model.compile(loss='categorical_crossentropy',
 print(model.summary(100))
 
 checkpointer = ModelCheckpoint(filepath='./saved/weights-{epoch:02d}.hdf5',
-                               monitor='val_categorical_accuracy',
+                               monitor='val_auc',
+                               mode='max',
                                verbose=1,
                                save_best_only=True)
 
@@ -89,16 +106,19 @@ class OurAUC(keras.callbacks.Callback):
         with open('guesses-{epoch:02d}.txt'.format(epoch=epoch), 'rb') as f:
             url = 'https://geo-extract-tester.herokuapp.com/api/score'
             r = requests.post(url, files={'file': f})
-            print('AUC: {:.5f}'.format(json.loads(r.text)['auc']))
+            r = json.loads(r.text)
+            auc = r['auc']
+            print('AUC: {:.5f}, high score? {}'.format(auc, r['high_score']))
 
         os.remove('guesses-{epoch:02d}.txt'.format(epoch=epoch))
+        logs['val_auc'] = auc
 
 our_auc = OurAUC()
 
 model.fit(x_train, y_train,
           epochs=20,
           validation_data=(x_val, y_val),
-          callbacks=[checkpointer, our_auc],
+          callbacks=[our_auc, checkpointer],
           verbose=2)
 
 idx = slice(501, 550)
