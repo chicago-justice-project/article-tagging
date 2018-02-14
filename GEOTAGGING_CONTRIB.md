@@ -29,8 +29,8 @@ python -m tagnews.geoloc.models.lstm.save_model
 This will train and save a model. A saved model can be loaded with
 
 ```python
->>> import tagnews.geoloc.tag
->>> geoextractor = tagnews.geoloc.tag.Extractor()
+>>> import tagnews
+>>> geoextractor = tagnews.GeoCoder()
 >>> article_text = 'The murder occurred at the 1700 block of S. Halsted. It happened just after midnight. Another murder occurred at the intersection of 55th and Woodlawn, where a lone gunman...'
 >>> geoextractor.extract_geostrings(article_text)
 [['1700', 'block', 'of', 'S.', 'Halsted.'], ['intersection', 'of', '55th', 'and', 'Woodlawn,']]
