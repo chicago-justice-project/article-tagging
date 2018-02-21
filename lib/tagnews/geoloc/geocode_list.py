@@ -20,6 +20,7 @@ def multi_option_lat_longs(lst, provider='arcgis'):
         Please choose a provider from {}!'.format(' or '.join(providers))
     lats_lons = []
     for addr_str in lst:
+        time.sleep(1)
         g = getattr(geocoder, provider)(addr_str)
         if g.latlng is None:
             time.sleep(.5)
@@ -27,4 +28,3 @@ def multi_option_lat_longs(lst, provider='arcgis'):
         else:
             lats_lons.append(g.latlng)
     return lats_lons
-  
