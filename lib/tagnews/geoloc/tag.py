@@ -58,12 +58,16 @@ class GeoCoder():
 
 
     def extract_geostring_probs(self, s):
+        if not s:
+            return [[], np.zeros((0,), dtype=np.float32)]
         words, data = self.pre_process(s)
         probs = self.model.predict(data)[0][:,1]
         return words, probs
 
 
     def extract_geostrings(self, s, prob_thresh=0.5):
+        if not s:
+            return []
         words, probs = self.extract_geostring_probs(s)
         above_thresh = probs >= prob_thresh
 
