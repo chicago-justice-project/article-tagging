@@ -2,8 +2,7 @@ from . import utils
 from . import crimetype
 
 from .crimetype.tag import CrimeTags
-from .geoloc.tag import GeoCoder
-from .geoloc.geocode_list import get_lat_longs_from_geostrings
+from .geoloc.tag import GeoCoder, get_lat_longs_from_geostrings
 from .utils.load_data import load_data
 from .utils.load_data import load_ner_data
 from .utils.load_vectorizer import load_glove

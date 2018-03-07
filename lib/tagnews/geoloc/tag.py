@@ -1,6 +1,9 @@
 import os
+from collections import namedtuple
 import glob
 import time
+
+import geocoder
 import pandas as pd
 import numpy as np
 
@@ -21,6 +24,73 @@ Contains the CrimeTags class that allows tagging of articles.
 
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
                               os.path.join('models', 'lstm', 'saved'))
+
+
+def post_process(geostring):
+    # TODO
+    geostring += ' Chicago, Illinois'
+    geostring.replace('block of ', '')
+    return geostring
+
+
+GeocodeResults = namedtuple('GeocodeResults', ['lat_longs_raw',
+                                               'full_responses_raw',
+                                               'lat_longs_post',
+                                               'full_responses_post'])
+
+
+def get_lat_longs_from_geostrings(geostring_list, post_process_f=None):
+    """
+    Geo-code each geostring in `geostring_list` into lat/long values.
+    Also return the full response from the geocoding service.
+
+    Inputs
+    ------
+    geostring_list : list of strings
+        The list of geostrings to geocode into lat/longs.
+    post_process_f : function
+        The results are returned for both the raw geostrings being
+        passed to the geocoder, and the results of
+        `post_process_f(geostring)` being passed to the geocoder.
+
+    Returns
+    -------
+    GeocodeResults : namedtuple
+        A named tuple with the following fields:
+        lat_longs_raw : list of tuples
+            The length `n` list of lat/long tuple pairs or None.
+        full_responses_raw : list
+            The length `n` list of the full responses from the geocoding service.
+        lat_longs_post : list of tuples
+            The length `n` list of lat/long tuple pairs or None of the post-processed geostrings.
+        full_responses_post : list
+            The length `n` list of the full responses of the post-processed geostrings.
+    """
+    if post_process_f is None:
+        post_process_f = post_process
+
+    def _geocode(lst):
+        full_responses = []
+        for addr_str in geostring_list:
+            g = geocoder.gisgraphy(addr_str)
+            full_responses.append(g)
+            time.sleep(0.5) # not technically required but let's be kind
+
+        lat_longs = [g.latlng for g in full_responses_raw]
+
+        return full_responses, lat_longs
+
+    full_responses_raw, lat_longs_raw = _geocode(geostring_list)
+
+    geostring_list = [post_process_f(geostring) for geostring in geostring_list]
+    full_responses_post, lat_longs_post = _geocode(geostring_list)
+
+
+
+    return GeocodeResults(lat_longs_raw=lat_longs_raw,
+                          full_responses_raw=full_responses_raw,
+                          lat_longs_post=lat_longs_post,
+                          full_responses_post=full_responses_post)
 
 
 def load_model(location=MODEL_LOCATION):
