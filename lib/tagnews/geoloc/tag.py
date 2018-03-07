@@ -120,6 +120,25 @@ class GeoCoder():
 
 
     def pre_process(self, s):
+        """
+        Takes in a string which is the text of an article and returns the tuple
+        `(words, data)` where `words` is the list of words found and `data`
+        is the 3D numpy array that contains the numeric data that can be used by
+        the trained model.
+
+        Inputs
+        ------
+        s : str
+            Article text.
+
+        Returns
+        -------
+        words : list of strings
+            The words found in the article.
+        data : 3D numpy.array
+            Has shape (1, N, M) where N is the number of words and M is the size of the
+            word vectors, currently M is 51.
+        """
         words = s.split() # split along white space.
         data = pd.concat([pd.DataFrame([[w[0].isupper()] if w else [False] for w in words]),
                           self.glove.loc[words].fillna(0).reset_index(drop=True)],
@@ -128,6 +147,21 @@ class GeoCoder():
 
 
     def extract_geostring_probs(self, s):
+        """
+        Extract the probability that each word in s is part of a geostring.
+
+        Inputs
+        ------
+        s : str
+            Article text.
+
+        Returns
+        -------
+        words : list of strings
+            The words found in the article.
+        probs : 1D numpy.array
+            Has shape (N,) where N is the number of words.
+        """
         if not s.strip():
             return [[], np.zeros((0,), dtype=np.float32)]
         words, data = self.pre_process(s)
@@ -136,6 +170,26 @@ class GeoCoder():
 
 
     def extract_geostrings(self, s, prob_thresh=0.5):
+        """
+        Extract the geostrings from the article text.
+
+        Inputs
+        ------
+        s : str
+            Article text.
+        prob_thresh : float, 0 <= prob_thresh <= 1
+            The threshold on probability above which words will be
+            considered as part of a geostring.
+            DEFAULT: 0.5
+
+        Returns
+        -------
+        geostrings : list of lists of strings
+            The list of extracted geostrings from the article text. Each word is kept
+            separated in the list.
+            Examle:
+                [['1300', 'W.', 'Halsted'], ['Ohio']]
+        """
         words, probs = self.extract_geostring_probs(s)
         above_thresh = probs >= prob_thresh
 
