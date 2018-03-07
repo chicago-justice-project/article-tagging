@@ -76,7 +76,7 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None):
             full_responses.append(g)
             time.sleep(0.5) # not technically required but let's be kind
 
-        lat_longs = [g.latlng for g in full_responses_raw]
+        lat_longs = [g.latlng for g in full_responses]
 
         return full_responses, lat_longs
 
