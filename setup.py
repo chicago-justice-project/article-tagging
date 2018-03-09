@@ -5,9 +5,27 @@ from distutils.core import setup
 from setuptools import setup, find_packages
 from setuptools.command.install import install as _install
 
+import os
+
+init_file = os.path.join(os.path.split(__file__)[0], 'lib/tagnews/__init__.py')
+with open(init_file) as f:
+    try:
+        s = f.read()
+        version_index = s.index('__version__')
+        version = s[version_index:].split('\n')[0].split("'")[1].strip()
+        # make sure it is in correct format by trying to parse it
+        [int(x) for x in version.split('.')]
+        assert len(version.split('.')) == 3
+    except Exception as e:
+        raise RuntimeError(
+            'Problem parsing lib/tagnews/__init__.py to get version.'
+            ' Make sure somewhere in that file there is a line that'
+            ' looks approximately like "__version__ = \'x.y.z\'",'
+            ' including using single quotes, not double quotes.'
+        )
 
 setup(name='tagnews',
-      version='1.0.1',
+      version=version,
       description=('automatically tag articles with justice-related categories'
                    ' and extract location information'),
       author='Kevin Rose, Josh Herzberg, Matt Sweeney',
