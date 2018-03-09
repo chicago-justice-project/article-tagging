@@ -12,7 +12,6 @@ import re
 from .. import utils
 
 from contextlib import ExitStack, redirect_stderr
-import os
 
 with ExitStack() as stack:
     null_stream = open(os.devnull, "w")
