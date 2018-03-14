@@ -6,6 +6,8 @@ import time
 import geocoder
 import pandas as pd
 import numpy as np
+from nltk.corpus import stopwords
+import re
 
 from .. import utils
 
@@ -27,9 +29,18 @@ MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
 
 
 def post_process(geostring):
-    # TODO
-    geostring += ' Chicago, Illinois'
-    geostring.replace('block of ', '')
+    assert type(
+        addr_list) == str, "use a string! this is an error from the post_process\
+                            function in tag.py"
+    clean = re.sub('[\W]+ ', '', addr_string)
+    if 'chicago' not in geostring.lower():
+        geostring = geostring + ' Chicago'
+    if ' il' not in geostring.lower() and ' illnois' not in geostring.lower():
+        geostring = geostring + ', Illinois'
+    for word in geostring.split(' '):
+        if word in stopwords.words('english') or word.lower == 'block':
+            geostring.replace(word, '')
+
     return geostring
 
 
