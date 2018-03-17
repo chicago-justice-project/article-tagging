@@ -28,8 +28,10 @@ install:
   - rm glove.6B.zip
   - mv lib/tagnews/data/ci-data/*.csv lib/tagnews/data/
 
-script:
+before_script:
   - cd lib
+
+script:
   - python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
   - python -m tagnews.geoloc.models.lstm.save_model 2
   - python -m pytest
