@@ -11,18 +11,17 @@ git:
 sudo: false
 
 install:
-  - python -m pip install numpy>=1.13
-  - python -m pip install nltk
-  - python -m pip install scikit-learn==0.19.0
-  - python -m pip install pandas
-  - python -m pip install scipy
-  - python -m pip install tensorflow>=1.4
-  - python -m pip install h5py
-  - python -m pip install keras
-  - python -m pip install geocoder
-  - python -m pip install pytest
-  - python -c "nltk.download('punkt')"
-  - python -c "nltk.download('wordnet')"
+  - pip install numpy>=1.13
+  - pip install nltk
+  - pip install scikit-learn==0.19.0
+  - pip install pandas
+  - pip install scipy
+  - pip install tensorflow>=1.4
+  - pip install h5py
+  - pip install keras
+  - pip install geocoder
+  - pip install pytest
+  - python -c "import nltk; nltk.download('punkt'); nltk.download('wordnet')"
   - wget http://nlp.stanford.edu/data/glove.6B.zip
   - python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
   - mv glove.6B.50d.txt lib/tagnews/data/
