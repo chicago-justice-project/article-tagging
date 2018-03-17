@@ -128,6 +128,7 @@ model.fit(x_train, y_train,
           verbose=2)
 
 idx = slice(501, 550)
+pd.set_option('display.width', 200)
 print(pd.concat([ner.iloc[idx, :3].reset_index(drop=True),
                  pd.DataFrame(model.predict(np.expand_dims(ner.iloc[idx, 3:].values, 0))[0][:, 1:],
                               columns=['prob_geloc'])],
