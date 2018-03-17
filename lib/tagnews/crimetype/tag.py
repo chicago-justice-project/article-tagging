@@ -182,5 +182,3 @@ class CrimeTags():
                 data={'weight': self.clf.coef_[i, vec.nonzero()[1]]}
             )
         return pd.Panel(p)
-
-import os # trying to break flake8
