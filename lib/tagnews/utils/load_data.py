@@ -5,6 +5,7 @@ import json
 import os
 import warnings
 import shutil
+from pathlib import Path
 
 """
 Helper functions to load the article data. The main method to use
@@ -241,6 +242,8 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
         np.random.RandomState() will be seeded with this value
         in order to perform the random subsampling.
     """
+    out_folder = str(Path(out_folder).expanduser().absolute())
+    input_folder = str(Path(input_folder).expanduser().absolute())
     if out_folder == input_folder:
         raise RuntimeError('out_folder cannot match input_folder.')
 
