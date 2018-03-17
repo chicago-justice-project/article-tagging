@@ -8,3 +8,4 @@ dist/
 .cache/
 .DS_Store
 lib/.coverage
+.pytest_cache*
