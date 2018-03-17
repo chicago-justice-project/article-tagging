@@ -30,3 +30,8 @@ class Test_LoadData():
             tagnews.utils.load_data.subsample_and_resave(
                 './tmp/', input_folder='./tmp/'
             )
+
+class Test_LoadGlove():
+    def test_load_glove():
+        glove = tagnews.load_glove('tagnews/data/glove.6B.50d.txt')
+        glove['murder']
