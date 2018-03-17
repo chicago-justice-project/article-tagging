@@ -4,16 +4,16 @@ os:
   - linux
 
 env:
-  global:
-    - FLAKE8=
+  - FLAKE8=
+  - FLAKE8=yes
+
+python:
+  - "3.6"
 
 matrix:
-  include:
-    - python: "3.6"
   allow_failures:
-    - python: "3.6"
-      env:
-        - FLAKE8=yes
+    - env:
+      - FLAKE8=yes
 
 sudo: false
 
