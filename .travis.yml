@@ -21,6 +21,7 @@ install:
   - pip install keras
   - pip install geocoder
   - pip install pytest
+  - pip install pytest-cov
   - python -c "import nltk; nltk.download('punkt'); nltk.download('wordnet')"
   - wget http://nlp.stanford.edu/data/glove.6B.zip
   - python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
@@ -34,4 +35,4 @@ before_script:
 script:
   - python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
   - python -m tagnews.geoloc.models.lstm.save_model 2
-  - python -m pytest
+  - python -m pytest --cov=tagnews
