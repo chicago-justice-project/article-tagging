@@ -1,4 +1,6 @@
 language: python
+python:
+  - "3.6"
 
 os:
   - linux
@@ -18,7 +20,7 @@ install:
   - python -m pip install keras
   - python -m pip install geocoder
   - python -m pip install pytest
-  - curl -s -O http://nlp.stanford.edu/data/glove.6B.zip
+  - wget http://nlp.stanford.edu/data/glove.6B.zip
   - python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
   - mv glove.6B.50d.txt article-tagging/lib/tagnews/data/
   - rm glove.6B.zip
