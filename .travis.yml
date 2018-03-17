@@ -24,7 +24,7 @@ install:
   - python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
   - mv glove.6B.50d.txt lib/tagnews/data/
   - rm glove.6B.zip
-  - mv lib/tagnews/data/ci-data/*.csv article-tagging/lib/tagnews/data/
+  - mv lib/tagnews/data/ci-data/*.csv lib/tagnews/data/
 
 script:
   - cd lib
