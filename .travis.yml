@@ -22,6 +22,7 @@ install:
   - pip install geocoder
   - pip install pytest
   - pip install pytest-cov
+  - pip install flake8
   - python -c "import nltk; nltk.download('punkt'); nltk.download('wordnet')"
   - wget http://nlp.stanford.edu/data/glove.6B.zip
   - python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
