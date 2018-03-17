@@ -11,6 +11,8 @@ git:
 sudo: false
 
 install:
+  - ls
+  - pwd
   - python -m pip install numpy>=1.13
   - python -m pip install scikit-learn==0.19.0
   - python -m pip install pandas
