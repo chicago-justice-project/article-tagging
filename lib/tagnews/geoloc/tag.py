@@ -38,7 +38,7 @@ def post_process(geostring):
     if ' il' not in geostring.lower() and ' illnois' not in geostring.lower():
         geostring = geostring + ', Illinois'
     for word in geostring.split(' '):
-        if word in stopwords.words('english') or word.lower == 'block':
+        if word in stopwords.words('english') or word.lower() == 'block':
             geostring.replace(word, '')
 
     return geostring
