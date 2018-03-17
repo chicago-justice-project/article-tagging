@@ -34,4 +34,4 @@ class Test_LoadData():
 class Test_LoadGlove():
     def test_load_glove(self):
         glove = tagnews.load_glove('tagnews/data/glove.6B.50d.txt')
-        glove['murder']
+        glove.loc['murder']
