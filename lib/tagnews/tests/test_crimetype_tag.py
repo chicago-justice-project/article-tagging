@@ -1,5 +1,6 @@
 import tagnews
 
+
 class Test_Crimetype():
     @classmethod
     def setup_method(cls):

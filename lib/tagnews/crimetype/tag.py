@@ -6,14 +6,15 @@ import pandas as pd
 
 # not used explicitly, but this needs to be imported like this
 # for unpickling to work.
-from ..utils.model_helpers import LemmaTokenizer
+from ..utils.model_helpers import LemmaTokenizer # noqa
 
 """
 Contains the CrimeTags class that allows tagging of articles.
 """
 
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
-                              os.path.join('models', 'binary_stemmed_logistic'))
+                              'models',
+                              'binary_stemmed_logistic')
 
 TAGS = ['OEMC', 'CPD', 'SAO', 'CCCC', 'CCJ', 'CCSP',
         'CPUB', 'IDOC', 'DOMV', 'SEXA', 'POLB', 'POLM',
@@ -90,9 +91,8 @@ class CrimeTags():
         y_hat = self.clf.predict_proba(x)
         preds = pd.DataFrame(y_hat)
         preds.columns = TAGS
-        preds = preds.T.iloc[:,0].sort_values(ascending=False)
+        preds = preds.T.iloc[:, 0].sort_values(ascending=False)
         return preds
-
 
     def tagtext(self, text, prob_thresh=0.5):
         """
@@ -109,7 +109,6 @@ class CrimeTags():
         preds = self.tagtext_proba(text)
         return preds[preds > prob_thresh].index.values.tolist()
 
-
     def relevant_proba(self, text):
         """
         Outputs the probability that the given text is relevant.
@@ -125,7 +124,6 @@ class CrimeTags():
             relevant_proba: Probability the text is relevant.
         """
         return max(self.tagtext_proba(text))
-
 
     def relevant(self, text, prob_thresh=0.05):
         """
@@ -144,7 +142,6 @@ class CrimeTags():
         """
         return len(self.tagtext(text, prob_thresh)) > 0
 
-
     def get_contributions(self, text):
         """
         Rank the words in the text by their contribution to each
@@ -159,7 +156,7 @@ class CrimeTags():
 
         Example:
         >>> s = 'This is an article about drugs and gangs.'
-        >>> s += ' Copyright Kevin Rose.'
+        >>> s += ' Written by the amazing Kevin Rose.'
         >>> p = tagger.get_contributions(s)
         >>> p['DRUG'].sort_values('weight', ascending=False)
                      weight
@@ -180,6 +177,8 @@ class CrimeTags():
         vec = self.vectorizer.transform([text])
         vec_inv = self.vectorizer.inverse_transform(vec)
         for i, tag in enumerate(TAGS):
-            p[tag] = pd.DataFrame(index=vec_inv,
-                                  data={'weight': self.clf.coef_[i, vec.nonzero()[1]]})
+            p[tag] = pd.DataFrame(
+                index=vec_inv,
+                data={'weight': self.clf.coef_[i, vec.nonzero()[1]]}
+            )
         return pd.Panel(p)
