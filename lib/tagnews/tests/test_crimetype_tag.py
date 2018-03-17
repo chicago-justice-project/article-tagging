@@ -1,14 +1,12 @@
 import tagnews
 
-class TestCrimetype():
+class Test_Crimetype():
     @classmethod
     def setup_method(cls):
         cls.model = tagnews.CrimeTags()
 
-
     def test_tagtext(self):
         self.model.tagtext('This is example article text')
-
 
     def test_tagtext_proba(self):
         article = 'Murder afoul, someone has been shot!'
