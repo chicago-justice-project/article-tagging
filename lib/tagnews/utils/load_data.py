@@ -66,10 +66,11 @@ def load_taggings(data_folder=__data_folder):
 
     uc_tags_column_names = ['id', 'usercoding_id', 'category_id']
 
-    uc_tags = pd.read_csv(os.path.join(data_folder,
-                                       'newsarticles_usercoding_categories.csv'),
-                          header=None,
-                          names=uc_tags_column_names)
+    uc_tags = pd.read_csv(
+        os.path.join(data_folder, 'newsarticles_usercoding_categories.csv'),
+        header=None,
+        names=uc_tags_column_names
+    )
     uc_tags.set_index('usercoding_id', drop=True, inplace=True)
 
     uc_tags['article_id'] = uc.loc[uc_tags.index, 'article_id']
@@ -104,9 +105,9 @@ def load_categories(data_folder=__data_folder):
 def load_data(data_folder=__data_folder, nrows=None):
     """
     Creates a dataframe of the article information and k-hot encodes the tags
-    into columns called cat_NUMBER. The k-hot encoding is done assuming that the
-    categories are 1-indexed and there are as many categories as the maximum
-    value of the numerical cateogry_id column.
+    into columns called cat_NUMBER. The k-hot encoding is done assuming that
+    the categories are 1-indexed and there are as many categories as the
+    maximum value of the numerical cateogry_id column.
 
     Inputs:
         data_folder:
@@ -126,15 +127,18 @@ def load_data(data_folder=__data_folder, nrows=None):
     tags_df = load_taggings(data_folder)
     # will help cacheing
     tags_df.sort_values(by='article_id', inplace=True)
-    tags_df = tags_df.loc[tags_df['article_id'].isin(df.index.intersection(tags_df['article_id']))]
+    tags_df = tags_df.loc[tags_df['article_id'].isin(
+        df.index.intersection(tags_df['article_id']))]
 
     locs_df = load_locations(data_folder)
     locs_df.sort_values(by='article_id', inplace=True)
-    locs_df = locs_df.loc[locs_df['article_id'].isin(df.index.intersection(locs_df['article_id']))]
+    locs_df = locs_df.loc[locs_df['article_id'].isin(
+        df.index.intersection(locs_df['article_id']))]
 
     # init with empty lists
     df['locations'] = np.empty([df.shape[0], 0]).tolist()
-    df.loc[locs_df['article_id'].values, 'locations'] = locs_df['locations'].values
+    loc_article_ids = locs_df['article_id'].values
+    df.loc[loc_article_ids, 'locations'] = locs_df['locations'].values
 
     def find_loc_in_string(locs, string):
         """
@@ -154,20 +158,22 @@ def load_data(data_folder=__data_folder, nrows=None):
         """
 
         for i, loc in enumerate(locs):
-            loc_text = loc['text']
+            loc_txt = loc['text']
 
-            loc_text = clean_string(loc_text)
+            loc_txt = clean_string(loc_txt)
             string = clean_string(string)
 
-            loc['cleaned text'] = loc_text
+            loc['cleaned text'] = loc_txt
 
-            spans = [x.span() for x in re.finditer(re.escape(loc_text), string)]
+            spans = [x.span() for x in re.finditer(re.escape(loc_txt), string)]
             if spans:
-                # The string may have occurred multiple times, and since the spans
-                # don't line up perfectly we can't know which one is the "correct" one.
-                # Best we can do is find the python span closest to the expected
-                # javascript span.
-                closest = np.argmin(np.abs(np.array([x[0] for x in spans]) - loc['start']))
+                # The string may have occurred multiple times, and since the
+                # spans don't line up perfectly we can't know which one is the
+                # "correct" one. Best we can do is find the python span closest
+                # to the expected javascript span.
+                closest = np.argmin(np.abs(
+                    np.array([x[0] for x in spans]) - loc['start']
+                ))
                 loc['cleaned span'] = spans[closest]
 
             locs[i] = loc
@@ -183,7 +189,8 @@ def load_data(data_folder=__data_folder, nrows=None):
         lambda locs: any([('cleaned span' not in loc) for loc in locs])
     ).sum()
     if num_no_match:
-        warnings.warn(str(num_no_match) + ' location strings were not found in the bodytext.',
+        warnings.warn(('{} location strings were not found in'
+                       ' the bodytext.').format(num_no_match),
                       RuntimeWarning)
 
     categories_df = load_categories(data_folder)
@@ -282,7 +289,7 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
                        'article_id', 'user_id', 'locations']
 
     uc_df = pd.read_csv(os.path.join(input_folder,
-                                  'newsarticles_usercoding.csv'),
+                                     'newsarticles_usercoding.csv'),
                         header=None,
                         names=uc_column_names)
 
@@ -300,7 +307,7 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
                      'newsarticles_usercoding_categories.csv'),
         header=None,
         names=uc_tags_column_names,
-        dtype = {'id': int, 'usercoding_id': int, 'category_id': int}
+        dtype={'id': int, 'usercoding_id': int, 'category_id': int}
     )
     sample = np.where(uc_df
                       .set_index('id')

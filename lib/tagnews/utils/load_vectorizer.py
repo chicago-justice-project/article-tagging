@@ -26,13 +26,14 @@ def load_glove(vectors_file, normalize=False):
         >>> vectors = load_glove('tagnews/data/glove.6B.50d.txt')
         >>> text = 'This is a sentence and stuff.'
         >>> # you should use an actual tokenizer for this step.
-        >>> vectorized_text = vectors.loc[[word.lower() for word in text.split()]]
+        >>> vectorized_text = vectors.loc[[word.lower()
+        ...                                for word in text.split()]]
         >>> print(vectorized_text.shape)
             (6, 300)
         >>> k = 5
         >>> import numpy as np
         >>> def euc(word):
-        ...   return np.sum((vectors.values - vectors.loc[word].values) ** 2.0, 1)
+        ...   return np.sum((vectors.values-vectors.loc[word].values)**2.0, 1)
         ...
         >>> vectors.index[np.argpartition(euc('murder'), range(k))[:k]]
 

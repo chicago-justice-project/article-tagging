@@ -12,7 +12,8 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         print(('Go ahead and start typing.'
                '\nIf you are on a UNIX machine, hit ctrl-d when done.'
-               '\nIf you are on a Windows machine, hit ctrl-Z and then Enter when done.'))
+               '\nIf you are on a Windows machine, hit ctrl-Z and'
+               ' then Enter when done.'))
         s = sys.stdin.read()
         preds = crimetags.tagtext_proba(s)
         preds = preds.sort_values(ascending=False)

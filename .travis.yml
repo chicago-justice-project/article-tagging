@@ -31,6 +31,7 @@ install:
 
 before_script:
   - cd lib
+  - flake8 --ignore=E261,E226,E402,W503 # more of a guideline than a rule
 
 script:
   - python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model

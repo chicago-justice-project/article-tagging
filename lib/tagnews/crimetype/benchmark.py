@@ -82,10 +82,10 @@ def benchmark(clf_factory, X, Y, clf_params_dict=None, k=4, verbose=False):
 
         acc[i] = (np.sum(y_tst == y_hat)) / float(y_tst.size)
         for j in range(L):
-            tpr[i, j] = np.sum((y_tst[:,j]) & (y_hat[:,j])) / np.sum(y_tst[:,j])
-            fpr[i, j] = (np.sum(np.logical_not(y_tst[:,j]) & (y_hat[:,j]))
-                         / np.sum(np.logical_not(y_tst[:,j])))
-            ppv[i, j] = np.sum((y_tst[:,j]) & (y_hat[:,j])) / np.sum(y_hat[:,j])
+            tpr[i, j] = np.sum(y_tst[:, j] & y_hat[:, j]) / np.sum(y_tst[:, j])
+            fpr[i, j] = (np.sum(np.logical_not(y_tst[:, j]) & y_hat[:, j])
+                         / np.sum(np.logical_not(y_tst[:, j])))
+            ppv[i, j] = np.sum(y_tst[:, j] & y_hat[:, j]) / np.sum(y_hat[:, j])
 
         clfs.append(clf)
 
@@ -101,9 +101,13 @@ def predict_articles(clf, vectorizer, df, n=100, seed=1029384756):
     pd.set_option('display.max_columns', 100)
     pd.set_option('display.float_format', lambda x: '%.6f' % x)
 
-    random_subset = np.random.choice(np.arange(df.shape[0]), size=n, replace=False)
+    random_subset = np.random.choice(np.arange(df.shape[0]),
+                                     size=n,
+                                     replace=False)
 
-    preds = clf.predict_proba(vectorizer.transform(df.iloc[random_subset,3].values))
+    preds = clf.predict_proba(vectorizer.transform(
+        df.iloc[random_subset, 3].values
+    ))
     preds = pd.DataFrame(preds)
     preds.columns = df.loc[:, 'OEMC':'TASR'].columns
 

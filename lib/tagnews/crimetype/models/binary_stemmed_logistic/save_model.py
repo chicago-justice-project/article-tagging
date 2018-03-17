@@ -5,13 +5,14 @@ import sys
 from ....utils import load_data as ld
 from ....utils.model_helpers import LemmaTokenizer
 import numpy as np
-import pandas as pd
 import sklearn
 import sklearn.feature_extraction.text
 import sklearn.multiclass
 import sklearn.linear_model
-from nltk import word_tokenize
-from nltk.stem import WordNetLemmatizer
+
+# needed to make pickle-ing work
+from nltk import word_tokenize # noqa
+from nltk.stem import WordNetLemmatizer # noqa
 
 np.random.seed(1029384756)
 
@@ -28,9 +29,11 @@ crime_df = crime_df.append(
                                      axis=0)
 )
 
-vectorizer = sklearn.feature_extraction.text.CountVectorizer(tokenizer=LemmaTokenizer(),
-                                                             binary=True,
-                                                             max_features=40000)
+vectorizer = sklearn.feature_extraction.text.CountVectorizer(
+    tokenizer=LemmaTokenizer(),
+    binary=True,
+    max_features=40000
+)
 
 clf = sklearn.multiclass.OneVsRestClassifier(
     sklearn.linear_model.LogisticRegression(verbose=0)
