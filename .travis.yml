@@ -35,4 +35,4 @@ before_script:
 script:
   - python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
   - python -m tagnews.geoloc.models.lstm.save_model 2
-  - python -m pytest --cov=tagnews
+  - python -m pytest --cov-report term-missing --cov=tagnews
