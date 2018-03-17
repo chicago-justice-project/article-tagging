@@ -264,7 +264,10 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
 
     # newsarticles_article.csv
     articles_df = load_articles(input_folder)
-    sample = articles_df.reset_index().set_index('id').loc[chosen_indexes, 'index']
+    sample = (articles_df
+              .reset_index()
+              .set_index('id')
+              .loc[chosen_indexes, 'index'])
     articles_df = articles_df.loc[sample, :]
     articles_df.to_csv(os.path.join(out_folder, 'newsarticles_article.csv'),
                        header=None, index=False)
@@ -299,7 +302,11 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
         names=uc_tags_column_names,
         dtype = {'id': int, 'usercoding_id': int, 'category_id': int}
     )
-    sample = np.where(uc_df.set_index('id').loc[uc_tags_df['usercoding_id'], 'article_id'].isin(chosen_indexes))[0]
+    sample = np.where(uc_df
+                      .set_index('id')
+                      .loc[uc_tags_df['usercoding_id'], 'article_id']
+                      .isin(chosen_indexes)
+                      )[0]
     uc_tags_df = uc_tags_df.loc[sample, :]
     uc_tags_df.to_csv(
         os.path.join(out_folder, 'newsarticles_usercoding_categories.csv'),
