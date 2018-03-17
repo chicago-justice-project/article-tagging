@@ -33,7 +33,7 @@ vectorizer = sklearn.feature_extraction.text.CountVectorizer(tokenizer=LemmaToke
                                                              max_features=40000)
 
 clf = sklearn.multiclass.OneVsRestClassifier(
-    sklearn.linear_model.LogisticRegression(verbose=1)
+    sklearn.linear_model.LogisticRegression(verbose=0)
 )
 
 X = vectorizer.fit_transform(crime_df['bodytext'].values)
