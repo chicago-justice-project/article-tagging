@@ -30,9 +30,9 @@ MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
 
 def post_process(geostring):
     assert type(
-        addr_list) == str, "use a string! this is an error from the post_process\
+        geostring) == str, "use a string! this is an error from the post_process\
                             function in tag.py"
-    clean = re.sub('[\W]+ ', '', addr_string)
+    geostring = re.sub('[\W]+ ', '', geostring)
     if 'chicago' not in geostring.lower():
         geostring = geostring + ' Chicago'
     if ' il' not in geostring.lower() and ' illnois' not in geostring.lower():
