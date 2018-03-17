@@ -13,7 +13,8 @@ python:
 matrix:
   allow_failures:
     - env:
-      - FLAKE8=yes
+      - python: "3.6"
+        env: FLAKE8=yes
 
 sudo: false
 
