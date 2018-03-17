@@ -1,0 +1,31 @@
+language: python
+
+os:
+  - linux
+
+git:
+  depth: 10
+
+sudo: false
+
+install:
+  - python -m pip install numpy>=1.13
+  - python -m pip install scikit-learn==0.19.0
+  - python -m pip install pandas
+  - python -m pip install scipy
+  - python -m pip install tensorflow>=1.4
+  - python -m pip install h5py
+  - python -m pip install keras
+  - python -m pip install geocoder
+  - python -m pip install pytest
+  - curl -s -O http://nlp.stanford.edu/data/glove.6B.zip
+  - python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
+  - mv glove.6B.50d.txt article-tagging/lib/tagnews/data/
+  - rm glove.6B.zip
+  - mv article-tagging/lib/tagnews/data/ci-data/*.csv article-tagging/lib/tagnews/data/
+
+script:
+  - cd article-tagging/lib
+  - python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
+  - python -m tagnews.geoloc.models.lstm.save_model 2
+  - python -m pytest
