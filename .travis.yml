@@ -1,12 +1,19 @@
 language: python
-python:
-  - "3.6"
 
 os:
   - linux
 
-git:
-  depth: 10
+env:
+  global:
+    - FLAKE8=
+
+matrix:
+  include:
+    - python: "3.6"
+  allowed_failures:
+    - python: "3.6"
+      env:
+        - FLAKE8=yes
 
 sudo: false
 
@@ -22,19 +29,27 @@ install:
   - pip install geocoder
   - pip install pytest
   - pip install pytest-cov
-  - pip install flake8
-  - python -c "import nltk; nltk.download('punkt'); nltk.download('wordnet')"
-  - wget http://nlp.stanford.edu/data/glove.6B.zip
-  - python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
-  - mv glove.6B.50d.txt lib/tagnews/data/
-  - rm glove.6B.zip
-  - mv lib/tagnews/data/ci-data/*.csv lib/tagnews/data/
+  - |
+    if [[ $FLAKE8 ]]; then
+      pip install flake8
+    else
+      python -c "import nltk; nltk.download('punkt'); nltk.download('wordnet')"
+      wget http://nlp.stanford.edu/data/glove.6B.zip
+      python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
+      mv glove.6B.50d.txt lib/tagnews/data/
+      rm glove.6B.zip
+      mv lib/tagnews/data/ci-data/*.csv lib/tagnews/data/
+    fi
 
 before_script:
   - cd lib
-  - flake8 --ignore=E261,E226,E402,W503 # more of a guideline than a rule
 
 script:
-  - python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
-  - python -m tagnews.geoloc.models.lstm.save_model 2
-  - python -m pytest --cov-report term-missing --cov=tagnews
+  - |
+    if [[ $FLAKE8 ]]; then
+      flake8 --ignore=E261,E226,E402,W503
+    else
+      python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
+      python -m tagnews.geoloc.models.lstm.save_model 2
+      python -m pytest --cov-report term-missing --cov=tagnews
+    fi
