@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/chicago-justice-project/article-tagging.svg?branch=master)](https://travis-ci.org/chicago-justice-project/article-tagging)
+
 Automatically classify news articles with type-of-crime tags? Neat! Also automatically extract location strings from the article? Even cooler!
 
 ```python
