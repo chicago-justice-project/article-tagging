@@ -17,7 +17,7 @@ class Test_GeoCoder():
                    ' 55th and Woodlawn where something happened.')
         words, probs = self.model.extract_geostring_probs(article)
         max_prob = probs.max()
-        max_word = probs.idxmax()
+        max_word = words[np.argmax(probs)]
         geostrings = self.model.extract_geostrings(article,
                                                    prob_thresh=max_prob-0.001)
         assert max_word in [word for geostring in geostrings for word in geostring]
