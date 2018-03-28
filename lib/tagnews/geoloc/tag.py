@@ -1,3 +1,5 @@
+from __future__ import division
+
 import os
 from collections import namedtuple
 import glob
@@ -6,7 +8,6 @@ import time
 import geocoder
 import pandas as pd
 import numpy as np
-from nltk.corpus import stopwords
 import re
 
 from .. import utils
@@ -28,28 +29,60 @@ MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
 
 
 def post_process(geostring):
-    assert type(
-        geostring) == str, "use a string! this is an error from the post_process\
-                            function in tag.py"
-    geostring = re.sub('[\W]+ ', '', geostring)
-    if 'chicago' not in geostring.lower():
+    """
+    Post process the geostring in a way that makes it more amenable to
+    geocoding by the current geocoding provider GISgraphy.
+
+    Inputs
+    ------
+    geostring : str
+        The geostring to post process
+
+    Returns
+    -------
+    processed_geostring : str
+    """
+    # Merge multiple whitespaces into one
+    geostring = ' '.join(geostring.split())
+
+    # add chicago to the end if it's not already in there and 'illinois'
+    # is not in there. If 'illinois' is in there then there's a good
+    # chance the city name is already in there.
+    if 'chicago' not in geostring.lower() and 'illinois' not in geostring.lower():
         geostring = geostring + ' Chicago'
-    if ' il' not in geostring.lower() and ' illnois' not in geostring.lower():
-        geostring = geostring + ', Illinois'
-    for word in geostring.split(' '):
-        if word in stopwords.words('english') or word.lower() == 'block':
-            geostring.replace(word, '')
+
+    # add illinois to the end if it's not already in there
+    if ('illinois' not in geostring.lower()
+            and not geostring.lower().endswith(' il')
+            and ' il ' not in geostring.lower()):
+        geostring = geostring + ' Illinois'
+
+    # gisgraphy struggles with things like "55th and Woodlawn".
+    # replace "...<number><number ender, e.g. th or rd> and..."
+    # with two zeros.
+    # \100 does not work correclty so we need to add a separator.
+    geostring = re.sub(r'([0-9]+)[th|rd|st] and',
+                       r'\1<__internal_separator__>00 and',
+                       geostring)
+    geostring = geostring.replace('<__internal_separator__>', '')
+
+    # remove stopwords, only if they are internal, i.e.
+    # the geostring doesn't start with "block ...".
+    for stopword in ['block', 'of', 'and']:
+        geostring = geostring.replace(' {} '.format(stopword), ' ')
 
     return geostring
 
 
 GeocodeResults = namedtuple('GeocodeResults', ['lat_longs_raw',
                                                'full_responses_raw',
+                                               'scores_raw',
                                                'lat_longs_post',
-                                               'full_responses_post'])
+                                               'full_responses_post',
+                                               'scores_post'])
 
 
-def get_lat_longs_from_geostrings(geostring_list, post_process_f=None):
+def get_lat_longs_from_geostrings(geostring_list, post_process_f=None, sleep_secs=0):
     """
     Geo-code each geostring in `geostring_list` into lat/long values.
     Also return the full response from the geocoding service.
@@ -62,6 +95,8 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None):
         The results are returned for both the raw geostrings being
         passed to the geocoder, and the results of
         `post_process_f(geostring)` being passed to the geocoder.
+    sleep_secs : float
+        How long to sleep between successive requests, in seconds.
 
     Returns
     -------
@@ -87,21 +122,31 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None):
         for addr_str in geostring_list:
             g = geocoder.gisgraphy(addr_str)
             full_responses.append(g)
-            time.sleep(0.5) # not technically required but let's be kind
+            time.sleep(sleep_secs)
 
         lat_longs = [g.latlng for g in full_responses]
 
-        return full_responses, lat_longs
+        scores = []
+        for g in full_responses:
+            try:
+                scores.append(json.loads(g.response.content)['result'][0]['score'])
+            except Exception:
+                scores.append(float('nan'))
+        scores = np.array(scores, dtype='float32')
 
-    full_responses_raw, lat_longs_raw = _geocode(geostring_list)
+        return full_responses, lat_longs, scores
+
+    full_responses_raw, lat_longs_raw, scores_raw = _geocode(geostring_list)
 
     geostring_list = [post_process_f(geo_s) for geo_s in geostring_list]
-    full_responses_post, lat_longs_post = _geocode(geostring_list)
+    full_responses_post, lat_longs_post, scores_post = _geocode(geostring_list)
 
     return GeocodeResults(lat_longs_raw=lat_longs_raw,
                           full_responses_raw=full_responses_raw,
+                          scores_raw=scores_raw,
                           lat_longs_post=lat_longs_post,
-                          full_responses_post=full_responses_post)
+                          full_responses_post=full_responses_post,
+                          scores_post=scores_post)
 
 
 def load_model(location=MODEL_LOCATION):
@@ -217,3 +262,21 @@ class GeoCoder():
             geostrings.append(words[on:off])
 
         return geostrings
+
+    def lat_longs_from_geostring_lists(geostring_lists, **kwargs):
+        """
+        TODO
+        """
+        out = get_lat_longs_from_geostrings([' '.join(gl) for gl in geostring_lists],
+                                            **kwargs)
+        # the score returned from GISgraphy appears to be interpretable as
+        # a higher score is LESS confident. Thus if raw / post > 1, then
+        # we are less sure the location is correct/in chicago. Vice versa,
+        # if  raw / post < 1, then we are more confident in the prediction.
+        # Finally, if the raw couldn't geotag it but after post processing
+        # we could, then we're more confident, so replace NaNs in the raw
+        # with 0.
+        out.score_raw[np.isnan(out.score_raw)] = 0
+        # For all x >= 0, we have 0 <= 1 / (1 + x) <= 1, which is a nice
+        # property to have.
+        return out.lat_longs_post, 1 / (1 + out.score_raw / out.score_post)
