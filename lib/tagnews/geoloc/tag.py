@@ -263,6 +263,7 @@ class GeoCoder():
 
         return geostrings
 
+    @staticmethod
     def lat_longs_from_geostring_lists(geostring_lists, **kwargs):
         """
         TODO
