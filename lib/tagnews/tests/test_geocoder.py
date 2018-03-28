@@ -24,7 +24,7 @@ class Test_GeoCoder():
                                                    prob_thresh=max_prob-0.001)
         assert max_word in [word for geostring in geostrings for word in geostring]
 
-    def test_lat_longs_from_geostring_lists():
+    def test_lat_longs_from_geostring_lists(self):
         geostring_lists = [['5500', 'S', 'Woodlawn'], ['100', 'N.', 'Wacker'], ['thigh']]
         lat_longs, scores = self.model.lat_longs_from_geostring_lists(
             geostring_lists, sleep_secs=0.5
