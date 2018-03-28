@@ -277,7 +277,7 @@ class GeoCoder():
         # Finally, if the raw couldn't geotag it but after post processing
         # we could, then we're more confident, so replace NaNs in the raw
         # with 0.
-        out.score_raw[np.isnan(out.score_raw)] = 0
+        out.scores_raw[np.isnan(out.scores_raw)] = 0
         # For all x >= 0, we have 0 <= 1 / (1 + x) <= 1, which is a nice
         # property to have.
-        return out.lat_longs_post, 1 / (1 + out.score_raw / out.score_post)
+        return out.lat_longs_post, 1 / (1 + out.scores_raw / out.scores_post)
