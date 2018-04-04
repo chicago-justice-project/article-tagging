@@ -1,0 +1,40 @@
+15,Juvenile,JUVE,2011-08-26 20:22:06.828537+00,t,other
+16,Re-Entry,REEN,2011-08-26 20:22:20.557875+00,t,other
+17,Violence,VIOL,2011-08-26 20:22:33.659219+00,t,other
+19,Probation,PROB,2011-08-26 20:23:14.245505+00,t,other
+20,Parole,PARL,2011-08-26 20:23:20.964542+00,t,other
+21,Criminal Justice Policy,CPLY,2011-08-26 20:23:35.241574+00,t,other
+29,Immigration,IMMG,2011-09-06 20:55:25.596941+00,t,other
+31,Unspecified Crime,UNSPC,2011-10-07 18:55:52.911149+00,t,other
+33,Arson,ARSN,2012-03-27 21:22:12.636112+00,t,crimes
+34,Burlgary,BURG,2012-03-27 21:22:24.563428+00,t,crimes
+4,Cook County Circuit Court,CCCC,2011-08-26 20:17:32.200297+00,t,orgs
+5,Cook County Jail,CCJ,2011-08-26 20:17:45.062532+00,t,orgs
+9,Domestic Violence,DOMV,2011-08-26 20:19:47.881876+00,t,crimes
+35,Driving Under the Influence,DUI,2012-03-27 21:22:44.588387+00,t,crimes
+22,Drugs,DRUG,2011-08-26 20:23:42.081659+00,t,crimes
+30,Environmental Crimes,ENVI,2011-09-07 22:06:48.627019+00,t,crimes
+36,Fraud,FRUD,2012-03-27 21:22:56.963232+00,t,crimes
+24,Gangs,GANG,2011-08-26 20:23:59.845203+00,t,crimes
+14,GLBTQ,GLBTQ,2011-08-26 20:21:54.769447+00,t,crimes
+13,Gun Violence,GUNV,2011-08-26 20:21:24.513693+00,t,crimes
+26,Homicides,HOMI,2011-08-26 20:24:23.339118+00,t,crimes
+37,Robbery,ROBB,2012-03-27 21:23:04.531403+00,t,crimes
+10,Sexual Assault,SEXA,2011-08-26 20:20:38.071264+00,t,crimes
+28,Chicago Police Board,CPBD,2011-09-06 20:54:59.505925+00,t,orgs
+2,Chicago Police Department,CPD,2011-08-26 20:16:27.480709+00,t,orgs
+23,Chicago Public Schools,CPS,2011-08-26 20:23:52.5828+00,t,orgs
+6,Cook County Sheriff's Police,CCSP,2011-08-26 20:18:03.825616+00,t,orgs
+7,Cook County Public Defender's Office,CPUB,2011-08-26 20:18:52.323487+00,t,orgs
+8,Illinois Department of Corrections,IDOC,2011-08-26 20:19:31.308972+00,t,orgs
+3,Cook County State's Attorney's Office,SAO,2011-08-26 20:16:53.005243+00,t,orgs
+11,Police Brutality,POLB,2011-08-26 20:20:53.565396+00,t,policing
+32,Illinois State Court,ILSC,2011-10-07 18:56:14.66409+00,t,orgs
+25,Illinois State Police,ILSP,2011-08-26 20:24:11.965487+00,t,orgs
+27,Independent Police Review Authority,IPRA,2011-09-06 20:53:58.289631+00,t,orgs
+1,Office of Emergency Management & Communications,OEMC,2011-08-25 15:49:06.569879+00,t,orgs
+12,Police Misconduct,POLM,2011-08-26 20:21:04.201743+00,t,policing
+38,Police Use of Taser,TASR,2012-03-27 21:23:26.656998+00,t,policing
+18,Beat Realignment / Police Resouce Allocation,BEAT,2011-08-26 20:22:51.626161+00,t,policing
+39,Civilian Office for Police Accountability,COPA,2017-05-12 19:02:36.800007+00,t,orgs
+40,Deputy Inspector General for Police,DIGP,2017-05-12 19:02:54.114808+00,t,orgs

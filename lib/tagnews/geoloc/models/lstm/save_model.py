@@ -1,20 +1,22 @@
 import os
+import sys
 
 os.chdir(os.path.split(__file__)[0])
 
 import glob
 saved_files = glob.glob('saved/weights*.hdf5')
 if saved_files:
-    delete = input('This will delete existing saved weight files, proceed? [y/n] ')
+    delete = input(('This will delete existing saved weight'
+                    ' files, proceed? [y/n] '))
     while delete not in ['y', 'n']:
-        delete = input('This will delete existing saved weight files, proceed? [y/n] ')
+        delete = input(('This will delete existing saved weight'
+                        ' files, proceed? [y/n] '))
     if delete == 'y':
         for f in saved_files:
             os.remove(f)
     else:
         print('Exiting.')
         exit()
-
 
 from .... import utils
 import pandas as pd
@@ -27,6 +29,11 @@ import json
 import requests
 import keras
 
+if len(sys.argv) == 1:
+    num_epochs = 20
+else:
+    num_epochs = int(sys.argv[1])
+
 glove = utils.load_vectorizer.load_glove('../../../data/glove.6B.50d.txt')
 # ner = utils.load_data.load_ner_data('../../../data/')
 
@@ -35,7 +42,7 @@ with open('training.txt', encoding='utf-8') as f:
 
 training_df = pd.DataFrame([x.split() for x in training_data.split('\n') if x],
                            columns=['word', 'tag'])
-training_df.iloc[:,1] = training_df.iloc[:,1].apply(int)
+training_df.iloc[:, 1] = training_df.iloc[:, 1].apply(int)
 training_df['all_tags'] = 'NA'
 
 ner = training_df # pd.concat([training_df, ner]).reset_index(drop=True)
@@ -80,23 +87,30 @@ checkpointer = ModelCheckpoint(filepath='./saved/weights-{epoch:02d}.hdf5',
                                verbose=1,
                                save_best_only=True)
 
+with open('validation.txt', encoding='utf-8') as f:
+    s = f.read()
+val_words = [w for w in s.split('\n') if w]
+
+gloved_data = pd.concat(
+    [pd.DataFrame([[w[0].isupper()] for w in val_words]),
+     glove.loc[[w for w in val_words]].fillna(0).reset_index(drop=True)],
+    axis='columns'
+)
+
+
 class OurAUC(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs={}):
         # Go to https://geo-extract-tester.herokuapp.com/ and download
         # the validation data (validation.txt).
-        with open('validation.txt', encoding='utf-8') as f:
-            s = f.read()
-
-        gloved_data = pd.concat([pd.DataFrame([[w[0].isupper()] for w in s.split('\n') if w]),
-                                 glove.loc[[w for w in s.split('\n') if w]].fillna(0).reset_index(drop=True)],
-                               axis='columns')
 
         glove_time_size = 100
         preds_batched = []
         i = 0
         while gloved_data[i:i+glove_time_size].size:
-            preds_batched.append(model.predict(np.expand_dims(gloved_data[i:i+glove_time_size],
-                                                              axis=0))[0][:,1])
+            preds_batched.append(
+                model.predict(np.expand_dims(gloved_data[i:i+glove_time_size],
+                                             axis=0))[0][:, 1]
+            )
             i += glove_time_size
 
         with open('guesses-{epoch:02d}.txt'.format(epoch=epoch), 'w') as f:
@@ -113,16 +127,20 @@ class OurAUC(keras.callbacks.Callback):
         os.remove('guesses-{epoch:02d}.txt'.format(epoch=epoch))
         logs['val_auc'] = auc
 
+
 our_auc = OurAUC()
 
 model.fit(x_train, y_train,
-          epochs=20,
+          epochs=num_epochs,
           validation_data=(x_val, y_val),
           callbacks=[our_auc, checkpointer],
           verbose=2)
 
 idx = slice(501, 550)
-print(pd.concat([ner.iloc[idx, :3].reset_index(drop=True),
-                 pd.DataFrame(model.predict(np.expand_dims(ner.iloc[idx, 3:].values, 0))[0][:, 1:],
-                              columns=['prob_geloc'])],
+pd.set_option('display.width', 200)
+df_to_print = pd.DataFrame(
+    model.predict(np.expand_dims(ner.iloc[idx, 3:].values, 0))[0][:, 1:],
+    columns=['prob_geloc']
+)
+print(pd.concat([ner.iloc[idx, :3].reset_index(drop=True), df_to_print],
                 axis='columns'))
