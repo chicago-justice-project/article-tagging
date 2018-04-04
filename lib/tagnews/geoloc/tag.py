@@ -284,7 +284,8 @@ class GeoCoder():
         Inputs
         ------
         geostring_lists : List[List[str]]
-            A list of list of strings, as returned by `extract_geostrings`.
+            A length-N list of list of strings, as returned by
+            `extract_geostrings`.
             Example: [['5500', 'S.', 'Woodlawn'], ['1700', 'S.', 'Halsted']]
         **kwargs : other parameters passed to `get_lat_longs_from_geostrings`
 
@@ -292,7 +293,15 @@ class GeoCoder():
         -------
         lat_longs, scores
         lat_longs : List[List[float]]
-            The list of lat/long pairs.
+            The length-N list of lat/long pairs. In the current formulation,
+            it should be impossible to not get a result unless there's
+            a connection issue. In this case, you'll likely get None instead
+            of a [lat, long] pair.
+        scores : numpy.array
+            1D, length-N numpy array of the scores, higher indicates more
+            confidence. This is our best guess after masssaging the scores
+            returned by the geocoder, and should not be taken as any sort
+            of absolute rule.
         """
         out = get_lat_longs_from_geostrings(
             [' '.join(gl) for gl in geostring_lists], **kwargs
