@@ -278,18 +278,31 @@ class GeoCoder():
     @staticmethod
     def lat_longs_from_geostring_lists(geostring_lists, **kwargs):
         """
-        TODO
+        Get the latitude/longitude pairs from a list of geostrings as
+        returned by `extract_geostrings`.
+
+        Inputs
+        ------
+        geostring_lists : List[List[str]]
+            A list of list of strings, as returned by `extract_geostrings`.
+            Example: [['5500', 'S.', 'Woodlawn'], ['1700', 'S.', 'Halsted']]
+        **kwargs : other parameters passed to `get_lat_longs_from_geostrings`
+
+        Returns
+        -------
+        lat_longs, scores
+        lat_longs : List[List[float]]
+            The list of lat/long pairs.
         """
-        out = get_lat_longs_from_geostrings([' '.join(gl) for gl in geostring_lists],
-                                            **kwargs)
-        # the score returned from GISgraphy appears to be interpretable as
-        # a higher score is LESS confident. Thus if raw / post > 1, then
-        # we are less sure the location is correct/in chicago. Vice versa,
-        # if  raw / post < 1, then we are more confident in the prediction.
-        # Finally, if the raw couldn't geotag it but after post processing
-        # we could, then we're more confident, so replace NaNs in the raw
-        # with 0.
-        out.scores_raw[np.isnan(out.scores_raw)] = 0
+        out = get_lat_longs_from_geostrings(
+            [' '.join(gl) for gl in geostring_lists], **kwargs
+        )
+
+        # If there was no lat/long from the raw, that's the lowest confidence
+        # we could have. Since gisgraphy's score is interpreted as HIGHER
+        # values are LESS confident, the lowest confidence would be a score
+        # of +inf.
+        out.scores_raw[np.isnan(out.scores_raw)] = np.inf
         # For all x >= 0, we have 0 <= 1 / (1 + x) <= 1, which is a nice
         # property to have.
         return out.lat_longs_post, 1 / (1 + out.scores_raw / out.scores_post)
