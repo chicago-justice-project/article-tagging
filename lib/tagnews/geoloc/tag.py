@@ -28,6 +28,17 @@ Contains the CrimeTags class that allows tagging of articles.
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
                               os.path.join('models', 'lstm', 'saved'))
 
+# headers used to make geocoder.gisgraphy work.
+HEADERS = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Cache-Control': 'max-age=0',
+    'Connection': 'keep-alive',
+    'Host': 'services.gisgraphy.com',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0',
+ }
 
 def post_process(geostring):
     """
@@ -121,7 +132,7 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None, sleep_sec
     def _geocode(lst):
         full_responses = []
         for addr_str in geostring_list:
-            g = geocoder.gisgraphy(addr_str)
+            g = geocoder.gisgraphy(addr_str, headers=HEADERS)
             full_responses.append(g)
             time.sleep(sleep_secs)
 
