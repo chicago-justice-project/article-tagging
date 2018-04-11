@@ -91,7 +91,8 @@ GeocodeResults = namedtuple('GeocodeResults', ['lat_longs_raw',
                                                'scores_raw',
                                                'lat_longs_post',
                                                'full_responses_post',
-                                               'scores_post'])
+                                               'scores_post',
+                                               'num_found_post'])
 
 
 def get_lat_longs_from_geostrings(geostring_list, post_process_f=None, sleep_secs=0):
@@ -125,6 +126,9 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None, sleep_sec
         full_responses_post : list
             The length `n` list of the full responses of the post-processed
             geostrings.
+        num_response_post: int
+            gisgraphy response gives the number of geocoded responses from the
+            address
     """
     if post_process_f is None:
         post_process_f = post_process
@@ -139,26 +143,32 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None, sleep_sec
         lat_longs = [g.latlng for g in full_responses]
 
         scores = []
+        num_found = []
         for g in full_responses:
             try:
                 scores.append(json.loads(g.response.content)['result'][0]['score'])
             except Exception:
                 scores.append(float('nan'))
+            try:
+                num_found.append(json.loads(g.response.content)['numFound'])
+            except:
+                num_found.append(None)
         scores = np.array(scores, dtype='float32')
 
-        return full_responses, lat_longs, scores
+        return full_responses, lat_longs, scores, num_found
 
-    full_responses_raw, lat_longs_raw, scores_raw = _geocode(geostring_list)
+    full_responses_raw, lat_longs_raw, scores_raw, _ = _geocode(geostring_list)
 
     geostring_list = [post_process_f(geo_s) for geo_s in geostring_list]
-    full_responses_post, lat_longs_post, scores_post = _geocode(geostring_list)
+    full_responses_post, lat_longs_post, scores_post, num_found = _geocode(geostring_list)
 
     return GeocodeResults(lat_longs_raw=lat_longs_raw,
                           full_responses_raw=full_responses_raw,
                           scores_raw=scores_raw,
                           lat_longs_post=lat_longs_post,
                           full_responses_post=full_responses_post,
-                          scores_post=scores_post)
+                          scores_post=scores_post,
+                          num_found_post=num_found)
 
 
 def load_model(location=MODEL_LOCATION):
@@ -302,6 +312,11 @@ class GeoCoder():
             confidence. This is our best guess after masssaging the scores
             returned by the geocoder, and should not be taken as any sort
             of absolute rule.
+        num_found_post : int
+            gisgraphy geocode returns field 'numFound' which we assume is the
+            number of results that their geocoding backend returns. Only one of
+            those results is actually returned by gisgraphy, but the number
+            seems to be somewhat informative.
         """
         out = get_lat_longs_from_geostrings(
             [' '.join(gl) for gl in geostring_lists], **kwargs
@@ -314,4 +329,4 @@ class GeoCoder():
         out.scores_raw[np.isnan(out.scores_raw)] = np.inf
         # For all x >= 0, we have 0 <= 1 / (1 + x) <= 1, which is a nice
         # property to have.
-        return out.lat_longs_post, 1 / (1 + out.scores_raw / out.scores_post)
+        return out.lat_longs_post, 1 / (1 + out.scores_raw / out.scores_post), out.num_found_post

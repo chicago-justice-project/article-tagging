@@ -33,11 +33,11 @@ class Test_GeoCoder():
 
     def test_lat_longs_from_geostring_lists(self):
         geostring_lists = [['5500', 'S', 'Woodlawn'], ['100', 'N.', 'Wacker'], ['thigh']]
-        lat_longs, scores = self.model.lat_longs_from_geostring_lists(
+        lat_longs, scores, num_found = self.model.lat_longs_from_geostring_lists(
             geostring_lists, sleep_secs=0.5
         )
 
         assert scores[2] < scores[0]
         assert scores[2] < scores[1]
 
-        assert len(lat_longs) == len(geostring_lists) == len(scores)
+        assert len(lat_longs) == len(geostring_lists) == len(scores) == len(num_found)
