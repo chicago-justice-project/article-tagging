@@ -211,7 +211,7 @@ class GeoCoder():
         words = s.split() # split along white space.
         data = pd.concat([pd.DataFrame([[w[0].isupper()] if w else [False]
                                         for w in words]),
-                          (self.glove.loc[words].fillna(0)
+                          (self.glove.reindex(words).fillna(0)
                            .reset_index(drop=True))],
                          axis='columns')
         return words, np.expand_dims(data, axis=0)
