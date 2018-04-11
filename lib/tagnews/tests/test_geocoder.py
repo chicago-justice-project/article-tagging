@@ -24,6 +24,13 @@ class Test_GeoCoder():
                                                    prob_thresh=max_prob-0.001)
         assert max_word in [word for geostring in geostrings for word in geostring]
 
+    def test_extract_geostring_probs_word_not_in_glove(self):
+        """
+        Regression test for issue #105.
+        """
+        article = '___1234567890nonexistent0987654321___'
+        words, probs = self.model.extract_geostring_probs(article)
+
     def test_lat_longs_from_geostring_lists(self):
         geostring_lists = [['5500', 'S', 'Woodlawn'], ['100', 'N.', 'Wacker'], ['thigh']]
         lat_longs, scores = self.model.lat_longs_from_geostring_lists(
