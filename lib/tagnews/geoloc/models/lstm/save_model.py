@@ -93,7 +93,7 @@ val_words = [w for w in s.split('\n') if w]
 
 gloved_data = pd.concat(
     [pd.DataFrame([[w[0].isupper()] for w in val_words]),
-     glove.loc[[w for w in val_words]].fillna(0).reset_index(drop=True)],
+     glove.reindex([w for w in val_words]).fillna(0).reset_index(drop=True)],
     axis='columns'
 )
 
