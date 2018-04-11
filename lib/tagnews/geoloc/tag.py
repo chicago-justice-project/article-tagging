@@ -144,9 +144,13 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None, sleep_sec
                 scores.append(json.loads(g.response.content)['result'][0]['score'])
             except Exception:
                 scores.append(float('nan'))
+            try:
+                num_found = json.loads(g.response.content)['numFound']
+            except:
+                num_found = None
         scores = np.array(scores, dtype='float32')
 
-        return full_responses, lat_longs, scores
+        return full_responses, lat_longs, scores, nu
 
     full_responses_raw, lat_longs_raw, scores_raw = _geocode(geostring_list)
 
@@ -314,4 +318,4 @@ class GeoCoder():
         out.scores_raw[np.isnan(out.scores_raw)] = np.inf
         # For all x >= 0, we have 0 <= 1 / (1 + x) <= 1, which is a nice
         # property to have.
-        return out.lat_longs_post, 1 / (1 + out.scores_raw / out.scores_post)
+        return out.lat_longs_post, 1 / (1 + out.scores_raw / out.scores_post), out.num_found
