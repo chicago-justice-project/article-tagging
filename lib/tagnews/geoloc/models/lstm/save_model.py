@@ -50,7 +50,7 @@ ner = ner[['word', 'all_tags', 'tag']]
 
 ner = pd.concat([ner,
                  pd.DataFrame(ner['word'].str[0].str.isupper().values),
-                 pd.DataFrame(glove.loc[ner['word'].str.lower()].values)],
+                 pd.DataFrame(glove.reindex(ner['word'].str.lower()).values)],
                 axis='columns')
 ner.fillna(value=0.0, inplace=True)
 
