@@ -1,12 +1,14 @@
+from __future__ import division
+
 import os
 from collections import namedtuple
 import glob
 import time
+import json
 
 import geocoder
 import pandas as pd
 import numpy as np
-from nltk.corpus import stopwords
 import re
 
 from .. import utils
@@ -26,30 +28,73 @@ Contains the CrimeTags class that allows tagging of articles.
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
                               os.path.join('models', 'lstm', 'saved'))
 
+# headers used to make geocoder.gisgraphy work.
+HEADERS = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Cache-Control': 'max-age=0',
+    'Connection': 'keep-alive',
+    'Host': 'services.gisgraphy.com',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0',
+ }
 
 def post_process(geostring):
-    assert type(
-        geostring) == str, "use a string! this is an error from the post_process\
-                            function in tag.py"
-    geostring = re.sub('[\W]+ ', '', geostring)
-    if 'chicago' not in geostring.lower():
+    """
+    Post process the geostring in a way that makes it more amenable to
+    geocoding by the current geocoding provider GISgraphy.
+
+    Inputs
+    ------
+    geostring : str
+        The geostring to post process
+
+    Returns
+    -------
+    processed_geostring : str
+    """
+    # Merge multiple whitespaces into one
+    geostring = ' '.join(geostring.split())
+
+    # add chicago to the end if it's not already in there and 'illinois'
+    # is not in there. If 'illinois' is in there then there's a good
+    # chance the city name is already in there.
+    if 'chicago' not in geostring.lower() and 'illinois' not in geostring.lower():
         geostring = geostring + ' Chicago'
-    if ' il' not in geostring.lower() and ' illnois' not in geostring.lower():
-        geostring = geostring + ', Illinois'
-    for word in geostring.split(' '):
-        if word in stopwords.words('english') or word.lower() == 'block':
-            geostring.replace(word, '')
+
+    # add illinois to the end if it's not already in there
+    if ('illinois' not in geostring.lower()
+            and not geostring.lower().endswith(' il')
+            and ' il ' not in geostring.lower()):
+        geostring = geostring + ' Illinois'
+
+    # gisgraphy struggles with things like "55th and Woodlawn".
+    # replace "...<number><number ender, e.g. th or rd> and..."
+    # with two zeros.
+    # \100 does not work correclty so we need to add a separator.
+    geostring = re.sub(r'([0-9]+)[th|rd|st] and',
+                       r'\1<__internal_separator__>00 and',
+                       geostring)
+    geostring = geostring.replace('<__internal_separator__>', '')
+
+    # remove stopwords, only if they are internal, i.e.
+    # the geostring doesn't start with "block ...".
+    for stopword in ['block', 'of', 'and']:
+        geostring = geostring.replace(' {} '.format(stopword), ' ')
 
     return geostring
 
 
 GeocodeResults = namedtuple('GeocodeResults', ['lat_longs_raw',
                                                'full_responses_raw',
+                                               'scores_raw',
                                                'lat_longs_post',
-                                               'full_responses_post'])
+                                               'full_responses_post',
+                                               'scores_post'])
 
 
-def get_lat_longs_from_geostrings(geostring_list, post_process_f=None):
+def get_lat_longs_from_geostrings(geostring_list, post_process_f=None, sleep_secs=0):
     """
     Geo-code each geostring in `geostring_list` into lat/long values.
     Also return the full response from the geocoding service.
@@ -62,6 +107,8 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None):
         The results are returned for both the raw geostrings being
         passed to the geocoder, and the results of
         `post_process_f(geostring)` being passed to the geocoder.
+    sleep_secs : float
+        How long to sleep between successive requests, in seconds.
 
     Returns
     -------
@@ -85,23 +132,33 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None):
     def _geocode(lst):
         full_responses = []
         for addr_str in geostring_list:
-            g = geocoder.gisgraphy(addr_str)
+            g = geocoder.gisgraphy(addr_str, headers=HEADERS)
             full_responses.append(g)
-            time.sleep(0.5) # not technically required but let's be kind
+            time.sleep(sleep_secs)
 
         lat_longs = [g.latlng for g in full_responses]
 
-        return full_responses, lat_longs
+        scores = []
+        for g in full_responses:
+            try:
+                scores.append(json.loads(g.response.content)['result'][0]['score'])
+            except Exception:
+                scores.append(float('nan'))
+        scores = np.array(scores, dtype='float32')
 
-    full_responses_raw, lat_longs_raw = _geocode(geostring_list)
+        return full_responses, lat_longs, scores
+
+    full_responses_raw, lat_longs_raw, scores_raw = _geocode(geostring_list)
 
     geostring_list = [post_process_f(geo_s) for geo_s in geostring_list]
-    full_responses_post, lat_longs_post = _geocode(geostring_list)
+    full_responses_post, lat_longs_post, scores_post = _geocode(geostring_list)
 
     return GeocodeResults(lat_longs_raw=lat_longs_raw,
                           full_responses_raw=full_responses_raw,
+                          scores_raw=scores_raw,
                           lat_longs_post=lat_longs_post,
-                          full_responses_post=full_responses_post)
+                          full_responses_post=full_responses_post,
+                          scores_post=scores_post)
 
 
 def load_model(location=MODEL_LOCATION):
@@ -217,3 +274,44 @@ class GeoCoder():
             geostrings.append(words[on:off])
 
         return geostrings
+
+    @staticmethod
+    def lat_longs_from_geostring_lists(geostring_lists, **kwargs):
+        """
+        Get the latitude/longitude pairs from a list of geostrings as
+        returned by `extract_geostrings`.
+
+        Inputs
+        ------
+        geostring_lists : List[List[str]]
+            A length-N list of list of strings, as returned by
+            `extract_geostrings`.
+            Example: [['5500', 'S.', 'Woodlawn'], ['1700', 'S.', 'Halsted']]
+        **kwargs : other parameters passed to `get_lat_longs_from_geostrings`
+
+        Returns
+        -------
+        lat_longs, scores
+        lat_longs : List[List[float]]
+            The length-N list of lat/long pairs. In the current formulation,
+            it should be impossible to not get a result unless there's
+            a connection issue. In this case, you'll likely get None instead
+            of a [lat, long] pair.
+        scores : numpy.array
+            1D, length-N numpy array of the scores, higher indicates more
+            confidence. This is our best guess after masssaging the scores
+            returned by the geocoder, and should not be taken as any sort
+            of absolute rule.
+        """
+        out = get_lat_longs_from_geostrings(
+            [' '.join(gl) for gl in geostring_lists], **kwargs
+        )
+
+        # If there was no lat/long from the raw, that's the lowest confidence
+        # we could have. Since gisgraphy's score is interpreted as HIGHER
+        # values are LESS confident, the lowest confidence would be a score
+        # of +inf.
+        out.scores_raw[np.isnan(out.scores_raw)] = np.inf
+        # For all x >= 0, we have 0 <= 1 / (1 + x) <= 1, which is a nice
+        # property to have.
+        return out.lat_longs_post, 1 / (1 + out.scores_raw / out.scores_post)
