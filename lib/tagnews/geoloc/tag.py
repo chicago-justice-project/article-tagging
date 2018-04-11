@@ -143,15 +143,16 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None, sleep_sec
         lat_longs = [g.latlng for g in full_responses]
 
         scores = []
+        num_found = []
         for g in full_responses:
             try:
                 scores.append(json.loads(g.response.content)['result'][0]['score'])
             except Exception:
                 scores.append(float('nan'))
             try:
-                num_found = json.loads(g.response.content)['numFound']
+                num_found.append(json.loads(g.response.content)['numFound'])
             except:
-                num_found = None
+                num_found.append(None)
         scores = np.array(scores, dtype='float32')
 
         return full_responses, lat_longs, scores, num_found
