@@ -1,31 +1,35 @@
 # Setup
 
-Fork this repo, clone your fork, and navigate to it. If you're going to be developing it doesn't necessarily make sense to install as a package, but you'll still need to install the dependencies:
+You need two things to work on this project; the code, and the data.
 
-## Dependencies
+## The Code
 
-***This code requires python 3.5 or greater.***
+For development, we strongly recommend you use something like virtual environments in python or a conda environment.
 
-Additionally, to use this code, you will need at least the python packages
+On GitHub, fork this repo, `git clone` your fork, and `cd` to it. Then, run
 
-* [nltk](http://www.nltk.org/),
-* [numpy](http://www.numpy.org/) at version 1.13 or higher,
-* [scikit-learn](http://scikit-learn.org/),
-* [tensorflow](https://www.tensorflow.org/) at version 1.4 or greater,
-* [keras](https://keras.io/), and
-* [pandas](http://pandas.pydata.org/).
+```
+pip install -e .
+```
 
-If you need detailed instructions, see the "How do I get the dependencies?" section in the FAQ below.
+This will install the package in editable mode. Changes you make to any of the source code files will be automatically picked up the next time you import `tagnews`.
 
-(See the `install_requires` line in setup.py for the definitive list.)
+You will need to install some [NLTK](http://www.nltk.org/) packages as well:
 
+```python
+>>> import nltk
+>>> nltk.download('punkt')
+>>> nltk.download('wordnet')
+```
 
 ## The Data
 
-Due mainly to the file size, the data is not included in the GitHub repo. Instead, it is available on a USB drive at Chi Hack Night, so you'll need to get it there. Extract the data from the archive on the USB drive. Copy the contents into the folder `lib/tagnews/data/`. After this is done, your directory should look something like this:
+The data used to be retrievable via an SFTP server, but this has since been shut down. You can follow [this issue](https://github.com/chicago-justice-project/chicago-justice/issues/74) to see progress on restarting the nightly database exports.
+
+However you get the data, copy the contents into the folder `lib/tagnews/data/`. After this is done, your directory should look something like this:
 
 ```bash
-(cjp-at) .../article-tagging/lib/tagnews/data$ ls -l
+.../article-tagging/lib/tagnews/data$ ls -l
 total 2117928
 -rw-r--r-- 1 kevin.rose 1049089       6071 Sep 19 23:45 column_names.txt
 -rw-r--r-- 1 kevin.rose 1049089 2156442023 Sep 18 21:02 newsarticles_article.csv
@@ -38,7 +42,7 @@ Once extracted to the correct place, you can load the data as follows:
 
 ```python
 >>> import tagnews
->>> df = tagnews.load_data(nrows=None) # change to int to load subset
+>>> df = tagnews.load_data(nrows=10) # change to some None for all rows
 ```
 
 # Getting Started
@@ -146,4 +150,4 @@ twine upload dist/tagnews-version.number.you.want.to.upload.tar.gz
 
 Create a new anaconda environment to download the version for rudimentary testing. The Continuous Integration should take care of most rigorous testing, this is just to make sure everything is working. I usually run through the example at the top of the README.
 
-Once you are happy, remove the `rc*` suffix and publish as the actual version.
+Once you are happy, remove the `rc*` suffix and publish as the actual version. You should then create a [release](https://github.com/chicago-justice-project/article-tagging/releases) on GitHub, attempting to log all the changes and attach the tarball created by `python setup.py sdist`.
