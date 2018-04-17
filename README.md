@@ -23,6 +23,13 @@ GUNV     0.134798
 >>> lat_longs, scores = geoextractor.lat_longs_from_geostring_lists(geostrings)
 >>> lat_longs
 [[41.49612808227539, -87.63743591308594], [41.79513222479058, -87.58843505219843]]
+>>> lat_longs, scores, num_found = geoextractor.lat_longs_from_geostring_lists(geoextractor.extract_geostrings(article_text))
+>>> lat_longs
+[[41.49612808227539, -87.63743591308594], [41.79513222479058, -87.58843505219843]]
+>>> scores
+array([0.5913217, 0.       ], dtype=float32)
+>>> num_found
+[8, 10]
 >>> import os; import psutil
 >>> print('Memory usage: {} MB'.format(psutil.Process(os.getpid()).memory_info().rss / (1024 ** 2)))
 Memory usage: 453.203125 MB
@@ -43,22 +50,28 @@ Below are sample usages when you want to just use this as a library to make pred
 The main classes are `tagnews.CrimeTags` and `tagnews.GeoCoder`:
 
 ```python
->>> import tagnews
->>> crimetags = tagnews.CrimeTags()
->>> article_text = 'The homicide occurred at the 1700 block of S. Halsted Ave. It happened just after midnight. Another person was killed at the intersection of 55th and Woodlawn, where a lone gunman'
->>> crimetags.tagtext_proba(article_text)
-HOMI     0.739159
-VIOL     0.146943
-GUNV     0.134798
-...
 >>> crimetags.tagtext(article_text, prob_thresh=0.5)
 ['HOMI']
 >>> geoextractor = tagnews.GeoCoder()
 >>> prob_out = geoextractor.extract_geostring_probs(article_text)
 >>> list(zip(*prob_out))
 [..., ('at', 0.0044685714), ('the', 0.005466637), ('1700', 0.7173856), ('block', 0.81395197), ('of', 0.82227415), ('S.', 0.7940061), ('Halsted', 0.70529455), ('Ave.', 0.60538065), ...]
->>> geoextractor.extract_geostrings(article_text, prob_thresh=0.5)
+>>> geostrings = geoextractor.extract_geostrings(article_text, prob_thresh=0.5)
+>>> geostrings
 [['1700', 'block', 'of', 'S.', 'Halsted', 'Ave.'], ['55th', 'and', 'Woodlawn,']]
+>>> lat_longs, scores = geoextractor.lat_longs_from_geostring_lists(geostrings)
+>>> lat_longs
+[[41.49612808227539, -87.63743591308594], [41.79513222479058, -87.58843505219843]]
+>>> lat_longs, scores, num_found = geoextractor.lat_longs_from_geostring_lists(geoextractor.extract_geostrings(article_text))
+>>> lat_longs
+[[41.49612808227539, -87.63743591308594], [41.79513222479058, -87.58843505219843]]
+>>> scores
+array([0.5913217, 0.       ], dtype=float32)
+>>> num_found
+[8, 10]
+>>> import os; import psutil
+>>> print('Memory usage: {} MB'.format(psutil.Process(os.getpid()).memory_info().rss / (1024 ** 2)))
+Memory usage: 453.203125 MB
 ```
 
 ## From the command line

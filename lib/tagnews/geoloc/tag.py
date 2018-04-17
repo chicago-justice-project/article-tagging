@@ -301,7 +301,7 @@ class GeoCoder():
 
         Returns
         -------
-        lat_longs, scores
+        lat_longs, scores, num_found
         lat_longs : List[List[float]]
             The length-N list of lat/long pairs. In the current formulation,
             it should be impossible to not get a result unless there's
@@ -312,7 +312,7 @@ class GeoCoder():
             confidence. This is our best guess after masssaging the scores
             returned by the geocoder, and should not be taken as any sort
             of absolute rule.
-        num_found_post : int
+        num_found : int
             gisgraphy geocode returns field 'numFound' which we assume is the
             number of results that their geocoding backend returns. Only one of
             those results is actually returned by gisgraphy, but the number
