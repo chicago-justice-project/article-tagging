@@ -137,7 +137,13 @@ You [pickle](https://docs.python.org/3.6/library/pickle.html) it. But working wi
 
 ### How is this published to pypi?
 
+First, update the `__version__` variable in `lib/tagnews/__init__.py`, initially start out by bumping the version and making it a release candidate, e.g. `1.1.0rc1`. Then, use the following two commands to publish the new version:
+
 ```bash
 python setup.py sdist
 twine upload dist/tagnews-version.number.you.want.to.upload.tar.gz
 ```
+
+Create a new anaconda environment to download the version for rudimentary testing. The Continuous Integration should take care of most rigorous testing, this is just to make sure everything is working. I usually run through the example at the top of the README.
+
+Once you are happy, remove the `rc*` suffix and publish as the actual version.
