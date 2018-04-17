@@ -4,6 +4,9 @@ from setuptools import setup
 
 import os
 
+with open('README.md') as f:
+    long_description = f.read()
+
 init_file = os.path.join(os.path.split(__file__)[0], 'lib/tagnews/__init__.py')
 with open(init_file) as f:
     try:
@@ -42,4 +45,6 @@ setup(name='tagnews',
                                 'data/glove.6B.50d.txt']},
       python_requires=">=3.5",
       zip_safe=False,
+      long_description=long_description,
+      long_description_content_type='text/markdown',
      )
