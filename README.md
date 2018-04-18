@@ -97,7 +97,7 @@ Great question! Please see [CONTRIBUTING.md](https://github.com/chicago-justice-
 
 ## Problems?
 
-If you have problems, please [report an issue](https://github.com/chicago-justice-project/article-tagging/issues/new).
+If you have problems, please [report an issue](https://github.com/chicago-justice-project/article-tagging/issues/new). Anything that is behaving unexpectedly is an issue, and should be reported. If you are getting bad or unexpected results, that is also an issue, and should be reported. We may not be able to do anything about it, but more data rarely degrades performance.
 
 ## Background
 
