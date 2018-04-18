@@ -50,7 +50,7 @@ You will need to install some [NLTK](http://www.nltk.org/) packages as well:
 
 Beware, `tagnews` requires python >= 3.5.
 
-## Sample Usage
+## Example
 
 The main classes are `tagnews.CrimeTags` and `tagnews.GeoCoder`.
 
