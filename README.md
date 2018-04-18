@@ -109,6 +109,8 @@ This question came from the [Chicago Justice Project](http://chicagojustice.org/
 2. Organizing an amazing group of [volunteers](http://chicagojustice.org/volunteer-for-cjp/) that have helped them tag these articles with crime categories like "Gun Violence" and "Drugs", but also organizations such as "Cook County State's Attorney's Office", "Illinois State Police", "Chicago Police Department", and other miscellaneous categories such as "LGBTQ", "Immigration".
 3. The web UI used to do this tagging was also recently updated to allow highlighting of geographic information, resulting in several hundred articles with labeled location sub-strings.
 
+Most of the code for those components can be found [here](https://github.com/chicago-justice-project/chicago-justice).
+
 A group actively working on this project meets every Tuesday at [Chi Hack Night](https://chihacknight.org/).
 
 ## See Also
