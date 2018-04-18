@@ -101,7 +101,7 @@ If you have problems, please [report an issue](https://github.com/chicago-justic
 
 ## Background
 
-We want to compare the amount different types of crimes are reported in certain areas vs. the actual occurrence amount in those areas. In essence, *are some crimes under-represented in certain areas but over-represented in others?* This is the main question driving the analysis.
+We want to compare the amount of different types of crimes are reported in certain areas vs. the actual occurrence amount in those areas. In essence, *are some crimes under-represented in certain areas but over-represented in others?* This is the main question driving the analysis.
 
 This question came from the [Chicago Justice Project](http://chicagojustice.org/). They have been interested in answering this question for quite a while, and have been collecting the data necessary to have a data-backed answer. Their efforts include
 
