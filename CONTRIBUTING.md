@@ -89,6 +89,32 @@ There are a couple things you could do, each item listed here is expounded on fu
 
 ## The type-of-crime model
 
+### What is it?
+
+The type-of-crime model builds a multi-class classifier that takes in text from a news article and for each type-of-crime tag outputs a probability that the tag applies to the news article. In other words, it tries to guess what kinds of crimes the news article discusses.
+
+The model code can be found in `lib/tagnes/crimetype/models/binary_stemmed_logistic/save_model.py`. It's less than 100 lines, don't be afraid to read it!
+
+The model relies on NLTK as a tokenizer and builds a binary bag-of-words vectorizer with 40000 features. (We restricted to 40000 features because performance did not decrease significantly and it made the model much smaller, useful when trying to publish to pypi as a package.) The vectorized versions of the articles are then used as input to a separate logistic regression for each crime tag.
+
+### How to train it?
+
+The `save_model.py` can be run as a script to save the trained model. To run it, `cd` into the `lib` directory and run
+
+```
+python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
+```
+
+The vectorizer is saved in the same directory as the code with the name `vectorizer-<year><month><day>-<hour><minute><second>.pkl`. The model is saved similarly, but with `model` instead of `vectorizer`.
+
+This code trains on the whole labeled dataset. During development, the `lib/tagnews/crimetype/benchmark.py` file was used to perform cross validation.
+
+### How might it be improved?
+
+* Use a better vectorizer than bag-of-words, e.g. GloVe as used for the geostring model.
+* We briefly tried a naive bayes classifier over a logistic regression and it didn't seem to improve performance, but naive bayes is usually used as the baseline for these kinds of tasks. Could it be made to work better?
+* Add more examples of articles that have *no* tags. Right now we randomly sample 3000 such articles, but we could probably use more. This may help with an observed problem where some sports articles have a high chance of being about a crime according to the model (likely due to the high use of words like "shoot").
+
 ## The geostring extractor model
 
 ## The geocoding
