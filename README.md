@@ -8,27 +8,7 @@
 * Automatically extract the locations discussed in the news article text, e.g. "55th and Woodlawn" and "1700 block of S. Halsted".
 * Retrieve the latitude/longitude pairs for said locations using the `geocoder` python library to access an existing geocoding web-service.
 
-See it in action! (More detailed usage further below.)
-
-```python
->>> import tagnews
->>> crimetags = tagnews.CrimeTags()
->>> article_text = ('The homicide occurred at the 1700 block of S. Halsted Ave.'
-...   ' It happened just after midnight. Another person was killed at the'
-...   ' intersection of 55th and Woodlawn, where a lone gunman')
->>> crimetags.tagtext_proba(article_text)
-HOMI     0.739159
-VIOL     0.146943
-GUNV     0.134798
-...
->>> geoextractor = tagnews.GeoCoder()
->>> geostrings = geoextractor.extract_geostrings(article_text, prob_thresh=0.5)
->>> geostrings
-[['1700', 'block', 'of', 'S.', 'Halsted', 'Ave.'], ['55th', 'and', 'Woodlawn,']]
->>> lat_longs, _, _ = geoextractor.lat_longs_from_geostring_lists(geostrings)
->>> lat_longs
-[[41.49612808227539, -87.63743591308594], [41.79513222479058, -87.58843505219843]]
-```
+Sound interesting? There's example usage below!
 
 You can find the source code on [GitHub](https://github.com/chicago-justice-project/article-tagging).
 
@@ -40,7 +20,7 @@ You can install `tagnews` with pip:
 pip install tagnews
 ```
 
-You will need to install some [NLTK](http://www.nltk.org/) packages as well:
+**NOTE:** You will need to install some [NLTK](http://www.nltk.org/) packages as well:
 
 ```python
 >>> import nltk
