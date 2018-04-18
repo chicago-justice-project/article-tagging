@@ -6,20 +6,27 @@ You need two things to work on this project; the code, and the data.
 
 For development, we strongly recommend you use something like virtual environments in python or a conda environment.
 
-On GitHub, fork this repo, `git clone` your fork, and `cd` to it. Then, run
+To get the code,
+
+1. On GitHub, fork this repo
+2. `git clone` your fork
+3. `cd` to it
+
+Then you can run
 
 ```
 pip install -e .
 ```
 
-This will install the package in editable mode. Changes you make to any of the source code files will be automatically picked up the next time you import `tagnews`.
+This will install the package in editable mode, and will download all the dependencies as a side effect. Changes you make to any of the source code files will be automatically picked up the next time you import `tagnews`.
 
-You will need to install some [NLTK](http://www.nltk.org/) packages as well:
+You will likely need to install some [NLTK](http://www.nltk.org/) data as well:
 
 ```python
 >>> import nltk
 >>> nltk.download('punkt')
 >>> nltk.download('wordnet')
+>>> quit()
 ```
 
 ## The Data
@@ -45,87 +52,52 @@ Once extracted to the correct place, you can load the data as follows:
 >>> df = tagnews.load_data(nrows=10) # change to some None for all rows
 ```
 
-# Getting Started
+# Directory structure
 
-A good place to start is the [notebooks](./lib/notebooks). We recommend starting with the explorations notebook -- it should give you a sense of what the data looks like. After reading through that, the bag-of-words-count-stemmed-binary notebook should give you a sense of what the NLP model for tagging looks like. Reading through these should help you get up to speed, and running them is a pretty good test to make sure everything is installed correctly.
+This project is structured as follows:
+
+```
+├───lib
+│   ├───notebooks ............................ Jupyter/IPython notebooks
+│   └───tagnews .............................. Python package/source code
+│       ├───crimetype ........................ Code related to time-of-crime tagging
+│       │   └───models ....................... Filler directory
+│       │       └───binary_stemmed_logistic .. Code to train/save crimetype NLP model
+│       ├───data ............................. Put the data in here!
+│       │   └───ci-data ...................... A tiny subset of data used for testing
+│       ├───geoloc ........................... Code related to geocoding
+│       │   └───models ....................... Filler directory
+│       │       └───lstm ..................... Code *and data* to train/save geostring extractor
+│       │           └───saved ................ Where the geostring model is saved.
+│       ├───tests ............................ Code used to test this project
+│       └───utils ............................ Helper functions, mostly around data loading
+└───r_models ................................. R code, unused for a while, use with caution
+```
+
+Depending on how you want to contribute will dictate which parts you need to know about.
 
 # What can I do?
 
-It's important to keep in mind that it can take a significant amount of time to make sure everything is installed and working correctly, and to get a handle on everything that's going on. It's normal to be confused and have questions. Once you feel comfortable with things, then you can:
+There are a couple things you could do, each item listed here is expounded on further below.
 
-Check out the [open issues](https://github.com/chicago-justice-project/article-tagging/issues) and see if there's anything you'd like to tackle there.
+* Improve the type-of-crime model (article text -> type-of-crime tags)
+* Improve the geostring extractor model (article text -> list of location strings)
+* Improve the geocoding (list of location strings -> list of lat/longs)
+* Write more tests
+* Write documentation
+* Ways to help without coding
 
-If not, you can try and improve upon the existing model(s), but be warned, measuring performance in a multi-label task is non-trivial. See the `bag-of-words-count-stemmed-binary.ipynb` notebook for an attempt at doing so. Tweaking that notebook and seeing how performance changes might be a good place to start tinkering with the NLP code. You can also read the `tagnews.crimetype.benchmark.py` file to get an idea of how the cross validation is being performed.
+## The type-of-crime model
 
-Further yet, you can help improve this very documentation.
+## The geostring extractor model
+
+## The geocoding
+
+## Testing
+
+## Documentation
 
 # FAQ
-
-### How do I get the dependencies?
-
-If you are having trouble installing the requirements, then we recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments. If you are unfamiliar with Anaconda, you should read about it at the linked site above.
-
-Once it is installed, you can create a new environment. If you are using bash (mac or linux):
-
-```bash
-$ # create a new anaconda environment with required packages
-$ conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
-$ source activate cjp-at
-(cjp-at) $ pip install "tensorflow>=1.4"
-(cjp-at) $ pip install keras
-(cjp-at) > ...
-```
-
-If you are using cmd (windows):
-
-```cmd
-> conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
-> activate cjp-at
-(cjp-at) $ pip install "tensorflow>=1.4"
-(cjp-at) $ pip install keras
-(cjp-at) > ...
-```
-
-If you have an NVIDIA GPU on your machine then you may wish to use `pip install "tensorflow-gpu>=1.4"` instead.
-
-### How do I fix errors from NLTK about missing data?
-If you get an error that looks something like
-
-```
-Traceback (most recent call last):
-  <snip>
-LookupError:
-**********************************************************************
-  Resource 'tokenizers/punkt/PY3/english.pickle' not found.
-  Please use the NLTK Downloader to obtain the resource:  >>>
-  nltk.download()
-  Searched in:
-    - '/home/kevin/nltk_data'
-    - '/usr/share/nltk_data'
-    - '/usr/local/share/nltk_data'
-    - '/usr/lib/nltk_data'
-    - '/usr/local/lib/nltk_data'
-    - ''
-**********************************************************************
-```
-
-then you need to download some nltk data. The easiest way to download nltk data is to just run
-
-```python
->>> import nltk
->>> nltk.download()
-```
-
-and use the GUI. If you wish to do this programatically, then you can run `nltk.download('corpus_name')`. Right now there are only two dependencies:
-
-```python
->>> nltk.download('punkt')
->>> nltk.download('wordnet')
-```
-
-### Do I have to use a specific language to participate in article-tagging?
-
-Thusfar, most of the work has been done in Python and R, but there's no reason that always has to be the case. If there is another language that would be perfect for this project or that you have expertise in, that works too. Talk with us and we can figure something out.
 
 ### Are there concepts that will be helpful for me to understand?
 
