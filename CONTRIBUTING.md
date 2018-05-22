@@ -121,6 +121,37 @@ We never defined a single number that could be used to decide if one model was b
 
 ## The geostring extractor model
 
+### What is it?
+
+The geostring model builds a word-by-word probability that each word is part of a "geostring". A "geostring" is a list of words that define a location. They can be pretty accurate street addresses as in "the shooting happened at the *corner of 55th and Woodlawn*" or fuzzier locations such as a neighborhood name, a church name, etc. The per-word probability can be thresholded and we take all consecutive list of words above the threshold as the geostrings inside an article.
+
+The model code can be found in `lib/tagnews/geoloc/models/lstm/save_model.py`. It's 150 lines of python code a good portion of which is trying to hit an external internet API. The keras library is used extensively.
+
+The model relies on the pre-trained semantic word vectorizer GloVE to get a 50 dimensional feature vector for each word, and then a two layer bi-directional LSTM is used to generate the probabilities.
+
+### How to train it?
+
+The `save_model.py` file can be run as a script to save the trained model. To run it, `cd` into the `lib` directory and run
+
+```
+python -m tagnews.geoloc.models.lstm.save_model
+```
+
+The model is saved under `lib/tagnews/geoloc/models/lstm/saved/weights-*.hdf5`. The code will run for a set number of training epochs (one epoch is one pass through all of the training examples), saving the weights after each epoch.
+
+### How to measure performance?
+
+Download the validation data from https://geo-extract-tester.herokuapp.com/ (there is also training data available for downloading). Follow the instructions on that website to upload guesses and the ROC curve will be shown for your model's predictions. If you have a higher AUC than the current high score, congratulations! Please submit a Pull Request!
+
+You can also upload your model's predictions via an API. There is code inside `lib/tagnews/geoloc/models/lstm/save_model.py` demonstrating this.
+
+### How might it be improved?
+
+* Including "naive" models that do simple look-ups against Chicago street names.
+* Using a word vectorizer that handles out-of-vocabulary predictions better (perhaps `FastText`?).
+* Just use a character-level CNN?
+* Augment the training data by labeling more articles (see the "I want to contribute to Chicago Justice Project but I don’t want to work on this NLP stuff. What can I do?" section).
+
 ## The geocoding
 
 ## Testing
