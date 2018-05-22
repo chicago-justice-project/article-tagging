@@ -109,6 +109,10 @@ The vectorizer is saved in the same directory as the code with the name `vectori
 
 This code trains on the whole labeled dataset. During development, the `lib/tagnews/crimetype/benchmark.py` file was used to perform cross validation.
 
+### How to measure performance?
+
+We never defined a single number that could be used to decide if one model was better than another, even though that's usually a critical step. We generated FPR/TPRs for all the crime categories and plotted those. The best way may be to fix an acceptable FPR rate at something like 5% or 10% and see what maximizes the mean TPR across a set of desired categories. In short, there's not a solid answer here and refining this would be super helpful in its own right.
+
 ### How might it be improved?
 
 * Use a better vectorizer than bag-of-words, e.g. GloVe as used for the geostring model.
