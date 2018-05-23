@@ -170,6 +170,13 @@ The code can be found in `lib/tagnews/geoloc/tag.py`, in the `get_lat_longs_from
 * Find a faster geocoder. (But please see **NOTE** above about Terms of Service.)
 * Find a more accurate geocoder. (But please see **NOTE** above about Terms of Service.)
 * Improve the inputs to it by improving the geostring model.
+* Improve the confidence score.
+
+### What if it breaks?
+
+The last time the geocoding broke it was because they started checking for browser-like headers, so we updated our requests to have browser-like headers. Something like this may happen again and unfortunately there's no real playbook here.
+
+The good news is that the geostrings will always be there, and if needed we can always re-process any geocoding that doesn't work.
 
 ## Testing
 
