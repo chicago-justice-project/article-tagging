@@ -52,6 +52,8 @@ Once extracted to the correct place, you can load the data as follows:
 >>> df = tagnews.load_data(nrows=10) # change to some None for all rows
 ```
 
+To do geostring extraction (see below), you will also need the pre-trained word vectorizer GloVE which can be downloaded at http://nlp.stanford.edu/data/glove.6B.zip.
+
 # Directory structure
 
 This project is structured as follows:
@@ -179,6 +181,30 @@ The last time the geocoding broke it was because they started checking for brows
 The good news is that the geostrings will always be there, and if needed we can always re-process any geocoding that doesn't work.
 
 ## Testing
+
+### The test suite
+
+You can find the tests `lib/tagnews/tests/`. We use `pytest` as the test runner. The test coverage isn't phenomenal, but it's not terrible either. We always welcome Pull Requests making more and better tests!
+
+### Running locally
+
+You need the data to run the tests. If you have the data, great! You should be able to run the tests. If you don't have the data, you can copy the tiny subset of the data stored in `lib/tagnews/data/ci-data/` to `lib/tagnews/data/`. Make sure you have downloaded GloVE from http://nlp.stanford.edu/data/glove.6B.zip (and extracted it, etc.).
+
+Beware that if you run the tests with the full data-set, it can take a _long_ time and a _lot_ of memory.
+
+If you don't already have a type-of-crime or geostring model, you will need train one (see above).
+
+Once that's completed, `cd` into the lib directory and run
+
+```
+python -m pytest --cov-report term-missing --cov=tagnews
+```
+
+### Continuous Integration Testing
+
+We use [Travis CI](https://travis-ci.org/chicago-justice-project/article-tagging) for continuous integration testing. Any Pull Request will automatically have the test suite run, and any commit to the master branch will automatically have the test suite run.
+
+This is configured via the `.travis.yml` file at the top-level of this project.
 
 ## Documentation
 
