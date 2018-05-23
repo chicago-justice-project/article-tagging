@@ -208,21 +208,15 @@ This is configured via the `.travis.yml` file at the top-level of this project.
 
 ## Documentation
 
-# FAQ
+### How to write it?
 
-### Are there concepts that will be helpful for me to understand?
+Write it in this very file! Or the README.md file!
 
-Definitely!  [This sklearn user guide](http://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction) details a number of the text analysis methodologies this project uses (sklearn is a Python library, but the user guide is great for understanding machine learning text analysis in general).  Also, see the section on 'Automated Article Tagging' in the [README](./README.md) for more detailed literature on some of the relevant concepts. Reading the code and looking up concepts you are unfamiliar with is a valid path forward as well!
+### How to publish it?
 
-### I want to contribute to Chicago Justice Project but I don’t want to work on this NLP stuff. What can I do?
+Documentation is not currently published. If you have interest in helping with this, submit a Pull Request!
 
-You can help out the [the team scraping articles/maintaining the volunteers' web interface](https://github.com/chicago-justice-project/chicago-justice). If that doesn't sound interesting either, we can always use more [volunteer taggers](http://chicagojustice.org/volunteer-for-cjp/). Or just show up Tuesday nights and ask what you can do!
-
-### How do I productize a model?
-
-You [pickle](https://docs.python.org/3.6/library/pickle.html) it. But working with pickle is difficult. In order to sanely be able load things, I'm running python files that pickle the model using the `-m` flag, e.g. `python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model` will run code that generates the pickles of the model. (Note that you need to be in the `lib` folder to do that.) All modules should be imported in the same way they will exist when unpickling the model from `tagnews.crimetype.tag`.
-
-### How is this published to pypi?
+## Publishing a new version to pypi
 
 First, update the `__version__` variable in `lib/tagnews/__init__.py`, initially start out by bumping the version and making it a release candidate, e.g. `1.1.0rc1`. Then, use the following two commands to publish the new version:
 
@@ -234,3 +228,7 @@ twine upload dist/tagnews-version.number.you.want.to.upload.tar.gz
 Create a new anaconda environment to download the version for rudimentary testing. The Continuous Integration should take care of most rigorous testing, this is just to make sure everything is working. I usually run through the example at the top of the README.
 
 Once you are happy, remove the `rc*` suffix and publish as the actual version. You should then create a [release](https://github.com/chicago-justice-project/article-tagging/releases) on GitHub, attempting to log all the changes and attach the tarball created by `python setup.py sdist`.
+
+## I want to contribute to Chicago Justice Project but I don’t want to work on this NLP stuff. What can I do?
+
+You can help out the [the team scraping articles/maintaining the volunteers' web interface](https://github.com/chicago-justice-project/chicago-justice). If that doesn't sound interesting either, we can always use more [volunteer taggers](http://chicagojustice.org/volunteer-for-cjp/). Or just show up Tuesday nights and ask what you can do!
