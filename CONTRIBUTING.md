@@ -218,7 +218,11 @@ Documentation is not currently published. If you have interest in helping with t
 
 ## Publishing a new version to pypi
 
-First, update the `__version__` variable in `lib/tagnews/__init__.py`, initially start out by bumping the version and making it a release candidate, e.g. `1.1.0rc1`. Then, use the following two commands to publish the new version:
+First, update the `__version__` variable in `lib/tagnews/__init__.py`, initially start out by bumping the version and making it a release candidate, e.g. `1.1.0rc1`.
+
+Second, make sure the saved models either match the previously published version exactly (by downloading the current release, extracting it, and copying the model file to where it needs to be), or are _meant_ to be updated. Make sure only the saved model you want exists in your project, delete all others.
+
+Then, use the following two commands to publish the new version:
 
 ```bash
 python setup.py sdist
@@ -229,6 +233,8 @@ Create a new anaconda environment to download the version for rudimentary testin
 
 Once you are happy, remove the `rc*` suffix and publish as the actual version. You should then create a [release](https://github.com/chicago-justice-project/article-tagging/releases) on GitHub, attempting to log all the changes and attach the tarball created by `python setup.py sdist`.
 
+*Note: pypi has a limit on the size of projects that can be uploaded, and pypi was recently migrated to a new data warehouse. We originally had to request a size increase in [this issue](https://github.com/pypa/packaging-problems/issues/119) and nothing has been published since. We may have to re-request a size increase.*
+
 ## I want to contribute to Chicago Justice Project but I don’t want to work on this NLP stuff. What can I do?
 
-You can help out the [the team scraping articles/maintaining the volunteers' web interface](https://github.com/chicago-justice-project/chicago-justice). If that doesn't sound interesting either, we can always use more [volunteer taggers](http://chicagojustice.org/volunteer-for-cjp/). Or just show up Tuesday nights and ask what you can do!
+You can help out the [the team scraping articles/maintaining the volunteers' web interface](https://github.com/chicago-justice-project/chicago-justice). If that doesn't sound interesting either, we can always use more [volunteer taggers](http://chicagojustice.org/volunteer-for-cjp/). Or just show up Tuesday nights at ChiHackNight and ask what you can do!
