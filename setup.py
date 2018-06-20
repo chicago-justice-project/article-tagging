@@ -4,6 +4,9 @@ from setuptools import setup
 
 import os
 
+with open('README.md') as f:
+    long_description = f.read()
+
 init_file = os.path.join(os.path.split(__file__)[0], 'lib/tagnews/__init__.py')
 with open(init_file) as f:
     try:
@@ -11,7 +14,6 @@ with open(init_file) as f:
         version_index = s.index('__version__')
         version = s[version_index:].split('\n')[0].split("'")[1].strip()
         # make sure it is in correct format by trying to parse it
-        [int(x) for x in version.split('.')]
         assert len(version.split('.')) == 3
     except Exception as e:
         raise RuntimeError(
@@ -23,8 +25,8 @@ with open(init_file) as f:
 
 setup(name='tagnews',
       version=version,
-      description=('automatically tag articles with justice-related categories'
-                   ' and extract location information'),
+      description=('automatically tag news articles with justice-related'
+                   ' categories and extract location information'),
       author='Kevin Rose, Josh Herzberg, Matt Sweeney',
       url='https://github.com/chicago-justice-project/article-tagging',
       package_dir={'': 'lib'},
@@ -42,4 +44,6 @@ setup(name='tagnews',
                                 'data/glove.6B.50d.txt']},
       python_requires=">=3.5",
       zip_safe=False,
+      long_description=long_description,
+      long_description_content_type='text/markdown',
      )

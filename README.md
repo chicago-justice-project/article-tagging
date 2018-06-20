@@ -20,12 +20,13 @@ GUNV     0.134798
 >>> geostrings = geoextractor.extract_geostrings(article_text, prob_thresh=0.5)
 >>> geostrings
 [['1700', 'block', 'of', 'S.', 'Halsted', 'Ave.'], ['55th', 'and', 'Woodlawn,']]
->>> lat_longs, scores = geoextractor.lat_longs_from_geostring_lists(geostrings)
+>>> lat_longs, scores, num_found = geoextractor.lat_longs_from_geostring_lists(geostrings)
 >>> lat_longs
 [[41.49612808227539, -87.63743591308594], [41.79513222479058, -87.58843505219843]]
->>> import os; import psutil
->>> print('Memory usage: {} MB'.format(psutil.Process(os.getpid()).memory_info().rss / (1024 ** 2)))
-Memory usage: 453.203125 MB
+>>> scores # our best attempt at giving a confidence in the lat_longs, higher is better
+array([0.5913217, 0.       ], dtype=float32)
+>>> num_found # how many results gisgraphy found for the (post-processed) geostring
+[8, 10]
 ```
 
 ***The documentation for this project is a work in progress. If something is unclear, or worse yet, incorrect, please report that as an [issue](https://github.com/chicago-justice-project/article-tagging/issues).***
@@ -57,8 +58,16 @@ GUNV     0.134798
 >>> prob_out = geoextractor.extract_geostring_probs(article_text)
 >>> list(zip(*prob_out))
 [..., ('at', 0.0044685714), ('the', 0.005466637), ('1700', 0.7173856), ('block', 0.81395197), ('of', 0.82227415), ('S.', 0.7940061), ('Halsted', 0.70529455), ('Ave.', 0.60538065), ...]
->>> geoextractor.extract_geostrings(article_text, prob_thresh=0.5)
+>>> geostrings = geoextractor.extract_geostrings(article_text, prob_thresh=0.5)
+>>> geostrings
 [['1700', 'block', 'of', 'S.', 'Halsted', 'Ave.'], ['55th', 'and', 'Woodlawn,']]
+>>> lat_longs, scores, num_found = geoextractor.lat_longs_from_geostring_lists(geostrings)
+>>> lat_longs
+[[41.49612808227539, -87.63743591308594], [41.79513222479058, -87.58843505219843]]
+>>> scores # our best attempt at giving a confidence in the lat_longs, higher is better
+array([0.5913217, 0.       ], dtype=float32)
+>>> num_found # how many results gisgraphy found for the (post-processed) geostring
+[8, 10]
 ```
 
 ## From the command line
