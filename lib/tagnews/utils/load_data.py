@@ -254,16 +254,16 @@ def load_data(data_folder=__data_folder, nrows=None):
             df.loc[article_ids[matches], cat_name] = vals[matches]
 
     update_df_with_categories(
-        tags_df['article_id'].values,
-        tags_df['category_abbreviation'].values,
-        np.ones((tags_df['article_id'].values.shape), dtype='int8'),
-        is_model=False
-    )
-    update_df_with_categories(
         model_tags_df['article_id'].values,
         model_tags_df['category_abbreviation'].values + '_model',
         model_tags_df['relevance'].values,
         is_model=True
+    )
+    update_df_with_categories(
+        tags_df['article_id'].values,
+        tags_df['category_abbreviation'].values,
+        np.ones((tags_df['article_id'].values.shape), dtype='int8'),
+        is_model=False
     )
 
     df.loc[df['bodytext'].isnull(), 'bodytext'] = ''
@@ -362,6 +362,30 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
     uc_tags_df.to_csv(
         os.path.join(out_folder, 'newsarticles_usercoding_categories.csv'),
         header=None, index=False
+    )
+
+    # newsarticles_trainedcoding
+    tc_names = ['id', 'date', 'model_info', 'relevance', 'article_id']
+    tc = pd.read_csv(
+        'tagnews/data/newsarticles_trainedcoding.csv',
+        names=tc_names
+    )
+    tc = tc.loc[tc['article_id'].isin(chosen_indexes)]
+    tc.to_csv(
+        os.path.join(out_folder, 'newsarticles_trainedcoding.csv'),
+        header=False, index=False
+    )
+
+    # newsarticles_trainedcategoryrelevance
+    tcr_names = ['id', 'relevance', 'category_id', 'coding_id']
+    tcr = pd.read_csv(
+        'tagnews/data/newsarticles_trainedcategoryrelevance.csv',
+        names=tcr_names
+    )
+    tcr = tcr.loc[tcr['coding_id'].isin(tc['id'])]
+    tcr.to_csv(
+        os.path.join(out_folder, 'newsarticles_trainedcategoryrelevance.csv'),
+        header=False, index=False
     )
 
 
