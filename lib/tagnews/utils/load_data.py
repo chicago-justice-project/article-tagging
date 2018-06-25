@@ -89,7 +89,7 @@ def load_model_categories(data_folder=__data_folder):
         os.path.join(data_folder, 'newsarticles_trainedcoding.csv'),
         names=tc_names
     ).set_index('id', drop=True)
-    tcr['article_id'] = tc.loc[tcr['coding_id']].index
+    tcr['article_id'] = tc.loc[tcr['coding_id']]['article_id'].values
     return tcr
 
 
@@ -239,6 +239,7 @@ def load_data(data_folder=__data_folder, nrows=None):
 
         article_ids = article_ids[existing_ids_filter]
         cat_abbreviations = cat_abbreviations[existing_ids_filter]
+        vals = vals[existing_ids_filter]
 
         for i in range(categories_df.shape[0]):
             cat_name = categories_df.loc[i+1, 'abbreviation']
@@ -248,6 +249,8 @@ def load_data(data_folder=__data_folder, nrows=None):
             if not is_model:
                 df[cat_name] = df[cat_name].astype('int8')
             matches = cat_abbreviations == cat_name
+            if not matches.sum():
+                continue
             df.loc[article_ids[matches], cat_name] = vals[matches]
 
     update_df_with_categories(
