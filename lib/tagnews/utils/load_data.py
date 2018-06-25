@@ -77,6 +77,22 @@ def load_taggings(data_folder=__data_folder):
     return uc_tags
 
 
+def load_model_categories(data_folder=__data_folder):
+    tcr_names = ['id', 'relevance', 'category_id', 'coding_id']
+    tc_names = ['id', 'date', 'model_info', 'relevance', 'article_id']
+
+    tcr = pd.read_csv(
+        os.path.join(data_folder, 'newsarticles_trainedcategoryrelevance.csv'),
+        names=tcr_names
+    )
+    tc = pd.read_csv(
+        os.path.join(data_folder, 'newsarticles_trainedcoding.csv'),
+        names=tc_names
+    ).set_index('id', drop=True)
+    tcr['article_id'] = tc.loc[tcr['coding_id']].index
+    return tcr
+
+
 def load_locations(data_folder=__data_folder):
     """Load the human-extracted locations from the articles."""
     uc_column_names = ['id', 'date', 'relevant',
@@ -134,6 +150,12 @@ def load_data(data_folder=__data_folder, nrows=None):
     locs_df.sort_values(by='article_id', inplace=True)
     locs_df = locs_df.loc[locs_df['article_id'].isin(
         df.index.intersection(locs_df['article_id']))]
+
+    model_tags_df = load_model_categories(data_folder)
+    # will help cacheing
+    model_tags_df.sort_values(by='article_id', inplace=True)
+    model_tags_df = model_tags_df.loc[model_tags_df['article_id'].isin(
+        df.index.intersection(model_tags_df['article_id']))]
 
     # init with empty lists
     df['locations'] = np.empty([df.shape[0], 0]).tolist()
@@ -201,26 +223,45 @@ def load_data(data_folder=__data_folder, nrows=None):
                                         ['abbreviation']
                                         [tags_df['category_id']]
                                         .values)
+    model_tags_df['category_abbreviation'] = (categories_df
+                                              ['abbreviation']
+                                              [model_tags_df['category_id']]
+                                              .values)
 
     if np.setdiff1d(tags_df['article_id'].values, df.index.values).size:
         warnings.warn('Tags were found for article IDs that do not exist.',
                       RuntimeWarning)
 
-    article_ids = tags_df['article_id'].values
-    cat_abbreviations = tags_df['category_abbreviation'].values
+    def update_df_with_categories(article_ids, cat_abbreviations, vals, is_model):
+        # for some reason, some articles that are tagged don't show up
+        # in the articles CSV. filter those out.
+        existing_ids_filter = np.isin(article_ids, df.index.values)
 
-    # for some reason, some articles that are tagged don't show up
-    # in the articles CSV. filter those out.
-    existing_ids_filter = np.isin(article_ids, df.index.values)
+        article_ids = article_ids[existing_ids_filter]
+        cat_abbreviations = cat_abbreviations[existing_ids_filter]
 
-    article_ids = article_ids[existing_ids_filter]
-    cat_abbreviations = cat_abbreviations[existing_ids_filter]
+        for i in range(categories_df.shape[0]):
+            cat_name = categories_df.loc[i+1, 'abbreviation']
+            if is_model:
+                cat_name += '_model'
+            df[cat_name] = 0
+            if not is_model:
+                df[cat_name] = df[cat_name].astype('int8')
+            matches = cat_abbreviations == cat_name
+            df.loc[article_ids[matches], cat_name] = vals[matches]
 
-    for i in range(categories_df.shape[0]):
-        cat_name = categories_df.loc[i+1, 'abbreviation']
-        df[cat_name] = 0
-        df[cat_name] = df[cat_name].astype('int8') # save on that memory!
-        df.loc[article_ids[cat_abbreviations == cat_name], cat_name] = 1
+    update_df_with_categories(
+        tags_df['article_id'].values,
+        tags_df['category_abbreviation'].values,
+        np.ones((tags_df['article_id'].values.shape), dtype='int8'),
+        is_model=False
+    )
+    update_df_with_categories(
+        model_tags_df['article_id'].values,
+        model_tags_df['category_abbreviation'].values + '_model',
+        model_tags_df['relevance'].values,
+        is_model=True
+    )
 
     df.loc[df['bodytext'].isnull(), 'bodytext'] = ''
 
