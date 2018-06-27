@@ -409,6 +409,18 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
         header=False, index=False
     )
 
+    # newsarticles_trainedlocation
+    tl_names = ['id', 'text', 'latitude', 'longitude', 'coding_id']
+    tl = pd.read_csv(
+        'tagnews/data/newsarticles_trainedlocation.csv',
+        names=tl_names
+    )
+    tl = tl.loc[tl['coding_id'].isin(tc['id'])]
+    tl.to_csv(
+        os.path.join(out_folder, 'newsarticles_trainedlocation.csv'),
+        header=False, index=False
+    )
+
 
 def load_crime_data(data_folder=__data_folder):
     crimes = pd.read_csv(os.path.join(data_folder, 'Crimes.csv'))
