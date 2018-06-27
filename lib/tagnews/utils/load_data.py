@@ -93,6 +93,22 @@ def load_model_categories(data_folder=__data_folder):
     return tcr
 
 
+def load_model_locations(data_folder=__data_folder):
+    tl_names = ['id', 'text', 'latitude', 'longitude', 'coding_id']
+    tc_names = ['id', 'date', 'model_info', 'relevance', 'article_id']
+
+    tl = pd.read_csv(
+        os.path.join(data_folder, 'newsarticles_trainedlocation.csv'),
+        names=tl_names
+    )
+    tc = pd.read_csv(
+        os.path.join(data_folder, 'newsarticles_trainedcoding.csv'),
+        names=tc_names
+    ).set_index('id', drop=True)
+    tl['article_id'] = tc.loc[tl['coding_id']]['article_id'].values
+    return tl
+
+
 def load_locations(data_folder=__data_folder):
     """Load the human-extracted locations from the articles."""
     uc_column_names = ['id', 'date', 'relevant',
@@ -214,6 +230,11 @@ def load_data(data_folder=__data_folder, nrows=None):
         warnings.warn(('{} location strings were not found in'
                        ' the bodytext.').format(num_no_match),
                       RuntimeWarning)
+
+    model_locations_df = load_model_locations(data_folder).set_index('article_id')
+    model_locations_gb = model_locations_df.groupby('article_id')
+    model_locations_text = model_locations_gb['text'].apply(list)
+    df['model_location_text'] = model_locations_text
 
     categories_df = load_categories(data_folder)
     categories_df.set_index('id', drop=True, inplace=True)
