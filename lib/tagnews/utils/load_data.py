@@ -6,6 +6,7 @@ import os
 import warnings
 import shutil
 from pathlib import Path
+import codecs
 
 """
 Helper functions to load the article data. The main method to use
@@ -341,6 +342,10 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
               .set_index('id')
               .loc[chosen_indexes, 'index'])
     articles_df = articles_df.loc[sample, :]
+    # garble garble
+    articles_df['bodytext'] = articles_df['bodytext'].apply(
+        lambda x: codecs.encode(x, 'rot-13')
+    )
     articles_df.to_csv(os.path.join(out_folder, 'newsarticles_article.csv'),
                        header=None, index=False)
     del articles_df
