@@ -232,7 +232,8 @@ def load_data(data_folder=__data_folder, nrows=None):
                        ' the bodytext.').format(num_no_match),
                       RuntimeWarning)
 
-    model_locations_df = load_model_locations(data_folder).set_index('article_id')
+    model_locations_df = load_model_locations(data_folder)
+    model_locations_df = model_locations_df.set_index('article_id')
     model_locations_gb = model_locations_df.groupby('article_id')
     model_locations_text = model_locations_gb['text'].apply(list)
     df['model_location_text'] = model_locations_text
@@ -254,7 +255,8 @@ def load_data(data_folder=__data_folder, nrows=None):
         warnings.warn('Tags were found for article IDs that do not exist.',
                       RuntimeWarning)
 
-    def update_df_with_categories(article_ids, cat_abbreviations, vals, is_model):
+    def update_df_with_categories(article_ids, cat_abbreviations, vals,
+                                  is_model):
         # for some reason, some articles that are tagged don't show up
         # in the articles CSV. filter those out.
         existing_ids_filter = np.isin(article_ids, df.index.values)
