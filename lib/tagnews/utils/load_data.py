@@ -345,7 +345,7 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
               .loc[chosen_indexes, 'index'])
     articles_df = articles_df.loc[sample, :]
     # garble garble
-    articles_df['bodytext'] = articles_df['bodytext'].apply(
+    articles_df['bodytext'] = articles_df['bodytext'].astype(str).apply(
         lambda x: codecs.encode(x, 'rot-13')
     )
     articles_df.to_csv(os.path.join(out_folder, 'newsarticles_article.csv'),
