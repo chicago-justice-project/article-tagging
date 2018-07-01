@@ -6,6 +6,7 @@ import os
 import warnings
 import shutil
 from pathlib import Path
+import codecs
 
 """
 Helper functions to load the article data. The main method to use
@@ -91,6 +92,22 @@ def load_model_categories(data_folder=__data_folder):
     ).set_index('id', drop=True)
     tcr['article_id'] = tc.loc[tcr['coding_id']]['article_id'].values
     return tcr
+
+
+def load_model_locations(data_folder=__data_folder):
+    tl_names = ['id', 'text', 'latitude', 'longitude', 'coding_id']
+    tc_names = ['id', 'date', 'model_info', 'relevance', 'article_id']
+
+    tl = pd.read_csv(
+        os.path.join(data_folder, 'newsarticles_trainedlocation.csv'),
+        names=tl_names
+    )
+    tc = pd.read_csv(
+        os.path.join(data_folder, 'newsarticles_trainedcoding.csv'),
+        names=tc_names
+    ).set_index('id', drop=True)
+    tl['article_id'] = tc.loc[tl['coding_id']]['article_id'].values
+    return tl
 
 
 def load_locations(data_folder=__data_folder):
@@ -215,6 +232,12 @@ def load_data(data_folder=__data_folder, nrows=None):
                        ' the bodytext.').format(num_no_match),
                       RuntimeWarning)
 
+    model_locations_df = load_model_locations(data_folder)
+    model_locations_df = model_locations_df.set_index('article_id')
+    model_locations_gb = model_locations_df.groupby('article_id')
+    model_locations_text = model_locations_gb['text'].apply(list)
+    df['model_location_text'] = model_locations_text
+
     categories_df = load_categories(data_folder)
     categories_df.set_index('id', drop=True, inplace=True)
 
@@ -232,7 +255,8 @@ def load_data(data_folder=__data_folder, nrows=None):
         warnings.warn('Tags were found for article IDs that do not exist.',
                       RuntimeWarning)
 
-    def update_df_with_categories(article_ids, cat_abbreviations, vals, is_model):
+    def update_df_with_categories(article_ids, cat_abbreviations, vals,
+                                  is_model):
         # for some reason, some articles that are tagged don't show up
         # in the articles CSV. filter those out.
         existing_ids_filter = np.isin(article_ids, df.index.values)
@@ -320,6 +344,10 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
               .set_index('id')
               .loc[chosen_indexes, 'index'])
     articles_df = articles_df.loc[sample, :]
+    # garble garble
+    articles_df['bodytext'] = articles_df['bodytext'].astype(str).apply(
+        lambda x: codecs.encode(x, 'rot-13')
+    )
     articles_df.to_csv(os.path.join(out_folder, 'newsarticles_article.csv'),
                        header=None, index=False)
     del articles_df
@@ -385,6 +413,18 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
     tcr = tcr.loc[tcr['coding_id'].isin(tc['id'])]
     tcr.to_csv(
         os.path.join(out_folder, 'newsarticles_trainedcategoryrelevance.csv'),
+        header=False, index=False
+    )
+
+    # newsarticles_trainedlocation
+    tl_names = ['id', 'text', 'latitude', 'longitude', 'coding_id']
+    tl = pd.read_csv(
+        'tagnews/data/newsarticles_trainedlocation.csv',
+        names=tl_names
+    )
+    tl = tl.loc[tl['coding_id'].isin(tc['id'])]
+    tl.to_csv(
+        os.path.join(out_folder, 'newsarticles_trainedlocation.csv'),
         header=False, index=False
     )
 

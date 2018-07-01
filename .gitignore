@@ -10,3 +10,5 @@ dist/
 lib/.coverage
 .pytest_cache*
 *.gz
+lib/tagnews/data/*.geojson
+.vscode*
