@@ -9,3 +9,6 @@ dist/
 .DS_Store
 lib/.coverage
 .pytest_cache*
+*.gz
+lib/tagnews/data/*.geojson
+.vscode*

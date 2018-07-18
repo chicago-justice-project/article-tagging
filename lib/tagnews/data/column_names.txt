@@ -82,3 +82,49 @@ Indexes:
 Foreign-key constraints:
     "ne_usercoding_id_3ce766f5753b730e_fk_newsarticles_usercoding_id" FOREIGN KEY (usercoding_id) REFERENCES newsarticles_usercoding(id) DEFERRABLE INITIALLY DEFERRED
     "newsar_category_id_6f8bff226c05e06b_fk_newsarticles_category_id" FOREIGN KEY (category_id) REFERENCES newsarticles_category(id) DEFERRABLE INITIALLY DEFERRED
+
+                                    Table "public.newsarticles_trainedcoding"
+   Column   |           Type           |                                Modifiers
+------------+--------------------------+-------------------------------------------------------------------------
+ id         | integer                  | not null default nextval('newsarticles_trainedcoding_id_seq'::regclass)
+ date       | timestamp with time zone | not null
+ model_info | text                     | not null
+ relevance  | double precision         | not null
+ article_id | integer                  | not null
+Indexes:
+    "newsarticles_trainedcoding_pkey" PRIMARY KEY, btree (id)
+    "newsarticles_trainedcoding_article_id_key" UNIQUE CONSTRAINT, btree (article_id)
+Foreign-key constraints:
+    "newsarticles_trained_article_id_5b9c0111_fk_newsartic" FOREIGN KEY (article_id) REFERENCES newsarticles_article(id) DEFERRABLE INITIALLY DEFERRED
+Referenced by:
+    TABLE "newsarticles_trainedcategoryrelevance" CONSTRAINT "newsarticles_trained_coding_id_ad7cc027_fk_newsartic" FOREIGN KEY (coding_id) REFERENCES newsarticles_trainedcoding(id) DEFERRABLE INITIALLY DEFERRED
+    TABLE "newsarticles_trainedlocation" CONSTRAINT "newsarticles_trained_coding_id_d406a29f_fk_newsartic" FOREIGN KEY (coding_id) REFERENCES newsarticles_trainedcoding(id) DEFERRABLE INITIALLY DEFERRED
+
+                               Table "public.newsarticles_trainedlocation"
+  Column   |       Type       |                                 Modifiers
+-----------+------------------+---------------------------------------------------------------------------
+ id        | integer          | not null default nextval('newsarticles_trainedlocation_id_seq'::regclass)
+ text      | text             | not null
+ latitude  | double precision |
+ longitude | double precision |
+ coding_id | integer          | not null
+Indexes:
+    "newsarticles_trainedlocation_pkey" PRIMARY KEY, btree (id)
+    "newsarticles_trainedlocation_coding_id_d406a29f" btree (coding_id)
+Foreign-key constraints:
+    "newsarticles_trained_coding_id_d406a29f_fk_newsartic" FOREIGN KEY (coding_id) REFERENCES newsarticles_trainedcoding(id) DEFERRABLE INITIALLY DEFERRED
+
+                                Table "public.newsarticles_trainedcategoryrelevance"
+   Column    |       Type       |                                     Modifiers
+-------------+------------------+------------------------------------------------------------------------------------
+ id          | integer          | not null default nextval('newsarticles_trainedcategoryrelevance_id_seq'::regclass)
+ relevance   | double precision | not null
+ category_id | integer          | not null
+ coding_id   | integer          | not null
+Indexes:
+    "newsarticles_trainedcategoryrelevance_pkey" PRIMARY KEY, btree (id)
+    "newsarticles_trainedcategoryrelevance_category_id_d3c4a714" btree (category_id)
+    "newsarticles_trainedcategoryrelevance_coding_id_ad7cc027" btree (coding_id)
+Foreign-key constraints:
+    "newsarticles_trained_category_id_d3c4a714_fk_newsartic" FOREIGN KEY (category_id) REFERENCES newsarticles_category(id) DEFERRABLE INITIALLY DEFERRED
+    "newsarticles_trained_coding_id_ad7cc027_fk_newsartic" FOREIGN KEY (coding_id) REFERENCES newsarticles_trainedcoding(id) DEFERRABLE INITIALLY DEFERRED
