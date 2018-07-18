@@ -54,8 +54,8 @@ T = Tokenizer(char_level=True,
 T.fit_on_texts(ner['word'].values)
 T.num_dims = T.texts_to_matrix('a').shape[1]
 
-timesteps = 64
-batch_size = 32
+timesteps = 128
+batch_size = 64
 input_channels = T.num_dims
 
 train_val_split = int(19 * ner.shape[0] / 20.)
@@ -119,25 +119,37 @@ checkpointer = ModelCheckpoint(filepath='./saved/weights-{epoch:02d}.hdf5',
 with open('validation.txt', encoding='utf-8') as f:
     s = f.read()
 val_words = [w for w in s.split('\n') if w]
+assert not any(' ' in w for w in val_words), 'No words can have spaces!'
 
 
 class OurAUC(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs={}):
         # Go to https://geo-extract-tester.herokuapp.com/ and download
         # the validation data (validation.txt).
-
-        # TODO
         txt = ' '.join(val_words)
-        self.model.predict(T.texts_to_matrix(txt)[np.newaxis, :32, :])
+        txt_mat = T.texts_to_matrix(txt)
+        space = T.texts_to_matrix(' ')[0]
+        split_inds = np.where((txt_mat == space).all(axis=1))[0]
+        n = 3
+        while 2**n <= len(txt):
+            n += 1
+        n -= 1
+
+        preds1 = self.model.predict(txt_mat[np.newaxis, :2**n, :])
+        preds2 = self.model.predict(txt_mat[np.newaxis, len(txt) - 2**n:, :])
+        preds = np.concatenate([preds1[0, :, 0], preds2[0, -(len(txt) - 2**n):, 0]])
+        preds_per_word = [x.mean() for x in np.split(preds, split_inds)]
 
         with open('guesses-{epoch:02d}.txt'.format(epoch=epoch), 'w') as f:
-            for prob in [p for pred in preds_batched for p in pred]:
+            for prob in preds_per_word:
                 f.write(str(prob) + '\n')
 
         with open('guesses-{epoch:02d}.txt'.format(epoch=epoch), 'rb') as f:
             url = 'https://geo-extract-tester.herokuapp.com/api/score'
-            r = requests.post(url, files={'file': f})
-            r = json.loads(r.text)
+            raw = requests.post(url, files={'file': f})
+            r = json.loads(raw.text)
+            if 'auc' not in r:
+                raise RuntimeError('Unexpected response:\n{}'.format(raw.text))
             auc = r['auc']
             print('AUC: {:.5f}, high score? {}'.format(auc, r['high_score']))
 
@@ -146,24 +158,15 @@ class OurAUC(keras.callbacks.Callback):
 
 
 def train(model):
-    our_auc = OurAUC(model)
+    our_auc = OurAUC()
 
     model.fit_generator(
         train_generator(),
-        steps_per_epoch=100,
+        steps_per_epoch=250,
         epochs=num_epochs,
         callbacks=[our_auc, checkpointer],
         verbose=2
     )
-
-    idx = slice(501, 550)
-    pd.set_option('display.width', 200)
-    df_to_print = pd.DataFrame(
-        model.predict(np.expand_dims(ner.iloc[idx, 3:].values, 0))[0][:, 1:],
-        columns=['prob_geloc']
-    )
-    print(pd.concat([ner.iloc[idx, :3].reset_index(drop=True), df_to_print],
-                    axis='columns'))
 
 
 def main():
