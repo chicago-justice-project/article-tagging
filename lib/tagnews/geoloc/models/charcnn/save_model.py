@@ -89,16 +89,23 @@ def train_generator():
 def make_model():
     down_kwargs = {'strides': 2, 'padding': 'same', 'activation': 'relu'}
     up_kwargs = {'strides': 1, 'padding': 'same', 'activation': 'relu'}
+    stable_kwargs = {'strides': 1, 'padding': 'same', 'activation': 'relu'}
     inp = Input(shape=(None, input_channels))
-    filters = [4, 4, 8, 16]
+    k = 11
+    filters = [8, 16, 32, 64]
     down_layers = [Conv1D(4, 1, strides=1, padding='same', activation='relu')(inp)]
     for f in filters:
-        down_layers.append(Conv1D(f, 7, **down_kwargs)(down_layers[-1]))
+        x = Conv1D(f, k, **down_kwargs)(down_layers[-1])
+        x = Conv1D(f, k, **stable_kwargs)(x)
+        x = Conv1D(f, k, **stable_kwargs)(x)
+        down_layers.append(x)
     up_layers = [down_layers[-1]]
     for i, f in enumerate(filters[::-1]):
         x = UpSampling1D(size=2)(up_layers[i])
-        x = Conv1D(f, 7, **up_kwargs)(x)
+        x = Conv1D(f // 2, k, **up_kwargs)(x)
         x = Concatenate()([x, down_layers[-(i + 2)]])
+        x = Conv1D(f, k, **stable_kwargs)(x)
+        x = Conv1D(f, k, **stable_kwargs)(x)
         up_layers.append(x)
     out = Conv1D(1, 1, strides=1, padding='same', activation='relu')(up_layers[-1])
     model = Model(input=inp, output=out)
@@ -153,7 +160,6 @@ class OurAUC(keras.callbacks.Callback):
             auc = r['auc']
             print('AUC: {:.5f}, high score? {}'.format(auc, r['high_score']))
 
-        os.remove('guesses-{epoch:02d}.txt'.format(epoch=epoch))
         logs['val_auc'] = auc
 
 
