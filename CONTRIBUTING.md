@@ -1,31 +1,42 @@
 # Setup
 
-Fork this repo, clone your fork, and navigate to it. If you're going to be developing it doesn't necessarily make sense to install as a package, but you'll still need to install the dependencies:
+You need two things to work on this project; the code, and the data.
 
-## Dependencies
+## The Code
 
-***This code requires python 3.5 or greater.***
+For development, we strongly recommend you use something like virtual environments in python or a conda environment.
 
-Additionally, to use this code, you will need at least the python packages
+To get the code,
 
-* [nltk](http://www.nltk.org/),
-* [numpy](http://www.numpy.org/) at version 1.13 or higher,
-* [scikit-learn](http://scikit-learn.org/),
-* [tensorflow](https://www.tensorflow.org/) at version 1.4 or greater,
-* [keras](https://keras.io/), and
-* [pandas](http://pandas.pydata.org/).
+1. On GitHub, fork this repo
+2. `git clone` your fork
+3. `cd` to it
 
-If you need detailed instructions, see the "How do I get the dependencies?" section in the FAQ below.
+Then you can run
 
-(See the `install_requires` line in setup.py for the definitive list.)
+```
+pip install -e .
+```
 
+This will install the package in editable mode, and will download all the dependencies as a side effect. Changes you make to any of the source code files will be automatically picked up the next time you import `tagnews`.
+
+You will likely need to install some [NLTK](http://www.nltk.org/) data as well:
+
+```python
+>>> import nltk
+>>> nltk.download('punkt')
+>>> nltk.download('wordnet')
+>>> quit()
+```
 
 ## The Data
 
-Due mainly to the file size, the data is not included in the GitHub repo. Instead, it is available on a USB drive at Chi Hack Night, so you'll need to get it there. Extract the data from the archive on the USB drive. Copy the contents into the folder `lib/tagnews/data/`. After this is done, your directory should look something like this:
+The data used to be retrievable via an SFTP server, but this has since been shut down. You can follow [this issue](https://github.com/chicago-justice-project/chicago-justice/issues/74) to see progress on restarting the nightly database exports.
+
+However you get the data, copy the contents into the folder `lib/tagnews/data/`. After this is done, your directory should look something like this:
 
 ```bash
-(cjp-at) .../article-tagging/lib/tagnews/data$ ls -l
+.../article-tagging/lib/tagnews/data$ ls -l
 total 2117928
 -rw-r--r-- 1 kevin.rose 1049089       6071 Sep 19 23:45 column_names.txt
 -rw-r--r-- 1 kevin.rose 1049089 2156442023 Sep 18 21:02 newsarticles_article.csv
@@ -38,106 +49,180 @@ Once extracted to the correct place, you can load the data as follows:
 
 ```python
 >>> import tagnews
->>> df = tagnews.load_data(nrows=None) # change to int to load subset
+>>> df = tagnews.load_data(nrows=10) # change to some None for all rows
 ```
 
-# Getting Started
+To do geostring extraction (see below), you will also need the pre-trained word vectorizer GloVE which can be downloaded at http://nlp.stanford.edu/data/glove.6B.zip.
 
-A good place to start is the [notebooks](./lib/notebooks). We recommend starting with the explorations notebook -- it should give you a sense of what the data looks like. After reading through that, the bag-of-words-count-stemmed-binary notebook should give you a sense of what the NLP model for tagging looks like. Reading through these should help you get up to speed, and running them is a pretty good test to make sure everything is installed correctly.
+# Directory structure
+
+This project is structured as follows:
+
+```
+├───lib
+│   ├───notebooks ............................ Jupyter/IPython notebooks
+│   └───tagnews .............................. Python package/source code
+│       ├───crimetype ........................ Code related to time-of-crime tagging
+│       │   └───models ....................... Filler directory
+│       │       └───binary_stemmed_logistic .. Code to train/save crimetype NLP model
+│       ├───data ............................. Put the data in here!
+│       │   └───ci-data ...................... A tiny subset of data used for testing
+│       ├───geoloc ........................... Code related to geocoding
+│       │   └───models ....................... Filler directory
+│       │       └───lstm ..................... Code *and data* to train/save geostring extractor
+│       │           └───saved ................ Where the geostring model is saved.
+│       ├───tests ............................ Code used to test this project
+│       └───utils ............................ Helper functions, mostly around data loading
+└───r_models ................................. R code, unused for a while, use with caution
+```
+
+Depending on how you want to contribute will dictate which parts you need to know about.
 
 # What can I do?
 
-It's important to keep in mind that it can take a significant amount of time to make sure everything is installed and working correctly, and to get a handle on everything that's going on. It's normal to be confused and have questions. Once you feel comfortable with things, then you can:
+There are a couple things you could do, each item listed here is expounded on further below.
 
-Check out the [open issues](https://github.com/chicago-justice-project/article-tagging/issues) and see if there's anything you'd like to tackle there.
+* Improve the type-of-crime model (article text -> type-of-crime tags)
+* Improve the geostring extractor model (article text -> list of location strings)
+* Improve the geocoding (list of location strings -> list of lat/longs)
+* Write more tests
+* Write documentation
+* Ways to help without coding
 
-If not, you can try and improve upon the existing model(s), but be warned, measuring performance in a multi-label task is non-trivial. See the `bag-of-words-count-stemmed-binary.ipynb` notebook for an attempt at doing so. Tweaking that notebook and seeing how performance changes might be a good place to start tinkering with the NLP code. You can also read the `tagnews.crimetype.benchmark.py` file to get an idea of how the cross validation is being performed.
+## The type-of-crime model
 
-Further yet, you can help improve this very documentation.
+### What is it?
 
-# FAQ
+The type-of-crime model builds a multi-class classifier that takes in text from a news article and for each type-of-crime tag outputs a probability that the tag applies to the news article. In other words, it tries to guess what kinds of crimes the news article discusses.
 
-### How do I get the dependencies?
+The model code can be found in `lib/tagnes/crimetype/models/binary_stemmed_logistic/save_model.py`. It's less than 100 lines, don't be afraid to read it!
 
-If you are having trouble installing the requirements, then we recommend using [Anaconda](https://www.continuum.io/downloads) to manage python environments. If you are unfamiliar with Anaconda, you should read about it at the linked site above.
+The model relies on NLTK as a tokenizer and builds a binary bag-of-words vectorizer with 40000 features. (We restricted to 40000 features because performance did not decrease significantly and it made the model much smaller, useful when trying to publish to pypi as a package.) The vectorized versions of the articles are then used as input to a separate logistic regression for each crime tag.
 
-Once it is installed, you can create a new environment. If you are using bash (mac or linux):
+### How to train it?
 
-```bash
-$ # create a new anaconda environment with required packages
-$ conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
-$ source activate cjp-at
-(cjp-at) $ pip install "tensorflow>=1.4"
-(cjp-at) $ pip install keras
-(cjp-at) > ...
-```
-
-If you are using cmd (windows):
-
-```cmd
-> conda create -n cjp-at "python>=3.5" nltk "numpy>=1.13" scikit-learn pandas pytest
-> activate cjp-at
-(cjp-at) $ pip install "tensorflow>=1.4"
-(cjp-at) $ pip install keras
-(cjp-at) > ...
-```
-
-If you have an NVIDIA GPU on your machine then you may wish to use `pip install "tensorflow-gpu>=1.4"` instead.
-
-### How do I fix errors from NLTK about missing data?
-If you get an error that looks something like
+The `save_model.py` can be run as a script to save the trained model. To run it, `cd` into the `lib` directory and run
 
 ```
-Traceback (most recent call last):
-  <snip>
-LookupError:
-**********************************************************************
-  Resource 'tokenizers/punkt/PY3/english.pickle' not found.
-  Please use the NLTK Downloader to obtain the resource:  >>>
-  nltk.download()
-  Searched in:
-    - '/home/kevin/nltk_data'
-    - '/usr/share/nltk_data'
-    - '/usr/local/share/nltk_data'
-    - '/usr/lib/nltk_data'
-    - '/usr/local/lib/nltk_data'
-    - ''
-**********************************************************************
+python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
 ```
 
-then you need to download some nltk data. The easiest way to download nltk data is to just run
+The vectorizer is saved in the same directory as the code with the name `vectorizer-<year><month><day>-<hour><minute><second>.pkl`. The model is saved similarly, but with `model` instead of `vectorizer`.
 
-```python
->>> import nltk
->>> nltk.download()
+This code trains on the whole labeled dataset. During development, the `lib/tagnews/crimetype/benchmark.py` file was used to perform cross validation.
+
+### How to measure performance?
+
+We never defined a single number that could be used to decide if one model was better than another, even though that's usually a critical step. We generated FPR/TPRs for all the crime categories and plotted those. The best way may be to fix an acceptable FPR rate at something like 5% or 10% and see what maximizes the mean TPR across a set of desired categories. In short, there's not a solid answer here and refining this would be super helpful in its own right.
+
+### How might it be improved?
+
+* Use a better vectorizer than bag-of-words, e.g. GloVe as used for the geostring model.
+* We briefly tried a naive bayes classifier over a logistic regression and it didn't seem to improve performance, but naive bayes is usually used as the baseline for these kinds of tasks. Could it be made to work better?
+* Add more examples of articles that have *no* tags. Right now we randomly sample 3000 such articles, but we could probably use more. This may help with an observed problem where some sports articles have a high chance of being about a crime according to the model (likely due to the high use of words like "shoot").
+
+## The geostring extractor model
+
+### What is it?
+
+The geostring model builds a word-by-word probability that each word is part of a "geostring". A "geostring" is a list of words that define a location. They can be pretty accurate street addresses as in "the shooting happened at the *corner of 55th and Woodlawn*" or fuzzier locations such as a neighborhood name, a church name, etc. The per-word probability can be thresholded and we take all consecutive list of words above the threshold as the geostrings inside an article.
+
+The model code can be found in `lib/tagnews/geoloc/models/lstm/save_model.py`. It's 150 lines of python code a good portion of which is trying to hit an external internet API. The keras library is used extensively.
+
+The model relies on the pre-trained semantic word vectorizer GloVE to get a 50 dimensional feature vector for each word, and then a two layer bi-directional LSTM is used to generate the probabilities.
+
+### How to train it?
+
+The `save_model.py` file can be run as a script to save the trained model. To run it, `cd` into the `lib` directory and run
+
+```
+python -m tagnews.geoloc.models.lstm.save_model
 ```
 
-and use the GUI. If you wish to do this programatically, then you can run `nltk.download('corpus_name')`. Right now there are only two dependencies:
+The model is saved under `lib/tagnews/geoloc/models/lstm/saved/weights-*.hdf5`. The code will run for a set number of training epochs (one epoch is one pass through all of the training examples), saving the weights after each epoch.
 
-```python
->>> nltk.download('punkt')
->>> nltk.download('wordnet')
+### How to measure performance?
+
+Download the validation data from https://geo-extract-tester.herokuapp.com/ (there is also training data available for downloading). Follow the instructions on that website to upload guesses and the ROC curve will be shown for your model's predictions. If you have a higher AUC than the current high score, congratulations! Please submit a Pull Request!
+
+You can also upload your model's predictions via an API. There is code inside `lib/tagnews/geoloc/models/lstm/save_model.py` demonstrating this.
+
+### How might it be improved?
+
+* Including "naive" models that do simple look-ups against Chicago street names.
+* Using a word vectorizer that handles out-of-vocabulary predictions better (perhaps `FastText`?).
+* Just use a character-level CNN?
+* Augment the training data by labeling more articles (see the "I want to contribute to Chicago Justice Project but I don’t want to work on this NLP stuff. What can I do?" section).
+
+## The geocoding
+
+### What is it?
+
+Geocoding here refers to the process of sending a geostring (e.g. "55th and Woodlawn") to an external service to retrieve a best-guess latitude/longitude pair of where that geostring is referring to.
+
+Right now, the geocoding is done using the `geocoder` python library to access the `gisgraphy` geocoding service.
+
+The code can be found in `lib/tagnews/geoloc/tag.py`, in the `get_lat_longs_from_geostrings` function.
+
+### How might it be improved?
+
+**NOTE:** There may be more accurate/faster geocoders out there, but we strived to find a service that has Terms of Service that allow us to use the results in effective ways. Please take care if you want to change the geocoding service.
+
+* Improve post-processing of geostrings (we do rudimentary things like append "Chicago, Illinois", but we could get more sophisticated).
+* Find a faster geocoder. (But please see **NOTE** above about Terms of Service.)
+* Find a more accurate geocoder. (But please see **NOTE** above about Terms of Service.)
+* Improve the inputs to it by improving the geostring model.
+* Improve the confidence score.
+
+### What if it breaks?
+
+The last time the geocoding broke it was because they started checking for browser-like headers, so we updated our requests to have browser-like headers. Something like this may happen again and unfortunately there's no real playbook here.
+
+The good news is that the geostrings will always be there, and if needed we can always re-process any geocoding that doesn't work.
+
+## Testing
+
+### The test suite
+
+You can find the tests `lib/tagnews/tests/`. We use `pytest` as the test runner. The test coverage isn't phenomenal, but it's not terrible either. We always welcome Pull Requests making more and better tests!
+
+### Running locally
+
+You need the data to run the tests. If you have the data, great! You should be able to run the tests. If you don't have the data, you can copy the tiny subset of the data stored in `lib/tagnews/data/ci-data/` to `lib/tagnews/data/`. Make sure you have downloaded GloVE from http://nlp.stanford.edu/data/glove.6B.zip (and extracted it, etc.).
+
+Beware that if you run the tests with the full data-set, it can take a _long_ time and a _lot_ of memory.
+
+If you don't already have a type-of-crime or geostring model, you will need train one (see above).
+
+Once that's completed, `cd` into the lib directory and run
+
+```
+python -m pytest --cov-report term-missing --cov=tagnews
 ```
 
-### Do I have to use a specific language to participate in article-tagging?
+### Continuous Integration Testing
 
-Thusfar, most of the work has been done in Python and R, but there's no reason that always has to be the case. If there is another language that would be perfect for this project or that you have expertise in, that works too. Talk with us and we can figure something out.
+We use [Travis CI](https://travis-ci.org/chicago-justice-project/article-tagging) for continuous integration testing. Any Pull Request will automatically have the test suite run, and any commit to the master branch will automatically have the test suite run.
 
-### Are there concepts that will be helpful for me to understand?
+This is configured via the `.travis.yml` file at the top-level of this project.
 
-Definitely!  [This sklearn user guide](http://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction) details a number of the text analysis methodologies this project uses (sklearn is a Python library, but the user guide is great for understanding machine learning text analysis in general).  Also, see the section on 'Automated Article Tagging' in the [README](./README.md) for more detailed literature on some of the relevant concepts. Reading the code and looking up concepts you are unfamiliar with is a valid path forward as well!
+## Documentation
 
-### I want to contribute to Chicago Justice Project but I don’t want to work on this NLP stuff. What can I do?
+### How to write it?
 
-You can help out the [the team scraping articles/maintaining the volunteers' web interface](https://github.com/chicago-justice-project/chicago-justice). If that doesn't sound interesting either, we can always use more [volunteer taggers](http://chicagojustice.org/volunteer-for-cjp/). Or just show up Tuesday nights and ask what you can do!
+Write it in this very file! Or the README.md file!
 
-### How do I productize a model?
+### How to publish it?
 
-You [pickle](https://docs.python.org/3.6/library/pickle.html) it. But working with pickle is difficult. In order to sanely be able load things, I'm running python files that pickle the model using the `-m` flag, e.g. `python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model` will run code that generates the pickles of the model. (Note that you need to be in the `lib` folder to do that.) All modules should be imported in the same way they will exist when unpickling the model from `tagnews.crimetype.tag`.
+Documentation is not currently published. If you have interest in helping with this, submit a Pull Request!
 
-### How is this published to pypi?
+## Publishing a new version to pypi
 
-First, update the `__version__` variable in `lib/tagnews/__init__.py`, initially start out by bumping the version and making it a release candidate, e.g. `1.1.0rc1`. Then, use the following two commands to publish the new version:
+First, update the `__version__` variable in `lib/tagnews/__init__.py`, initially start out by bumping the version and making it a release candidate, e.g. `1.1.0rc1`.
+
+Second, make sure the saved models either match the previously published version exactly (by downloading the current release, extracting it, and copying the model file to where it needs to be), or are _meant_ to be updated. Make sure only the saved model you want exists in your project, delete all others.
+
+Then, use the following two commands to publish the new version:
 
 ```bash
 python setup.py sdist
@@ -146,4 +231,10 @@ twine upload dist/tagnews-version.number.you.want.to.upload.tar.gz
 
 Create a new anaconda environment to download the version for rudimentary testing. The Continuous Integration should take care of most rigorous testing, this is just to make sure everything is working. I usually run through the example at the top of the README.
 
-Once you are happy, remove the `rc*` suffix and publish as the actual version.
+Once you are happy, remove the `rc*` suffix and publish as the actual version. You should then create a [release](https://github.com/chicago-justice-project/article-tagging/releases) on GitHub, attempting to log all the changes and attach the tarball created by `python setup.py sdist`.
+
+*Note: pypi has a limit on the size of projects that can be uploaded, and pypi was recently migrated to a new data warehouse. We originally had to request a size increase in [this issue](https://github.com/pypa/packaging-problems/issues/119) and nothing has been published since. We may have to re-request a size increase.*
+
+## I want to contribute to Chicago Justice Project but I don’t want to work on this NLP stuff. What can I do?
+
+You can help out the [the team scraping articles/maintaining the volunteers' web interface](https://github.com/chicago-justice-project/chicago-justice). If that doesn't sound interesting either, we can always use more [volunteer taggers](http://chicagojustice.org/volunteer-for-cjp/). Or just show up Tuesday nights at ChiHackNight and ask what you can do!
