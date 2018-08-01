@@ -6,8 +6,7 @@ import glob
 from .... import utils
 import pandas as pd
 from keras.models import Model
-from keras.layers import Conv1D, Dense, UpSampling1D, Input, Concatenate, Reshape
-import keras.backend as K
+from keras.layers import Conv1D, UpSampling1D, Input, Concatenate, BatchNormalization, Embedding
 from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
 import numpy as np
@@ -31,7 +30,7 @@ if saved_files:
         exit()
 
 if len(sys.argv) == 1:
-    num_epochs = 20
+    num_epochs = 100
 else:
     num_epochs = int(sys.argv[1])
 
@@ -55,8 +54,7 @@ T.fit_on_texts(ner['word'].values)
 T.num_dims = T.texts_to_matrix('a').shape[1]
 
 timesteps = 128
-batch_size = 64
-input_channels = T.num_dims
+batch_size = 32
 
 train_val_split = int(19 * ner.shape[0] / 20.)
 # Add some padding so random sampling from 0 to train_val_split
@@ -73,7 +71,7 @@ ner['cumsum'] = ner['word'].str.len().cumsum()
 
 def train_generator():
     while True:
-        X = np.zeros((batch_size, timesteps, input_channels))
+        X = np.zeros((batch_size, timesteps))
         Y = np.zeros((batch_size, timesteps))
         for i in range(batch_size):
             start = np.random.randint(train_val_split - 1)
@@ -81,8 +79,9 @@ def train_generator():
             while ner['cumsum'][stop] - ner['cumsum'][start] < timesteps:
                 stop += 1
             subset = ner.loc[start:stop, :]
-            X[i] = T.texts_to_matrix(''.join(subset['word']))[:timesteps]
-            Y[i] = np.concatenate([[x['tag']] * len(x['word']) for _, x in subset.iterrows()])[:timesteps]
+            X[i] = np.argmax(T.texts_to_matrix(''.join(subset['word']))[:timesteps], axis=-1)
+            Y[i] = np.concatenate([[x['tag']] * len(x['word'])
+                                   for _, x in subset.iterrows()])[:timesteps]
         yield X, Y[:, :, np.newaxis]
 
 
@@ -90,28 +89,32 @@ def make_model():
     down_kwargs = {'strides': 2, 'padding': 'same', 'activation': 'relu'}
     up_kwargs = {'strides': 1, 'padding': 'same', 'activation': 'relu'}
     stable_kwargs = {'strides': 1, 'padding': 'same', 'activation': 'relu'}
-    inp = Input(shape=(None, input_channels))
+    inp = Input(shape=(None,))
     k = 11
-    filters = [8, 16, 32, 64]
-    down_layers = [Conv1D(4, 1, strides=1, padding='same', activation='relu')(inp)]
+    filters = [8, 16, 32]
+    down_layers = [Embedding(T.num_dims, 4)(inp)]
+    # down_layers = [Conv1D(4, 1, strides=1, padding='same', activation='relu')(inp)]
     for f in filters:
         x = Conv1D(f, k, **down_kwargs)(down_layers[-1])
         x = Conv1D(f, k, **stable_kwargs)(x)
         x = Conv1D(f, k, **stable_kwargs)(x)
+        x = BatchNormalization(momentum=0.9)(x)
         down_layers.append(x)
     up_layers = [down_layers[-1]]
     for i, f in enumerate(filters[::-1]):
         x = UpSampling1D(size=2)(up_layers[i])
         x = Conv1D(f // 2, k, **up_kwargs)(x)
+        x = BatchNormalization(momentum=0.9)(x)
         x = Concatenate()([x, down_layers[-(i + 2)]])
         x = Conv1D(f, k, **stable_kwargs)(x)
         x = Conv1D(f, k, **stable_kwargs)(x)
+        x = BatchNormalization(momentum=0.9)(x)
         up_layers.append(x)
-    out = Conv1D(1, 1, strides=1, padding='same', activation='relu')(up_layers[-1])
+    out = Conv1D(1, 1, strides=1, padding='same', activation='sigmoid')(up_layers[-1])
     model = Model(input=inp, output=out)
 
     model.compile(loss='binary_crossentropy',
-                  optimizer='adam',
+                  optimizer='adadelta',
                   metrics=['accuracy'])
     print(model.summary(100))
     return model
@@ -137,14 +140,16 @@ class OurAUC(keras.callbacks.Callback):
         txt_mat = T.texts_to_matrix(txt)
         space = T.texts_to_matrix(' ')[0]
         split_inds = np.where((txt_mat == space).all(axis=1))[0]
+        txt_mat = np.argmax(txt_mat, axis=-1)
         n = 3
         while 2**n <= len(txt):
             n += 1
         n -= 1
+        l = 2**n
 
-        preds1 = self.model.predict(txt_mat[np.newaxis, :2**n, :])
-        preds2 = self.model.predict(txt_mat[np.newaxis, len(txt) - 2**n:, :])
-        preds = np.concatenate([preds1[0, :, 0], preds2[0, -(len(txt) - 2**n):, 0]])
+        preds1 = self.model.predict(txt_mat[np.newaxis, :l])
+        preds2 = self.model.predict(txt_mat[np.newaxis, len(txt) - l:])
+        preds = np.concatenate([preds1[0, :], preds2[0, -(len(txt) - l):]])
         preds_per_word = [x.mean() for x in np.split(preds, split_inds)]
 
         with open('guesses-{epoch:02d}.txt'.format(epoch=epoch), 'w') as f:
@@ -153,12 +158,17 @@ class OurAUC(keras.callbacks.Callback):
 
         with open('guesses-{epoch:02d}.txt'.format(epoch=epoch), 'rb') as f:
             url = 'https://geo-extract-tester.herokuapp.com/api/score'
-            raw = requests.post(url, files={'file': f})
-            r = json.loads(raw.text)
-            if 'auc' not in r:
-                raise RuntimeError('Unexpected response:\n{}'.format(raw.text))
-            auc = r['auc']
-            print('AUC: {:.5f}, high score? {}'.format(auc, r['high_score']))
+            try:
+                raw = requests.post(url, files={'file': f})
+            except OSError:
+                print('Lost connection, upload guesses directly to get AUC')
+                auc = -np.inf
+            else:
+                r = json.loads(raw.text)
+                if 'auc' not in r:
+                    raise RuntimeError('Unexpected response:\n{}'.format(raw.text))
+                auc = r['auc']
+                print('AUC: {:.5f}, high score? {}'.format(auc, r['high_score']))
 
         logs['val_auc'] = auc
 
