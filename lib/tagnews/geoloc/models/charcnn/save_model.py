@@ -5,7 +5,8 @@ import glob
 
 import pandas as pd
 from keras.models import Model
-from keras.layers import Conv1D, UpSampling1D, Input, Concatenate, BatchNormalization, Embedding
+from keras.layers import (Conv1D, UpSampling1D, Input, Concatenate,
+                          BatchNormalization, Embedding, Dropout, Activation)
 from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
 import numpy as np
@@ -87,26 +88,30 @@ def train_generator():
 def make_model():
     down_kwargs = {'strides': 2, 'padding': 'same', 'activation': 'relu'}
     up_kwargs = {'strides': 1, 'padding': 'same', 'activation': 'relu'}
-    stable_kwargs = {'strides': 1, 'padding': 'same', 'activation': 'relu'}
+    stable_relu_kwargs = {'strides': 1, 'padding': 'same', 'activation': 'relu'}
+    stable_lin_kwargs = {'strides': 1, 'padding': 'same', 'activation': None}
     inp = Input(shape=(None,))
     k = 11
     filters = [8, 16, 32]
     down_layers = [Embedding(T.num_dims, 4)(inp)]
     for f in filters:
         x = Conv1D(f, k, **down_kwargs)(down_layers[-1])
-        x = Conv1D(f, k, **stable_kwargs)(x)
-        x = Conv1D(f, k, **stable_kwargs)(x)
+        x = Conv1D(f, k, **stable_relu_kwargs)(x)
+        x = Conv1D(f, k, **stable_lin_kwargs)(x)
         x = BatchNormalization(momentum=0.9)(x)
+        x = Activation('relu')(x)
         down_layers.append(x)
+    down_layers[-1] = Dropout(.3)(down_layers[-1])
     up_layers = [down_layers[-1]]
     for i, f in enumerate(filters[::-1]):
         x = UpSampling1D(size=2)(up_layers[i])
         x = Conv1D(f // 2, k, **up_kwargs)(x)
         x = BatchNormalization(momentum=0.9)(x)
         x = Concatenate()([x, down_layers[-(i + 2)]])
-        x = Conv1D(f, k, **stable_kwargs)(x)
-        x = Conv1D(f, k, **stable_kwargs)(x)
+        x = Conv1D(f, k, **stable_relu_kwargs)(x)
+        x = Conv1D(f, k, **stable_lin_kwargs)(x)
         x = BatchNormalization(momentum=0.9)(x)
+        x = Activation('relu')(x)
         up_layers.append(x)
     out = Conv1D(1, 1, strides=1, padding='same', activation='sigmoid')(up_layers[-1])
     model = Model(input=inp, output=out)
