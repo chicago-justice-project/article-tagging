@@ -3,7 +3,6 @@ import sys
 
 import glob
 
-from .... import utils
 import pandas as pd
 from keras.models import Model
 from keras.layers import Conv1D, UpSampling1D, Input, Concatenate, BatchNormalization, Embedding
@@ -93,7 +92,6 @@ def make_model():
     k = 11
     filters = [8, 16, 32]
     down_layers = [Embedding(T.num_dims, 4)(inp)]
-    # down_layers = [Conv1D(4, 1, strides=1, padding='same', activation='relu')(inp)]
     for f in filters:
         x = Conv1D(f, k, **down_kwargs)(down_layers[-1])
         x = Conv1D(f, k, **stable_kwargs)(x)
