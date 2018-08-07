@@ -86,9 +86,10 @@ def train_generator():
 
 
 def make_model():
-    down_kwargs = {'strides': 2, 'padding': 'same', 'activation': 'relu'}
-    up_kwargs = {'strides': 1, 'padding': 'same', 'activation': 'relu'}
-    stable_relu_kwargs = {'strides': 1, 'padding': 'same', 'activation': 'relu'}
+    act = 'elu'
+    down_kwargs = {'strides': 2, 'padding': 'same', 'activation': act}
+    up_kwargs = {'strides': 1, 'padding': 'same', 'activation': act}
+    stable_act_kwargs = {'strides': 1, 'padding': 'same', 'activation': act}
     stable_lin_kwargs = {'strides': 1, 'padding': 'same', 'activation': None}
     inp = Input(shape=(None,))
     k = 11
@@ -96,10 +97,10 @@ def make_model():
     down_layers = [Embedding(T.num_dims, 4)(inp)]
     for f in filters:
         x = Conv1D(f, k, **down_kwargs)(down_layers[-1])
-        x = Conv1D(f, k, **stable_relu_kwargs)(x)
+        x = Conv1D(f, k, **stable_act_kwargs)(x)
         x = Conv1D(f, k, **stable_lin_kwargs)(x)
         x = BatchNormalization(momentum=0.9)(x)
-        x = Activation('relu')(x)
+        x = Activation(act)(x)
         down_layers.append(x)
     down_layers[-1] = Dropout(.3)(down_layers[-1])
     up_layers = [down_layers[-1]]
@@ -108,10 +109,10 @@ def make_model():
         x = Conv1D(f // 2, k, **up_kwargs)(x)
         x = BatchNormalization(momentum=0.9)(x)
         x = Concatenate()([x, down_layers[-(i + 2)]])
-        x = Conv1D(f, k, **stable_relu_kwargs)(x)
+        x = Conv1D(f, k, **stable_act_kwargs)(x)
         x = Conv1D(f, k, **stable_lin_kwargs)(x)
         x = BatchNormalization(momentum=0.9)(x)
-        x = Activation('relu')(x)
+        x = Activation(act)(x)
         up_layers.append(x)
     out = Conv1D(1, 1, strides=1, padding='same', activation='sigmoid')(up_layers[-1])
     model = Model(input=inp, output=out)
