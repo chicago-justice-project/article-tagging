@@ -6,7 +6,7 @@ import tagnews
 
 class Test_GeoCoder():
     @classmethod
-    def setup_method(cls):
+    def setup_class(cls):
         cls.model = tagnews.GeoCoder()
 
     def test_extract_geostrings(self):
