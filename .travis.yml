@@ -39,9 +39,9 @@ install:
       python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
       mv glove.6B.50d.txt lib/tagnews/data/
       rm glove.6B.zip
-      python -c "import requests
-       r = requests.get('https://data.cityofchicago.org/api/geospatial/cauq-8yn6?method=export&format=GeoJSON')
-       f = open('Boundaries - Community Areas (current).geojson', 'w')
+      python -c "import requests;\
+       r = requests.get('https://data.cityofchicago.org/api/geospatial/cauq-8yn6?method=export&format=GeoJSON');\
+       f = open('Boundaries - Community Areas (current).geojson', 'w');\
        f.write(r.text)"
       mv "Boundaries - Community Areas (current).geojson" lib/tagnews/data/
       mv lib/tagnews/data/ci-data/*.csv lib/tagnews/data/
