@@ -38,7 +38,7 @@ class Test_GeoCoder():
             geostring_lists, sleep_secs=0.0
         )
 
-        assert coords.shape[0] == len(geostring_lists) == len(scores) == len(num_found)
+        assert coords.shape[0] == len(geostring_lists) == len(scores)
 
     def test_community_areas(self):
         # Approximately 55th and Woodlawn, which is in Hyde Park.
