@@ -6,7 +6,8 @@
 
 * Automatically categorize the text from news articles with type-of-crime tags, e.g. homicide, arson, gun violence, etc.
 * Automatically extract the locations discussed in the news article text, e.g. "55th and Woodlawn" and "1700 block of S. Halsted".
-* Retrieve the latitude/longitude pairs for said locations using the `geocoder` python library to access an existing geocoding web-service.
+* Retrieve the latitude/longitude pairs for said locations using an instance of the pelias geocoder hosted by CJP.
+* Get the community areas those lat/long pairs belong to using a shape file downloaded from the city data portal parsed by the `shapely` python library.
 
 Sound interesting? There's example usage below!
 
