@@ -5,11 +5,12 @@ from collections import namedtuple
 import glob
 import time
 import json
+import re
 
 import requests
 import pandas as pd
 import numpy as np
-import re
+from shapely.geometry import shape, Point
 
 from .. import utils
 
@@ -27,6 +28,11 @@ Contains the CrimeTags class that allows tagging of articles.
 
 MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
                               os.path.join('models', 'lstm', 'saved'))
+
+COMMUNITY_AREAS_FILE = os.path.join(
+    os.path.split(__file__)[0], '..', 'data',
+    'Boundaries - Community Areas (current).geojson'
+)
 
 
 def post_process(geostring):
@@ -190,6 +196,12 @@ class GeoCoder():
             os.path.join(os.path.split(__file__)[0],
                          '../data/glove.6B.50d.txt')
         )
+        with open(COMMUNITY_AREAS_FILE) as f:
+            d = json.load(f)
+            self.com_areas = {
+                f['properties']['community']: shape(f['geometry'])
+                for f in d['features']
+            }
 
     def pre_process(self, s):
         """
@@ -309,3 +321,30 @@ class GeoCoder():
         )
 
         return out.coords_post, out.scores_post
+
+    def community_area_from_coords(self, coords):
+        """
+        Get the community area name that the coordinate lies in.
+
+        Parameters
+        ----------
+        coords : pandas.DataFrame
+            A pandas dataframe with columns "lat" and "long".
+
+        Returns
+        -------
+        com_areas : List
+            A list of community areas, one corresponding to each
+            row of coords. An empty string indicates that the coord
+            did not belong to any of the community areas.
+        """
+        out = []
+        for _, coord in coords.iterrows():
+            p = Point(coord['long'], coord['lat'])
+            for com_name, com_shape in self.com_areas.items():
+                if com_shape.contains(p):
+                    out.append(com_name)
+                    break
+            else:
+                out.append('')
+        return out

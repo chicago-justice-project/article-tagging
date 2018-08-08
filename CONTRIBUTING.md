@@ -54,6 +54,8 @@ Once extracted to the correct place, you can load the data as follows:
 
 To do geostring extraction (see below), you will also need the pre-trained word vectorizer GloVE which can be downloaded at http://nlp.stanford.edu/data/glove.6B.zip.
 
+Finally, you will need to make sure you have the community area boundaries geojson file. This can be downloaded from [https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Community-Areas-current-/cauq-8yn6](https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Community-Areas-current-/cauq-8yn6) (use the export button). Put the downloaded file in the same data folder. Make sure the file is named "Boundaries - Community Areas (current).geojson".
+
 # Directory structure
 
 This project is structured as follows:
