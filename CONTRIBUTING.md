@@ -232,7 +232,7 @@ Create a new anaconda environment to download the version for rudimentary testin
 
 Once you are happy, remove the `rc*` suffix and publish as the actual version. You should then create a [release](https://github.com/chicago-justice-project/article-tagging/releases) on GitHub, attempting to log all the changes and attach the tarball created by `python setup.py sdist`.
 
-*Note: pypi has a limit on the size of projects that can be uploaded, and pypi was recently migrated to a new data warehouse. We originally had to request a size increase in [this issue](https://github.com/pypa/packaging-problems/issues/119) and nothing has been published since. We may have to re-request a size increase.*
+*Note: pypi has a limit on the size of projects that can be uploaded, and pypi was recently migrated to a new data warehouse. We originally had to request a size increase in [this issue](https://github.com/pypa/packaging-problems/issues/119).*
 
 ## I want to contribute to Chicago Justice Project but I don’t want to work on this NLP stuff. What can I do?
 
