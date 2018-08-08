@@ -61,8 +61,10 @@ GUNV     0.134798
          lat       long
 0  41.859021 -87.646934
 1  41.794816 -87.597422
->>> scores # our best attempt at giving a confidence in the lat_longs, higher is better
+>>> scores # confidence in the lat/longs as returned by pelias, higher is better
 array([0.878, 1.   ])
+>>> geoextractor.community_area_from_coords(coords)
+['LOWER WEST SIDE', 'HYDE PARK']
 ```
 
 ## Limitations
