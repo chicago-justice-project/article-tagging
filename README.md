@@ -56,13 +56,13 @@ GUNV     0.134798
 >>> geostrings = geoextractor.extract_geostrings(article_text, prob_thresh=0.5)
 >>> geostrings
 [['1700', 'block', 'of', 'S.', 'Halsted', 'Ave.'], ['55th', 'and', 'Woodlawn,']]
->>> lat_longs, scores, num_found = geoextractor.lat_longs_from_geostring_lists(geostrings)
->>> lat_longs
-[[41.49612808227539, -87.63743591308594], [41.79513222479058, -87.58843505219843]]
+>>> coords, scores = geoextractor.lat_longs_from_geostring_lists(geostrings)
+>>> coords
+         lat       long
+0  41.859021 -87.646934
+1  41.794816 -87.597422
 >>> scores # our best attempt at giving a confidence in the lat_longs, higher is better
-array([0.5913217, 0.       ], dtype=float32)
->>> num_found # how many results gisgraphy found for the (post-processed) geostring
-[8, 10]
+array([0.878, 1.   ])
 ```
 
 ## Limitations
