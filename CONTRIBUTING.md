@@ -162,18 +162,15 @@ You can also upload your model's predictions via an API. There is code inside `l
 
 Geocoding here refers to the process of sending a geostring (e.g. "55th and Woodlawn") to an external service to retrieve a best-guess latitude/longitude pair of where that geostring is referring to.
 
-Right now, the geocoding is done using the `geocoder` python library to access the `gisgraphy` geocoding service.
+Right now, the geocoding is done using an instance of pelias hosted by CJP.
 
 The code can be found in `lib/tagnews/geoloc/tag.py`, in the `get_lat_longs_from_geostrings` function.
 
 ### How might it be improved?
 
-**NOTE:** There may be more accurate/faster geocoders out there, but we strived to find a service that has Terms of Service that allow us to use the results in effective ways. Please take care if you want to change the geocoding service.
-
 * Improve post-processing of geostrings (we do rudimentary things like append "Chicago, Illinois", but we could get more sophisticated).
-* Find a faster geocoder. (But please see **NOTE** above about Terms of Service.)
-* Find a more accurate geocoder. (But please see **NOTE** above about Terms of Service.)
 * Improve the inputs to it by improving the geostring model.
+* Improve the inputs by making a better post-processor of geostrings.
 * Improve the confidence score.
 
 ### What if it breaks?
