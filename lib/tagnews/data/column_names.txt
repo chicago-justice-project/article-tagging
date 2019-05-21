@@ -1,3 +1,20 @@
+                                     Table "public.newsarticles_newssource"
+     Column     |          Type          |                              Modifiers
+----------------+------------------------+----------------------------------------------------------------------
+ id             | integer                | not null default nextval('newsarticles_newssource_id_seq'::regclass)
+ name           | character varying(256) | not null
+ short_name     | character varying(256) | not null
+ legacy_feed_id | character varying(8)   | not null
+Indexes:
+    "newsarticles_newssource_pkey" PRIMARY KEY, btree (id)
+    "newsarticles_newssource_3ee615f7" btree (legacy_feed_id)
+    "newsarticles_newssource_legacy_feed_id_5367de32a6bdc03f_like" btree (legacy_feed_id varchar_pattern_ops)
+    "newsarticles_newssource_short_name_1ff6619d20cb947d_like" btree (short_name varchar_pattern_ops)
+    "newsarticles_newssource_short_name_1ff6619d20cb947d_uniq" btree (short_name)
+Referenced by:
+    TABLE "newsarticles_article" CONSTRAINT "n_news_source_id_6ef491df45588361_fk_newsarticles_newssource_id" FOREIGN KEY (news_source_id) REFERENCES newsarticles_newssource(id) DEFERRABLE INITIALLY DEFERRED
+    TABLE "newsarticles_scraperresult" CONSTRAINT "ne_news_source_id_e906324e3d2ac00_fk_newsarticles_newssource_id" FOREIGN KEY (news_source_id) REFERENCES newsarticles_newssource(id) DEFERRABLE INITIALLY DEFERRED
+
                                       Table "public.newsarticles_article"
      Column     |           Type           |                             Modifiers
 ----------------+--------------------------+-------------------------------------------------------------------
@@ -41,6 +58,7 @@ Referenced by:
  article_id | integer                  | not null
  user_id    | integer                  |
  locations  | text                     | not null
+ sentiment  | integer                  |
 Indexes:
     "newsarticles_usercoding_pkey" PRIMARY KEY, btree (id)
     "newsarticles_usercoding_article_id_3535f524868d4ee3_uniq" UNIQUE CONSTRAINT, btree (article_id, user_id)
@@ -91,6 +109,7 @@ Foreign-key constraints:
  model_info | text                     | not null
  relevance  | double precision         | not null
  article_id | integer                  | not null
+ sentiment  | double precision         |
 Indexes:
     "newsarticles_trainedcoding_pkey" PRIMARY KEY, btree (id)
     "newsarticles_trainedcoding_article_id_key" UNIQUE CONSTRAINT, btree (article_id)
@@ -100,14 +119,16 @@ Referenced by:
     TABLE "newsarticles_trainedcategoryrelevance" CONSTRAINT "newsarticles_trained_coding_id_ad7cc027_fk_newsartic" FOREIGN KEY (coding_id) REFERENCES newsarticles_trainedcoding(id) DEFERRABLE INITIALLY DEFERRED
     TABLE "newsarticles_trainedlocation" CONSTRAINT "newsarticles_trained_coding_id_d406a29f_fk_newsartic" FOREIGN KEY (coding_id) REFERENCES newsarticles_trainedcoding(id) DEFERRABLE INITIALLY DEFERRED
 
-                               Table "public.newsarticles_trainedlocation"
-  Column   |       Type       |                                 Modifiers
------------+------------------+---------------------------------------------------------------------------
- id        | integer          | not null default nextval('newsarticles_trainedlocation_id_seq'::regclass)
- text      | text             | not null
- latitude  | double precision |
- longitude | double precision |
- coding_id | integer          | not null
+                                 Table "public.newsarticles_trainedlocation"
+    Column    |       Type       |                                 Modifiers
+--------------+------------------+---------------------------------------------------------------------------
+ id           | integer          | not null default nextval('newsarticles_trainedlocation_id_seq'::regclass)
+ text         | text             | not null
+ latitude     | double precision |
+ longitude    | double precision |
+ coding_id    | integer          | not null
+ confidence   | double precision |
+ neighborhood | text             | not null
 Indexes:
     "newsarticles_trainedlocation_pkey" PRIMARY KEY, btree (id)
     "newsarticles_trainedlocation_coding_id_d406a29f" btree (coding_id)
@@ -128,3 +149,4 @@ Indexes:
 Foreign-key constraints:
     "newsarticles_trained_category_id_d3c4a714_fk_newsartic" FOREIGN KEY (category_id) REFERENCES newsarticles_category(id) DEFERRABLE INITIALLY DEFERRED
     "newsarticles_trained_coding_id_ad7cc027_fk_newsartic" FOREIGN KEY (coding_id) REFERENCES newsarticles_trainedcoding(id) DEFERRABLE INITIALLY DEFERRED
+
