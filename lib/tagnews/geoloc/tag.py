@@ -26,12 +26,15 @@ with ExitStack() as stack:
 Contains the CrimeTags class that allows tagging of articles.
 """
 
-MODEL_LOCATION = os.path.join(os.path.split(__file__)[0],
-                              os.path.join('models', 'lstm', 'saved'))
+MODEL_LOCATION = os.path.join(
+    os.path.split(__file__)[0], os.path.join("models", "lstm", "saved")
+)
 
 COMMUNITY_AREAS_FILE = os.path.join(
-    os.path.split(__file__)[0], '..', 'data',
-    'Boundaries - Community Areas (current).geojson'
+    os.path.split(__file__)[0],
+    "..",
+    "data",
+    "Boundaries - Community Areas (current).geojson",
 )
 
 
@@ -50,39 +53,48 @@ def post_process(geostring):
     processed_geostring : str
     """
     # Merge multiple whitespaces into one
-    geostring = ' '.join(geostring.split())
+    geostring = " ".join(geostring.split())
 
     # gisgraphy struggles with things like "55th and Woodlawn".
     # replace "...<number><number ender, e.g. th or rd> and..."
     # with two zeros.
     # \100 does not work correclty so we need to add a separator.
-    geostring = re.sub(r'([0-9]+)(th|rd|st) and',
-                       r'\1<__internal_separator__>00 and',
-                       geostring)
-    geostring = geostring.replace('<__internal_separator__>', '')
+    geostring = re.sub(
+        r"([0-9]+)(th|rd|st) and", r"\1<__internal_separator__>00 and", geostring
+    )
+    geostring = geostring.replace("<__internal_separator__>", "")
 
     # remove stopwords, only if they are internal, i.e.
     # the geostring doesn't start with "block ...".
-    for stopword in ['block', 'of', 'and']:
-        geostring = geostring.replace(' {} '.format(stopword), ' ')
+    for stopword in ["block", "of", "and"]:
+        geostring = geostring.replace(" {} ".format(stopword), " ")
 
     return geostring
 
 
-_base_geocoder_url = ('http://ec2-34-228-58-223.compute-1.amazonaws.com'
-                      ':4000/v1/search?text={}')
+_base_geocoder_url = (
+    "http://ec2-34-228-58-223.compute-1.amazonaws.com" ":4000/v1/search?text={}"
+)
 
-GeocodeResults = namedtuple('GeocodeResults', ['coords_raw',
-                                               'full_responses_raw',
-                                               'scores_raw',
-                                               'coords_post',
-                                               'full_responses_post',
-                                               'scores_post'])
+GeocodeResults = namedtuple(
+    "GeocodeResults",
+    [
+        "coords_raw",
+        "full_responses_raw",
+        "scores_raw",
+        "coords_post",
+        "full_responses_post",
+        "scores_post",
+    ],
+)
 
 
-def get_lat_longs_from_geostrings(geostring_list, post_process_f=None,
-                                  sleep_secs=0,
-                                  geocoder_url_formatter=_base_geocoder_url):
+def get_lat_longs_from_geostrings(
+    geostring_list,
+    post_process_f=None,
+    sleep_secs=0,
+    geocoder_url_formatter=_base_geocoder_url,
+):
     """
     Geo-code each geostring in `geostring_list` into lat/long values.
     Also return the full response from the geocoding service.
@@ -129,9 +141,9 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None,
         full_responses = []
         for addr_str in lst:
             try:
-                g = json.loads(requests.get(
-                    geocoder_url_formatter.format(addr_str)
-                ).text)
+                g = json.loads(
+                    requests.get(geocoder_url_formatter.format(addr_str)).text
+                )
             except Exception:
                 g = {}
             full_responses.append(g)
@@ -139,19 +151,20 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None,
 
         def _get_latlong(g):
             try:
-                return g['features'][0]['geometry']['coordinates']
+                return g["features"][0]["geometry"]["coordinates"]
             except (KeyError, IndexError):
                 return [np.nan, np.nan]
 
         def _get_confidence(g):
             try:
-                return g['features'][0]['properties']['confidence']
+                return g["features"][0]["properties"]["confidence"]
             except (KeyError, IndexError):
                 return np.nan
 
-        coords = pd.DataFrame([_get_latlong(g) for g in full_responses],
-                              columns=['long', 'lat'])
-        coords = coords[['lat', 'long']] # it makes me feel better, OK?
+        coords = pd.DataFrame(
+            [_get_latlong(g) for g in full_responses], columns=["long", "lat"]
+        )
+        coords = coords[["lat", "long"]]  # it makes me feel better, OK?
         scores = np.array([_get_confidence(g) for g in full_responses])
 
         return full_responses, coords, scores
@@ -162,12 +175,14 @@ def get_lat_longs_from_geostrings(geostring_list, post_process_f=None,
         [post_process_f(geo_s) for geo_s in geostring_list]
     )
 
-    return GeocodeResults(coords_raw=coords_raw,
-                          full_responses_raw=full_responses_raw,
-                          scores_raw=scores_raw,
-                          coords_post=coords_post,
-                          full_responses_post=full_responses_post,
-                          scores_post=scores_post)
+    return GeocodeResults(
+        coords_raw=coords_raw,
+        full_responses_raw=full_responses_raw,
+        scores_raw=scores_raw,
+        coords_post=coords_post,
+        full_responses_post=full_responses_post,
+        scores_post=scores_post,
+    )
 
 
 def load_model(location=MODEL_LOCATION):
@@ -178,29 +193,32 @@ def load_model(location=MODEL_LOCATION):
 
     The files with the most recent timestamp are loaded.
     """
-    models = glob.glob(os.path.join(location, 'weights*.hdf5'))
+    models = glob.glob(os.path.join(location, "weights*.hdf5"))
     if not models:
-        raise RuntimeError(('No models to load. Run'
-                            ' "python -m tagnews.geoloc.models.'
-                            'lstm.save_model"'))
+        raise RuntimeError(
+            (
+                "No models to load. Run"
+                ' "python -m tagnews.geoloc.models.'
+                'lstm.save_model"'
+            )
+        )
 
     model = keras.models.load_model(models[-1])
 
     return model
 
 
-class GeoCoder():
+class GeoCoder:
     def __init__(self):
         self.model = load_model()
         self.glove = utils.load_vectorizer.load_glove(
-            os.path.join(os.path.split(__file__)[0],
-                         '../data/glove.6B.50d.txt')
+            os.path.join(os.path.split(__file__)[0], "../data/glove.6B.50d.txt")
         )
         with open(COMMUNITY_AREAS_FILE) as f:
             d = json.load(f)
             self.com_areas = {
-                f['properties']['community']: shape(f['geometry'])
-                for f in d['features']
+                f["properties"]["community"]: shape(f["geometry"])
+                for f in d["features"]
             }
 
     def pre_process(self, s):
@@ -223,12 +241,14 @@ class GeoCoder():
             Has shape (1, N, M) where N is the number of words and M
             is the size of the word vectors, currently M is 51.
         """
-        words = s.split() # split along white space.
-        data = pd.concat([pd.DataFrame([[w[0].isupper()] if w else [False]
-                                        for w in words]),
-                          (self.glove.reindex(words).fillna(0)
-                           .reset_index(drop=True))],
-                         axis='columns')
+        words = s.split()  # split along white space.
+        data = pd.concat(
+            [
+                pd.DataFrame([[w[0].isupper()] if w else [False] for w in words]),
+                (self.glove.reindex(words).fillna(0).reset_index(drop=True)),
+            ],
+            axis="columns",
+        )
         return words, np.expand_dims(data, axis=0)
 
     def extract_geostring_probs(self, s):
@@ -277,10 +297,8 @@ class GeoCoder():
         words, probs = self.extract_geostring_probs(s)
         above_thresh = probs >= prob_thresh
 
-        words = ['filler'] + words + ['filler']
-        above_thresh = np.concatenate([[False],
-                                       above_thresh,
-                                       [False]]).astype(np.int32)
+        words = ["filler"] + words + ["filler"]
+        above_thresh = np.concatenate([[False], above_thresh, [False]]).astype(np.int32)
         switch_ons = np.where(np.diff(above_thresh) == 1)[0] + 1
         switch_offs = np.where(np.diff(above_thresh) == -1)[0] + 1
 
@@ -317,7 +335,7 @@ class GeoCoder():
             of absolute rule.
         """
         out = get_lat_longs_from_geostrings(
-            [' '.join(gl) for gl in geostring_lists], **kwargs
+            [" ".join(gl) for gl in geostring_lists], **kwargs
         )
 
         return out.coords_post, out.scores_post
@@ -340,11 +358,11 @@ class GeoCoder():
         """
         out = []
         for _, coord in coords.iterrows():
-            p = Point(coord['long'], coord['lat'])
+            p = Point(coord["long"], coord["lat"])
             for com_name, com_shape in self.com_areas.items():
                 if com_shape.contains(p):
                     out.append(com_name)
                     break
             else:
-                out.append('')
+                out.append("")
         return out
