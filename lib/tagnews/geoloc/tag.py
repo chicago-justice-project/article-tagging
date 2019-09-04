@@ -291,22 +291,26 @@ class GeoCoder:
         geostrings : list of lists of strings
             The list of extracted geostrings from the article text.
             Each word is kept separated in the list.
-            Examle:
+            Example:
                 [['1300', 'W.', 'Halsted'], ['Ohio']]
         """
         words, probs = self.extract_geostring_probs(s)
         above_thresh = probs >= prob_thresh
 
         words = ["filler"] + words + ["filler"]
+        probs = np.append(0, np.append(probs, 0))
+
         above_thresh = np.concatenate([[False], above_thresh, [False]]).astype(np.int32)
         switch_ons = np.where(np.diff(above_thresh) == 1)[0] + 1
         switch_offs = np.where(np.diff(above_thresh) == -1)[0] + 1
 
         geostrings = []
+        probstrings = []
         for on, off in zip(switch_ons, switch_offs):
             geostrings.append(words[on:off])
+            probstrings.append(probs[on:off])
 
-        return geostrings
+        return geostrings, probstrings
 
     @staticmethod
     def lat_longs_from_geostring_lists(geostring_lists, **kwargs):
