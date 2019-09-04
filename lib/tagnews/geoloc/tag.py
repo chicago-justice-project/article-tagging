@@ -385,11 +385,12 @@ class GeoCoder:
         2-tuple of one geostring of the best geostring
         """
         consider = [[], []]
-        for geostring, probs in zip(extracted_strs_and_probs[0],
-                                    extracted_strs_and_probs[1]):
+        for geostring, probs in zip(
+            extracted_strs_and_probs[0], extracted_strs_and_probs[1]
+        ):
             is_neighborhood = False
             for neighborhood in neighborhoods:
-                if neighborhood.lower() in ' '.join(geostring).lower():
+                if neighborhood.lower() in " ".join(geostring).lower():
                     is_neighborhood = True
             if is_neighborhood or len(geostring) >= 3:
                 consider[0].append((geostring))
