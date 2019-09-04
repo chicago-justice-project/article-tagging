@@ -1,20 +1,20 @@
 from __future__ import division
 
-import os
-from collections import namedtuple
 import glob
-import time
 import json
+import os
 import re
+import time
+from collections import namedtuple
+from contextlib import ExitStack, redirect_stderr
 
-import requests
-import pandas as pd
 import numpy as np
+import pandas as pd
+import requests
 from shapely.geometry import shape, Point
 
+from tagnews.utils.neighborhoods import neighborhoods
 from .. import utils
-
-from contextlib import ExitStack, redirect_stderr
 
 with ExitStack() as stack:
     null_stream = open(os.devnull, "w")
@@ -370,3 +370,31 @@ class GeoCoder:
             else:
                 out.append("")
         return out
+
+    def best_geostring(self, extracted_strs_and_probs: tuple):
+        """
+
+        Parameters
+        ----------
+        extracted_strs_and_probs : 2-tuple
+            A 2-tuple of two lists containing a list of extracted geostrings at index zero
+                                and a list of extracted geostring probabilities at index one
+
+        Returns
+        -------
+        2-tuple of one geostring of the best geostring
+        """
+        consider = [[], []]
+        for geostring, probs in zip(extracted_strs_and_probs[0],
+                                    extracted_strs_and_probs[1]):
+            is_neighborhood = False
+            for neighborhood in neighborhoods:
+                if neighborhood.lower() in ' '.join(geostring).lower():
+                    is_neighborhood = True
+            if is_neighborhood or len(geostring) >= 3:
+                consider[0].append((geostring))
+                consider[1].append((probs))
+
+        avgs = [sum(i) / len(i) for i in consider[1]]
+        max_index = avgs.index(max(avgs))
+        return consider[0][max_index]
