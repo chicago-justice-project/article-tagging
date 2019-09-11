@@ -54,6 +54,8 @@ Once extracted to the correct place, you can load the data as follows:
 
 To do geostring extraction (see below), you will also need the pre-trained word vectorizer GloVE which can be downloaded at http://nlp.stanford.edu/data/glove.6B.zip.
 
+Finally, you will need to make sure you have the community area boundaries geojson file. This can be downloaded from [https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Community-Areas-current-/cauq-8yn6](https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Community-Areas-current-/cauq-8yn6) (use the export button). Put the downloaded file in the same data folder. Make sure the file is named "Boundaries - Community Areas (current).geojson".
+
 # Directory structure
 
 This project is structured as follows:
@@ -160,18 +162,15 @@ You can also upload your model's predictions via an API. There is code inside `l
 
 Geocoding here refers to the process of sending a geostring (e.g. "55th and Woodlawn") to an external service to retrieve a best-guess latitude/longitude pair of where that geostring is referring to.
 
-Right now, the geocoding is done using the `geocoder` python library to access the `gisgraphy` geocoding service.
+Right now, the geocoding is done using an instance of pelias hosted by CJP.
 
 The code can be found in `lib/tagnews/geoloc/tag.py`, in the `get_lat_longs_from_geostrings` function.
 
 ### How might it be improved?
 
-**NOTE:** There may be more accurate/faster geocoders out there, but we strived to find a service that has Terms of Service that allow us to use the results in effective ways. Please take care if you want to change the geocoding service.
-
 * Improve post-processing of geostrings (we do rudimentary things like append "Chicago, Illinois", but we could get more sophisticated).
-* Find a faster geocoder. (But please see **NOTE** above about Terms of Service.)
-* Find a more accurate geocoder. (But please see **NOTE** above about Terms of Service.)
 * Improve the inputs to it by improving the geostring model.
+* Improve the inputs by making a better post-processor of geostrings.
 * Improve the confidence score.
 
 ### What if it breaks?
@@ -233,7 +232,7 @@ Create a new anaconda environment to download the version for rudimentary testin
 
 Once you are happy, remove the `rc*` suffix and publish as the actual version. You should then create a [release](https://github.com/chicago-justice-project/article-tagging/releases) on GitHub, attempting to log all the changes and attach the tarball created by `python setup.py sdist`.
 
-*Note: pypi has a limit on the size of projects that can be uploaded, and pypi was recently migrated to a new data warehouse. We originally had to request a size increase in [this issue](https://github.com/pypa/packaging-problems/issues/119) and nothing has been published since. We may have to re-request a size increase.*
+*Note: pypi has a limit on the size of projects that can be uploaded, and pypi was recently migrated to a new data warehouse. We originally had to request a size increase in [this issue](https://github.com/pypa/packaging-problems/issues/119).*
 
 ## I want to contribute to Chicago Justice Project but I don’t want to work on this NLP stuff. What can I do?
 

@@ -1,11 +1,12 @@
 import numpy as np
+import pandas as pd
 
 import tagnews
 
 
 class Test_GeoCoder():
     @classmethod
-    def setup_method(cls):
+    def setup_class(cls):
         cls.model = tagnews.GeoCoder()
 
     def test_extract_geostrings(self):
@@ -22,7 +23,7 @@ class Test_GeoCoder():
         max_word = words[np.argmax(probs)]
         geostrings = self.model.extract_geostrings(article,
                                                    prob_thresh=max_prob-0.001)
-        assert max_word in [word for geostring in geostrings for word in geostring]
+        assert max_word in [word for geostring in geostrings for word in geostring][0]
 
     def test_extract_geostring_probs_word_not_in_glove(self):
         """
@@ -33,11 +34,15 @@ class Test_GeoCoder():
 
     def test_lat_longs_from_geostring_lists(self):
         geostring_lists = [['5500', 'S', 'Woodlawn'], ['100', 'N.', 'Wacker'], ['thigh']]
-        lat_longs, scores, num_found = self.model.lat_longs_from_geostring_lists(
-            geostring_lists, sleep_secs=0.5
+        coords, scores = self.model.lat_longs_from_geostring_lists(
+            geostring_lists, sleep_secs=0.0
         )
 
-        assert scores[2] < scores[0]
-        assert scores[2] < scores[1]
+        assert coords.shape[0] == len(geostring_lists) == len(scores)
 
-        assert len(lat_longs) == len(geostring_lists) == len(scores) == len(num_found)
+    def test_community_areas(self):
+        # Approximately 55th and Woodlawn, which is in Hyde Park.
+        coords = pd.DataFrame([[41.793465, -87.596930]],
+                              columns=['lat', 'long'])
+        com_area = self.model.community_area_from_coords(coords)
+        assert com_area == ['HYDE PARK']

@@ -6,7 +6,8 @@
 
 * Automatically categorize the text from news articles with type-of-crime tags, e.g. homicide, arson, gun violence, etc.
 * Automatically extract the locations discussed in the news article text, e.g. "55th and Woodlawn" and "1700 block of S. Halsted".
-* Retrieve the latitude/longitude pairs for said locations using the `geocoder` python library to access an existing geocoding web-service.
+* Retrieve the latitude/longitude pairs for said locations using an instance of the pelias geocoder hosted by CJP.
+* Get the community areas those lat/long pairs belong to using a shape file downloaded from the city data portal parsed by the `shapely` python library.
 
 Sound interesting? There's example usage below!
 
@@ -56,13 +57,15 @@ GUNV     0.134798
 >>> geostrings = geoextractor.extract_geostrings(article_text, prob_thresh=0.5)
 >>> geostrings
 [['1700', 'block', 'of', 'S.', 'Halsted', 'Ave.'], ['55th', 'and', 'Woodlawn,']]
->>> lat_longs, scores, num_found = geoextractor.lat_longs_from_geostring_lists(geostrings)
->>> lat_longs
-[[41.49612808227539, -87.63743591308594], [41.79513222479058, -87.58843505219843]]
->>> scores # our best attempt at giving a confidence in the lat_longs, higher is better
-array([0.5913217, 0.       ], dtype=float32)
->>> num_found # how many results gisgraphy found for the (post-processed) geostring
-[8, 10]
+>>> coords, scores = geoextractor.lat_longs_from_geostring_lists(geostrings)
+>>> coords
+         lat       long
+0  41.859021 -87.646934
+1  41.794816 -87.597422
+>>> scores # confidence in the lat/longs as returned by pelias, higher is better
+array([0.878, 1.   ])
+>>> geoextractor.community_area_from_coords(coords)
+['LOWER WEST SIDE', 'HYDE PARK']
 ```
 
 ## Limitations

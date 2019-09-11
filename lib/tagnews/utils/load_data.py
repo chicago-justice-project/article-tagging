@@ -55,8 +55,8 @@ def load_articles(data_folder=__data_folder, nrows=None):
 
 def load_taggings(data_folder=__data_folder):
     """Loads the type-of-crime human tagging of the articles."""
-    uc_column_names = ['id', 'date', 'relevant',
-                       'article_id', 'user_id', 'locations']
+    uc_column_names = ['id', 'date', 'relevant', 'article_id',
+                       'user_id', 'locations', 'sentiment']
 
     uc = pd.read_csv(os.path.join(data_folder,
                                   'newsarticles_usercoding.csv'),
@@ -80,7 +80,8 @@ def load_taggings(data_folder=__data_folder):
 
 def load_model_categories(data_folder=__data_folder):
     tcr_names = ['id', 'relevance', 'category_id', 'coding_id']
-    tc_names = ['id', 'date', 'model_info', 'relevance', 'article_id']
+    tc_names = ['id', 'date', 'model_info', 'relevance', 'article_id',
+                'sentiment']
 
     tcr = pd.read_csv(
         os.path.join(data_folder, 'newsarticles_trainedcategoryrelevance.csv'),
@@ -95,8 +96,10 @@ def load_model_categories(data_folder=__data_folder):
 
 
 def load_model_locations(data_folder=__data_folder):
-    tl_names = ['id', 'text', 'latitude', 'longitude', 'coding_id']
-    tc_names = ['id', 'date', 'model_info', 'relevance', 'article_id']
+    tl_names = ['id', 'text', 'latitude', 'longitude', 'coding_id',
+                'confidence', 'neighborhood']
+    tc_names = ['id', 'date', 'model_info', 'relevance', 'article_id',
+                'sentiment']
 
     tl = pd.read_csv(
         os.path.join(data_folder, 'newsarticles_trainedlocation.csv'),
@@ -112,8 +115,8 @@ def load_model_locations(data_folder=__data_folder):
 
 def load_locations(data_folder=__data_folder):
     """Load the human-extracted locations from the articles."""
-    uc_column_names = ['id', 'date', 'relevant',
-                       'article_id', 'user_id', 'locations']
+    uc_column_names = ['id', 'date', 'relevant', 'article_id',
+                       'user_id', 'locations', 'sentiment']
 
     uc = pd.read_csv(os.path.join(data_folder,
                                   'newsarticles_usercoding.csv'),
