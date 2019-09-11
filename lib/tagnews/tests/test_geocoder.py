@@ -23,7 +23,7 @@ class Test_GeoCoder():
         max_word = words[np.argmax(probs)]
         geostrings = self.model.extract_geostrings(article,
                                                    prob_thresh=max_prob-0.001)
-        assert max_word in [word for geostring in geostrings for word in geostring]
+        assert max_word in [word for geostring in geostrings for word in geostring][0]
 
     def test_extract_geostring_probs_word_not_in_glove(self):
         """
