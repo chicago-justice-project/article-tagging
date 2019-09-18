@@ -23,9 +23,9 @@ elif len(sys.argv) == 1:
 else:
     raise Exception('BAD ARGUMENTS')
 
-crime_df = df.ix[df.loc[:, 'OEMC':'TASR'].any(1), :]
+crime_df = df.loc[df.loc[:, 'OEMC':'TASR'].any(1), :]
 crime_df = crime_df.append(
-    df.ix[~df['relevant'], :].sample(n=min(3000, (~df['relevant']).sum()),
+    df.loc[~df['relevant'], :].sample(n=min(3000, (~df['relevant']).sum()),
                                      axis=0)
 )
 
