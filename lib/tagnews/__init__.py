@@ -9,4 +9,4 @@ from .utils.load_vectorizer import load_glove
 __all__ = [utils, crimetype, CrimeTags, GeoCoder,
            get_lat_longs_from_geostrings, load_data, load_glove]
 
-__version__ = '1.2.3rc1'
+__version__ = '1.2.3'
