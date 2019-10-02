@@ -396,7 +396,7 @@ class GeoCoder:
             if is_neighborhood or len(geostring) >= 3:
                 consider[0].append((geostring))
                 consider[1].append((probs))
-        if consider:
+        if consider[0]:
             avgs = [sum(i) / len(i) for i in consider[1]]
             max_index = avgs.index(max(avgs))
             return consider[0][max_index]
