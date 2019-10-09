@@ -85,11 +85,11 @@ class Test_GeoCoder:
         )
         output1 = ["1700", "block", "of", "S.", "Halsted", "Ave."]
         # Empty geostring example
-        input2, output2 = [(), ()], None
-        for input, expected_output in zip([input1, input2], [output1, output2]):
-            actual_output = self.model.best_geostring(input)
+        input2, output2 = [(), ()], ''
+        for inpt, expected_output in zip([input1, input2], [output1, output2]):
+            actual_output = self.model.best_geostring(inpt)
             assert (
                 actual_output == expected_output
             ), "ERROR: expected output != actual output for input {}/n  {} != {}".format(
-                input, actual_output, expected_output
+                inpt, actual_output, expected_output
             )

@@ -401,5 +401,5 @@ class GeoCoder:
             max_index = avgs.index(max(avgs))
             return consider[0][max_index]
         else:
-            return None
+            return ''
 

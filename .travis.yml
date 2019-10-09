@@ -40,7 +40,7 @@ install:
        f = open('Boundaries - Community Areas (current).geojson', 'w');\
        f.write(r.text)"
       mv "Boundaries - Community Areas (current).geojson" lib/tagnews/data/
-      wget http://nlp.stanford.edu/data/glove.6B.zip
+      wget http://nlp.stanford.edu/data/glove.6B.zip --no-check-certificate
       python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
       mv glove.6B.50d.txt lib/tagnews/data/
       rm glove.6B.zip
