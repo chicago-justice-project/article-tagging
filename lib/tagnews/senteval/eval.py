@@ -16,32 +16,18 @@ def process_google_result(text):
                 return mention.sentiment.score
 
 
-def clean_html_text(html_text):
-    return "".join(filter(str.isalpha, html_text)).lower()
-
-
 class SentimentGoogler:
     def __init__(self):
         self.client = self.connect_to_client()
 
+    def run(self, doc_text):
+        sentiment_ = self.call_api(doc_text)
+        for entity in sentiment_.entities:
+            police_entity = self.is_police_entity(entity)
+            return police_entity
+
     def connect_to_client(self):
         return language.LanguageServiceClient()
-
-    @staticmethod
-    def pre_process(html_text):
-        """
-        Parameters
-        ----------
-        html_text : str
-            Article text.
-
-        Returns
-        -------
-        words: str
-            lower case, just letters
-        """
-        words = "".join(filter(str.isalpha, html_text)).lower()
-        return words
 
     def call_api(self, doc_text):
         """
@@ -55,16 +41,14 @@ class SentimentGoogler:
         sentiment : json
             google response call
         """
-        cleaned_doc_text = self.pre_process(doc_text)
         document = types.Document(
-            content=cleaned_doc_text, type=enums.Document.Type.PLAIN_TEXT
+            content=doc_text, type=enums.Document.Type.PLAIN_TEXT
         )
         sentiment = self.client.analyze_entity_sentiment(document=document)
 
         return sentiment
 
-    @staticmethod
-    def is_police_entity(sentiment_response):
+    def is_police_entity(self, entity):
         possible_responses = [
             "police",
             "officer",
@@ -73,10 +57,32 @@ class SentimentGoogler:
             "pigs",
             "policeofficer",
         ]
-        for entity in sentiment_response.entities:
-            if clean_html_text(clean_entity) in possible_responses:
+        possible_responses = [
+            "police",
+            "officer",
+            "cop",
+            "officers",
+            "pigs",
+            "policeofficer",
+        ]
+        if entity in possible_responses:
+            return entity
+        for mention in entity.mentions:
+            if pre_process_text(mention.text.content) in possible_responses:
                 return entity
-            for mention in entity.mentions:
-                if clean_html_text(mention.text.content) in possible_responses:
-                    return entity
-                return False
+            return False
+
+def pre_process_text(html_text):
+    """
+    Parameters
+    ----------
+    html_text : str
+        Article text.
+
+    Returns
+    -------
+    words: str
+        lower case, just letters
+    """
+    words = "".join(filter(str.isalpha, html_text)).lower()
+    return words
