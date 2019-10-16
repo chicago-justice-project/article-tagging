@@ -41,22 +41,12 @@ class SentimentGoogler:
         sentiment : json
             google response call
         """
-        document = types.Document(
-            content=doc_text, type=enums.Document.Type.PLAIN_TEXT
-        )
+        document = types.Document(content=doc_text, type=enums.Document.Type.PLAIN_TEXT)
         sentiment = self.client.analyze_entity_sentiment(document=document)
 
         return sentiment
 
     def is_police_entity(self, entity):
-        possible_responses = [
-            "police",
-            "officer",
-            "cop",
-            "officers",
-            "pigs",
-            "policeofficer",
-        ]
         possible_responses = [
             "police",
             "officer",
@@ -71,6 +61,7 @@ class SentimentGoogler:
             if pre_process_text(mention.text.content) in possible_responses:
                 return entity
             return False
+
 
 def pre_process_text(html_text):
     """
