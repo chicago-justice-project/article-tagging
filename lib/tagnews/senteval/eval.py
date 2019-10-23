@@ -24,10 +24,14 @@ class SentimentGoogler:
         sentiment_ = self.call_api(doc_text)
         for entity in sentiment_.entities:
             police_entity = self.is_police_entity(entity)
-            return police_entity
+            if police_entity:
+                return self.sentiment_from_entity(police_entity)
 
     def connect_to_client(self):
         return language.LanguageServiceClient()
+
+    def sentiment_from_entity(self, entity):
+        return entity.sentiment.score
 
     def call_api(self, doc_text):
         """
