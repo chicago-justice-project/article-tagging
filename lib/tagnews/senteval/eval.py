@@ -64,7 +64,8 @@ class SentimentGoogler:
     def extract_google_priority_bin(article, cpd_model_val, cpd_val):
         cop_words = sent_evaller().police_words
         cop_word_counts = sum([article.count(substr) for substr in cop_words])
-        score = 0.5 * cpd_val + 0.25 * cpd_model_val + 0.25 * max(cop_word_counts / (2 * len(cop_words)), 1.)
+        score = 0.5 * cpd_val + 0.25 * cpd_model_val + 0.25 * min(cop_word_counts / (2 * len(cop_words)), 1.)
+        return score
 
 
 def pre_process_text(html_text):
