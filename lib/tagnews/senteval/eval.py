@@ -2,6 +2,8 @@ from google.cloud import language
 from google.cloud.language import enums
 from google.cloud.language import types
 
+from tagnews.senteval import police_words
+
 
 def process_google_result(text):
     document = types.Document(content=text, type=enums.Document.Type.PLAIN_TEXT)
@@ -10,7 +12,7 @@ def process_google_result(text):
     for entity in sentiment.entities:
         clean_entity = "".join(filter(str.isalpha, entity)).lower()
 
-        if clean_entity in ["police", "officer", "cop", "officers", "pigs"]:
+        if clean_entity in police_words:
 
             for mention in entity.mentions:
                 return mention.sentiment.score
@@ -66,8 +68,6 @@ class SentimentGoogler:
                 return entity
             return False
 
-    def set_bucket_value(self):
-        pass
 
 def pre_process_text(html_text):
     """
