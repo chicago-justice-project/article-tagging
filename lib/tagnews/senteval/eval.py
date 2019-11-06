@@ -66,6 +66,8 @@ class SentimentGoogler:
                 return entity
             return False
 
+    def set_bucket_value(self):
+        pass
 
 def pre_process_text(html_text):
     """

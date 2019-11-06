@@ -5,8 +5,9 @@ from .crimetype.tag import CrimeTags
 from .geoloc.tag import GeoCoder, get_lat_longs_from_geostrings
 from .utils.load_data import load_data
 from .utils.load_vectorizer import load_glove
+from .senteval.eval import SentimentGoogler
 
-__all__ = [utils, crimetype, CrimeTags, GeoCoder,
+__all__ = [utils, crimetype, CrimeTags, GeoCoder, SentimentGoogler,
            get_lat_longs_from_geostrings, load_data, load_glove]
 
 __version__ = '1.2.4'
