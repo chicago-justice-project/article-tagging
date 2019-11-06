@@ -21,7 +21,7 @@ def process_google_result(text):
 class SentimentGoogler:
     def __init__(self):
         self.client = self.connect_to_client()
-        self.polce_words = police_words
+        self.police_words = police_words
 
     def run(self, doc_text):
         sentiment_ = self.call_api(doc_text)
