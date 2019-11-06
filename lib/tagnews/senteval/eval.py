@@ -21,6 +21,7 @@ def process_google_result(text):
 class SentimentGoogler:
     def __init__(self):
         self.client = self.connect_to_client()
+        self.polce_words = police_words
 
     def run(self, doc_text):
         sentiment_ = self.call_api(doc_text)
@@ -61,10 +62,10 @@ class SentimentGoogler:
             "pigs",
             "policeofficer",
         ]
-        if entity in possible_responses:
+        if entity in self.police_words:
             return entity
         for mention in entity.mentions:
-            if pre_process_text(mention.text.content) in possible_responses:
+            if pre_process_text(mention.text.content) in self.police_words:
                 return entity
             return False
 
