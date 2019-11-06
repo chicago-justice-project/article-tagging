@@ -2,7 +2,7 @@ from google.cloud import language
 from google.cloud.language import enums
 from google.cloud.language import types
 
-from tagnews.senteval import police_words
+from tagnews.senteval import police_words, bins
 
 
 def process_google_result(text):
@@ -64,7 +64,8 @@ class SentimentGoogler:
     def extract_google_priority_bin(self, article, cpd_model_val, cpd_val):
         cop_word_counts = sum([article.count(substr) for substr in self.police_words])
         score = 0.5 * cpd_val + 0.25 * cpd_model_val + 0.25 * min(cop_word_counts / (2 * len(self.police_words)), 1.)
-        return score
+        bin = [bin for bin, bin_max_val in enumerate(bins) if bin_max_val > score][0]
+        return bin
 
 
 def pre_process_text(html_text):
