@@ -2,7 +2,7 @@ from google.cloud import language
 from google.cloud.language import enums
 from google.cloud.language import types
 
-from tagnews.senteval import police_words, bins
+from tagnews.senteval.police_words import police_words_list, bins
 
 
 def process_google_result(text):
@@ -12,7 +12,7 @@ def process_google_result(text):
     for entity in sentiment.entities:
         clean_entity = "".join(filter(str.isalpha, entity)).lower()
 
-        if clean_entity in police_words:
+        if clean_entity in police_words_list:
 
             for mention in entity.mentions:
                 return mention.sentiment.score
@@ -21,7 +21,7 @@ def process_google_result(text):
 class SentimentGoogler:
     def __init__(self):
         self.client = self.connect_to_client()
-        self.police_words = police_words
+        self.police_words = police_words_list
 
     def run(self, doc_text):
         sentiment_ = self.call_api(doc_text)
