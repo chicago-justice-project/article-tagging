@@ -54,14 +54,6 @@ class SentimentGoogler:
         return sentiment
 
     def is_police_entity(self, entity):
-        possible_responses = [
-            "police",
-            "officer",
-            "cop",
-            "officers",
-            "pigs",
-            "policeofficer",
-        ]
         if entity in self.police_words:
             return entity
         for mention in entity.mentions:
