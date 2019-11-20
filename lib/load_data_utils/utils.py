@@ -10,7 +10,7 @@ logger.setLevel(logging.INFO)
 
 def download_data():
     source = os.environ["CJPTABLES"]
-    destination_folder = "/Users/joshherzberg/Documents/chihack/police_sentiment"
+    destination_folder = "."
     gz_fn = os.path.join(destination_folder, "cjp_tables.tar.gz")
     if os.path.exists(os.path.join(destination_folder, "cjp_tables")):
         shutil.rmtree(os.path.join(destination_folder, "cjp_tables"))
