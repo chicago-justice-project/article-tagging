@@ -30,6 +30,7 @@ install:
   - pip install pytest
   - pip install pytest-cov
   - pip install requests
+  - pip install google-cloud-language
   - |
     if [[ $FLAKE8 ]]; then
       pip install flake8
