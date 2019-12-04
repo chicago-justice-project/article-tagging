@@ -5,17 +5,17 @@ from google.cloud.language import types
 from tagnews.senteval.police_words import police_words_list, bins
 
 
-def process_google_result(text):
-    document = types.Document(content=text, type=enums.Document.Type.PLAIN_TEXT)
-    sentiment = client.analyze_entity_sentiment(document=document)
-
-    for entity in sentiment.entities:
-        clean_entity = "".join(filter(str.isalpha, entity)).lower()
-
-        if clean_entity in police_words_list:
-
-            for mention in entity.mentions:
-                return mention.sentiment.score
+# def process_google_result(text):
+#     document = types.Document(content=text, type=enums.Document.Type.PLAIN_TEXT)
+#     sentiment = client.analyze_entity_sentiment(document=document)
+#
+#     for entity in sentiment.entities:
+#         clean_entity = "".join(filter(str.isalpha, entity)).lower()
+#
+#         if clean_entity in police_words_list:
+#
+#             for mention in entity.mentions:
+#                 return mention.sentiment.score
 
 
 class SentimentGoogler:
