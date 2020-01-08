@@ -22,6 +22,8 @@ class SentimentGoogler:
     def __init__(self):
         self.client = self.connect_to_client()
         self.police_words = police_words_list
+        self.bins = bins[::-1] # reversed because we start with lower numbered bins
+        self.num_bins = len(bins)
 
     def run(self, doc_text):
         sentiment_ = self.call_api(doc_text)
