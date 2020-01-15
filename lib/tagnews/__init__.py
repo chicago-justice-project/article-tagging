@@ -11,4 +11,4 @@ from .senteval.police_words import police_words_list, bins
 __all__ = [utils, crimetype, CrimeTags, GeoCoder, SentimentGoogler,
            get_lat_longs_from_geostrings, load_data, load_glove, police_words_list, bins]
 
-__version__ = '1.2.4'
+__version__ = '1.2.5'
