@@ -63,7 +63,7 @@ class SentimentGoogler:
                 return entity
             return False
 
-    def extract_google_priority_bin(self, article, cpd_model_val, cpd_val):
+    def extract_google_priority_bin(self, article, cpd_model_val=1, cpd_val=1):
         cop_word_counts = sum([article.count(substr) for substr in self.police_words])
         score = 0.5 * cpd_val + 0.25 * cpd_model_val + 0.25 * min(cop_word_counts / (2 * len(self.police_words)), 1.)
         bin = [bin for bin, bin_max_val in enumerate(bins) if bin_max_val > score][0]
