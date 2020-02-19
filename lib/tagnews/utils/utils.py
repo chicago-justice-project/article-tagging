@@ -25,6 +25,7 @@ def load_all_data():
     # fmt: off
     """ articles_df, categories_df, trainedcategoryrelevance_df, trainedcoding_df, usercoding_df, usercoding_categories_df, trainedlocation"""
     # fmt: on
+    newssource = load_newssource()
     articles = load_articles()
     categories = load_categories()
     trainedcategoryrelevance = load_trainedcategoryrelevance()
@@ -32,15 +33,34 @@ def load_all_data():
     trainedcoding = load_trainedcoding()
     usercoding = load_usercoding()
     usercoding_categories = load_usercoding_categories()
+    trainedsentiment = load_trainedsentiment()
+    trainedsentimententities = load_trainedsentimententities()
     return (
+        newssource,
         articles,
         categories,
         trainedcategoryrelevance,
         trainedcoding,
         usercoding,
         usercoding_categories,
-        trainedlocation
+        trainedlocation,
+        trainedsentiment,
+        trainedsentimententities
     )
+
+
+def load_newssource():
+    newsource = pd.read_csv(
+        "./cjp_tables/newsarticles_newssource.csv.gz", header=None, compression="gzip"
+    )
+    newsource.columns = [
+        "source_id",
+        "source_name",
+        "short_name",
+        "legacy_feed_id",
+    ]
+    print(f"news sources loaded. size: {newsource.shape}")
+    return newsource
 
 
 def load_articles():
@@ -95,6 +115,8 @@ def load_trainedcoding():
         "relevance",
         "article_id",
         "sentiment",
+        "bin",
+        "sentiment_processed",
     ]
     print(f"trainedcoding loaded. size: {trainedcoding.shape}")
     return trainedcoding
@@ -146,3 +168,37 @@ def load_usercoding_categories():
     usercoding_categories.columns = ["id", "usercoding_id", "category_id"]
     print(f"usercoding_categories loaded. size: {usercoding_categories.shape}")
     return usercoding_categories
+
+
+def load_trainedsentiment():
+    trainedsentiment = pd.read_csv(
+        "./cjp/newsarticles_trainedsentiment.csv.gz",
+        header=None,
+        compression="gzip"
+    )
+    trainedsentiment.columns = [
+        "id",
+        "date",
+        "api_response",
+        "coding_id",
+    ]
+    print(f"trainedsentiment loaded. size: {trainedsentiment.shape}")
+    return trainedsentiment
+
+
+def load_trainedsentimententities():
+    trainedsentimententities = pd.read_csv(
+        "./cjp_tables/newsarticles_trainedsentimententities.csv.gz",
+        header=None,
+        compression="gzip"
+    )
+    trainedsentimententities.columns = [
+        "id",
+        "index",
+        "entity",
+        "sentiment",
+        "coding_id",
+        "response_id",
+    ]
+    print(f"trainedsentimententities loaded. size: {trainedsentimententities.shape}")
+    return trainedsentimententities
