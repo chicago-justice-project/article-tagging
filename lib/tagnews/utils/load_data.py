@@ -144,7 +144,6 @@ def load_data(data_folder=__data_folder, nrows=None):
     into columns called cat_NUMBER. The k-hot encoding is done assuming that
     the categories are 1-indexed and there are as many categories as the
     maximum value of the numerical cateogry_id column.
-
     Inputs:
         data_folder:
             A folder containing the data files in CSV format.
@@ -189,7 +188,6 @@ def load_data(data_folder=__data_folder, nrows=None):
         neatly. This function will hopefully performa all necessary
         transformations to find the given location text within the
         larger string.
-
         Inputs:
             locs: list of locations as loaded by load_locations
             string: bodytext of article in which to find locs
@@ -307,7 +305,6 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
     into `out_folder`. If there are fewer than `n` articles
     tagged with a type-of-crime, then we will use all of
     the articles with that tag.
-
     Inputs
     ------
     out_folder : str
@@ -484,7 +481,6 @@ def load_crime_data(data_folder=__data_folder):
 def load_ner_data(data_folder=__data_folder):
     """
     Loads ner.csv from the specified data folder.
-
     The column 'stag' is a binary value indicating whether or not
     the row corresponds to the entity "geo". Typically, you will
     want to use column 'word' to predict the column 'stag'.

@@ -23,7 +23,7 @@ def load_glove(vectors_file, normalize=False):
 
     Sample usage:
 
-        >>> vectors = load_glove('tagnews/data/glove.6B.50d.txt')
+        >>> vectors = load_glove('tagnews/geoloc/glove.6B.50d.txt')
         >>> text = 'This is a sentence and stuff.'
         >>> # you should use an actual tokenizer for this step.
         >>> vectorized_text = vectors.loc[[word.lower()

@@ -4,8 +4,9 @@ from setuptools import setup
 
 import os
 
-with open('README.md') as f:
+with open('README.md', "r") as f:
     long_description = f.read()
+
 
 init_file = os.path.join(os.path.split(__file__)[0], 'lib/tagnews/__init__.py')
 with open(init_file) as f:
@@ -36,6 +37,7 @@ setup(name='tagnews',
                 'tagnews.crimetype.models.binary_stemmed_logistic',
                 'tagnews.geoloc',
                 'tagnews.geoloc.models.lstm',
+                'tagnews.senteval',
                 'tagnews.tests'],
       install_requires=['nltk', 'numpy>=1.13', 'scikit-learn==0.19.0', 'pandas', 'scipy',
                         'tensorflow>=1.4', 'h5py', 'keras', 'shapely', 'requests'],
