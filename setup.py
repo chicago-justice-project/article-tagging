@@ -28,7 +28,7 @@ setup(name='tagnews',
       version=version,
       description=('automatically tag news articles with justice-related'
                    ' categories and extract location information'),
-      author='Kevin Rose, Josh Herzberg, Michael Chladek',
+      author='Kevin Rose, Josh Herzberg, Matt Sweeney',
       url='https://github.com/chicago-justice-project/article-tagging',
       package_dir={'': 'lib'},
       packages=['tagnews',
