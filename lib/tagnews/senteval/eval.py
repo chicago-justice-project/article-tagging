@@ -1,6 +1,4 @@
-from google.cloud import language
-from google.cloud.language import enums
-from google.cloud.language import types
+from google.cloud import language_v2
 
 from tagnews.senteval.police_words import police_words_list, bins
 
@@ -33,7 +31,7 @@ class SentimentGoogler:
                 return self.sentiment_from_entity(police_entity)
 
     def connect_to_client(self):
-        return language.LanguageServiceClient()
+        return language_v2.LanguageServiceClient()
 
     def sentiment_from_entity(self, entity):
         return entity.sentiment.score
@@ -50,7 +48,7 @@ class SentimentGoogler:
         sentiment : json
             google response call
         """
-        document = types.Document(content=doc_text, type=enums.Document.Type.PLAIN_TEXT)
+        document = language_v2.Document(content=doc_text, type_=language_v2.Document.Type.PLAIN_TEXT)
         sentiment = self.client.analyze_entity_sentiment(document=document)
 
         return sentiment
