@@ -1,0 +1,83 @@
+name: Publish to PyPI
+
+on:
+  # Allow manual triggers from any branch
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose environment to deploy to'
+        required: true
+        default: 'testpypi'
+        type: choice
+        options:
+        - testpypi
+        - pypi
+  
+  # Automatically trigger on new releases
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'pypi' }}
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+    
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+    
+    - name: Download required data files
+      run: |
+        # Download NLTK data
+        python -c "import nltk; nltk.download('punkt'); nltk.download('wordnet')"
+        
+        # Download geographic data
+        python -c "import requests; r = requests.get('https://data.cityofchicago.org/api/geospatial/cauq-8yn6?method=export&format=GeoJSON'); f = open('Boundaries - Community Areas (current).geojson', 'w'); f.write(r.text)"
+        mv "Boundaries - Community Areas (current).geojson" lib/tagnews/data/
+        
+        # Download and extract GloVe
+        wget http://nlp.stanford.edu/data/glove.6B.zip --no-check-certificate
+        python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
+        mv glove.6B.50d.txt lib/tagnews/data/
+        rm glove.6B.zip
+        
+        # Move test data
+        mv lib/tagnews/data/ci-data/*.csv lib/tagnews/data/
+    
+    - name: Install package dependencies
+      run: |
+        pip install numpy nltk scikit-learn pandas scipy tensorflow h5py keras shapely requests google-cloud-language
+    
+    - name: Train and save models
+      run: |
+        cd lib
+        python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
+        python -m tagnews.geoloc.models.lstm.save_model 2
+    
+    - name: Build package
+      run: python -m build
+    
+    # - name: Publish to Test PyPI
+    #   if: ${{ github.event.inputs.environment == 'testpypi' }}
+    #   env:
+    #     TWINE_USERNAME: __token__
+    #     TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+    #   run: |
+    #     python -m twine upload --repository testpypi dist/*
+    
+    - name: Publish to PyPI
+      if: ${{ github.event.inputs.environment == 'pypi' || github.event_name == 'release' }}
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        python -m twine upload dist/*
