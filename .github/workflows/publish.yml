@@ -18,7 +18,7 @@ on:
     types: [published]
 
 jobs:
-  build-and-publish:
+  build:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment || 'pypi' }}
     
@@ -65,19 +65,41 @@ jobs:
     
     - name: Build package
       run: python -m build
+
+  publish-to-testpypi:
+    name: Publish to Test PyPI
+    if: ${{ github.event.inputs.environment == 'testpypi' }}
+    needs:
+    - build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/tagnews3
+
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish distribution to TestPyPi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+    #env:
+    #  TWINE_USERNAME: __token__
+    #  TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+    #run: |
+    #  python -m twine upload --repository testpypi dist/*
     
-    # - name: Publish to Test PyPI
-    #   if: ${{ github.event.inputs.environment == 'testpypi' }}
-    #   env:
-    #     TWINE_USERNAME: __token__
-    #     TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
-    #   run: |
-    #     python -m twine upload --repository testpypi dist/*
-    
-    - name: Publish to PyPI
-      if: ${{ github.event.inputs.environment == 'pypi' || github.event_name == 'release' }}
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-      run: |
-        python -m twine upload dist/*
+    #- name: Publish to PyPI
+    #  if: ${{ github.event.inputs.environment == 'pypi' || github.event_name == 'release' }}
+    #  env:
+    #    TWINE_USERNAME: __token__
+    #    TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+    #  run: |
+    #    python -m twine upload dist/*
