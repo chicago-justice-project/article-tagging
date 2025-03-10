@@ -34,6 +34,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install build twine
+
+    - name: Install package dependencies
+      run: |
+        pip install numpy nltk scikit-learn pandas scipy tensorflow h5py keras shapely requests google-cloud-language
     
     - name: Download required data files
       run: |
@@ -52,10 +56,6 @@ jobs:
         
         # Move test data
         mv lib/tagnews/data/ci-data/*.csv lib/tagnews/data/
-    
-    - name: Install package dependencies
-      run: |
-        pip install numpy nltk scikit-learn pandas scipy tensorflow h5py keras shapely requests google-cloud-language
     
     - name: Train and save models
       run: |
