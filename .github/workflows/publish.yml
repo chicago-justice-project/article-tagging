@@ -42,7 +42,7 @@ jobs:
     - name: Download required data files
       run: |
         # Download NLTK data
-        python -c "import nltk; nltk.download('punkt'); nltk.download('wordnet')"
+        python -c "import nltk; nltk.download('punkt_tab'); nltk.download('wordnet')"
         
         # Download geographic data
         python -c "import requests; r = requests.get('https://data.cityofchicago.org/api/geospatial/cauq-8yn6?method=export&format=GeoJSON'); f = open('Boundaries - Community Areas (current).geojson', 'w'); f.write(r.text)"
