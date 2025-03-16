@@ -128,12 +128,12 @@ class OurAUC(keras.callbacks.Callback):
         logs['val_auc'] = auc
 
 
-our_auc = OurAUC()
+#our_auc = OurAUC()
 
 model.fit(x_train, y_train,
           epochs=num_epochs,
           validation_data=(x_val, y_val),
-          callbacks=[our_auc, checkpointer],
+          callbacks=[checkpointer],
           verbose=2)
 
 idx = slice(501, 550)
