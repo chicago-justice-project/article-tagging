@@ -81,7 +81,7 @@ jobs:
 
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/tagnews3
+      url: https://test.pypi.org/p/tagnews
 
     permissions:
       id-token: write
