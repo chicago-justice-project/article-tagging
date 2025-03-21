@@ -82,7 +82,7 @@ model.compile(loss='categorical_crossentropy',
 print(model.summary(100))
 
 checkpointer = ModelCheckpoint(filepath='./saved/weights-{epoch:02d}.hdf5',
-                               monitor='val_auc',
+                               monitor='val_categorical_accuracy',
                                mode='max',
                                verbose=1,
                                save_best_only=True)
