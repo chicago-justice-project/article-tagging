@@ -9,6 +9,7 @@ import sklearn
 import sklearn.feature_extraction.text
 import sklearn.multiclass
 import sklearn.linear_model
+import pandas as pd
 
 # needed to make pickle-ing work
 from nltk import word_tokenize # noqa
@@ -23,11 +24,11 @@ elif len(sys.argv) == 1:
 else:
     raise Exception('BAD ARGUMENTS')
 
-crime_df = df.loc[df.loc[:, 'OEMC':'TASR'].any(1), :]
-crime_df = crime_df.append(
-    df.loc[~df['relevant'], :].sample(n=min(3000, (~df['relevant']).sum()),
-                                     axis=0)
-)
+crime_df = df.loc[df.loc[:, 'OEMC':'TASR'].any(axis=1), :]
+crime_df = pd.concat([
+    df.loc[df.loc[:, 'OEMC':'TASR'].any(axis=1), :],
+    df.loc[~df['relevant'], :].sample(n=min(3000, (~df['relevant']).sum()), axis=0)
+], ignore_index=True)
 
 vectorizer = sklearn.feature_extraction.text.CountVectorizer(
     tokenizer=LemmaTokenizer(),

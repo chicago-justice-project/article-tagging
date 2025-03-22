@@ -212,7 +212,7 @@ def load_data(data_folder=__data_folder, nrows=None):
                 # "correct" one. Best we can do is find the python span closest
                 # to the expected javascript span.
                 closest = np.argmin(np.abs(
-                    np.array([x[0] for x in spans]) - loc['start']
+                    np.asarray([x[0] for x in spans]).astype(np.float32) - loc['start']
                 ))
                 loc['cleaned span'] = spans[closest]
 

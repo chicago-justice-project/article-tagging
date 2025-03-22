@@ -12,3 +12,4 @@ lib/.coverage
 *.gz
 lib/tagnews/data/*.geojson
 .vscode*
+.idea*
