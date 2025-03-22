@@ -24,7 +24,7 @@ You will likely need to install some [NLTK](http://www.nltk.org/) data as well:
 
 ```python
 >>> import nltk
->>> nltk.download('punkt')
+>>> nltk.download('punkt_tab')
 >>> nltk.download('wordnet')
 >>> quit()
 ```
@@ -201,9 +201,9 @@ python -m pytest --cov-report term-missing --cov=tagnews
 
 ### Continuous Integration Testing
 
-We use [Travis CI](https://travis-ci.org/chicago-justice-project/article-tagging) for continuous integration testing. Any Pull Request will automatically have the test suite run, and any commit to the master branch will automatically have the test suite run.
+We use GitHub Actions for continuous integration testing. Right now, this is run manually under Actions in GitHub.
 
-This is configured via the `.travis.yml` file at the top-level of this project.
+This is configured via the `.github/workflows/publish.yml` file at the top-level of this project.
 
 ## Documentation
 
@@ -221,12 +221,7 @@ First, update the `__version__` variable in `lib/tagnews/__init__.py`, initially
 
 Second, make sure the saved models either match the previously published version exactly (by downloading the current release, extracting it, and copying the model file to where it needs to be), or are _meant_ to be updated. Make sure only the saved model you want exists in your project, delete all others.
 
-Then, use the following two commands to publish the new version:
-
-```bash
-python setup.py sdist
-twine upload dist/tagnews-version.number.you.want.to.upload.tar.gz
-```
+Then, use GitHub Actions to run the workflow using the `pypi` environment. This can also be tested first by publishing to TestPyPI. To do so, run the same GitHub Action manually but use the `testpypi` environment.
 
 Create a new anaconda environment to download the version for rudimentary testing. The Continuous Integration should take care of most rigorous testing, this is just to make sure everything is working. I usually run through the example at the top of the README.
 

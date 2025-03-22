@@ -25,11 +25,11 @@ pip install tagnews
 
 ```python
 >>> import nltk
->>> nltk.download('punkt')
+>>> nltk.download('punkt_tab')
 >>> nltk.download('wordnet')
 ```
 
-Beware, `tagnews` requires python >= 3.5.
+Beware, `tagnews` requires python >= 3.8.
 
 ## Example
 
