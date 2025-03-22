@@ -165,7 +165,7 @@ def get_lat_longs_from_geostrings(
             [_get_latlong(g) for g in full_responses], columns=["long", "lat"]
         )
         coords = coords[["lat", "long"]]  # it makes me feel better, OK?
-        scores = np.array([_get_confidence(g) for g in full_responses])
+        scores = np.asarray([_get_confidence(g) for g in full_responses]).astype(np.float32)
 
         return full_responses, coords, scores
 
@@ -249,6 +249,7 @@ class GeoCoder:
             ],
             axis="columns",
         )
+        data = np.asarray(data).astype(np.float32)
         return words, np.expand_dims(data, axis=0)
 
     def extract_geostring_probs(self, s):
