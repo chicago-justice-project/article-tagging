@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tagnews"
+version = "1.4.0"
+description = "automatically tag news articles with justice-related categories and extract location information"
+authors = [
+  {name = "Kevin Rose"},
+  {name = "Josh Herzberg"},
+  {name = "Matt Sweeney"},
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+  "google-cloud-language",
+  "h5py",
+  "keras",
+  "nltk",
+  "numpy",
+  "pandas",
+  "requests",
+  "scikit-learn",
+  "scipy",
+  "shapely",
+  "tensorflow",
+]
+
+[project.urls]
+Repository = "https://github.com/chicago-justice-project/article-tagging"
+
+[tool.setuptools]
+package-dir = {"" = "lib"}
+packages = [
+  "tagnews",
+  "tagnews.utils",
+  "tagnews.crimetype",
+  "tagnews.crimetype.models.binary_stemmed_logistic",
+  "tagnews.geoloc",
+  "tagnews.geoloc.models.lstm",
+  "tagnews.senteval",
+  "tagnews.tests",
+]
+
+[tool.setuptools.package-data]
+tagnews = [
+  "crimetype/models/binary_stemmed_logistic/*.pkl",
+  "geoloc/models/lstm/saved/*.hdf5",
+  "data/glove.6B.50d.txt",
+  "data/Boundaries - Community Areas (current).geojson",
+]

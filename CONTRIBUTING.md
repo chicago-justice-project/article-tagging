@@ -217,7 +217,7 @@ Documentation is not currently published. If you have interest in helping with t
 
 ## Publishing a new version to pypi
 
-First, update the `__version__` variable in `lib/tagnews/__init__.py`, initially start out by bumping the version and making it a release candidate, e.g. `1.1.0rc1`.
+First, update the version string in `pyproject.toml`, initially start out by bumping the version and making it a release candidate, e.g. `1.1.0rc1`.
 
 Second, make sure the saved models either match the previously published version exactly (by downloading the current release, extracting it, and copying the model file to where it needs to be), or are _meant_ to be updated. Make sure only the saved model you want exists in your project, delete all others.
 
