@@ -7,7 +7,7 @@ dist/
 .eggs/
 .cache/
 .DS_Store
-lib/.coverage
+.coverage
 .pytest_cache*
 *.gz
 lib/tagnews/data/*.geojson

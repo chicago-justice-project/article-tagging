@@ -52,7 +52,6 @@ uv run python -m tagnews.geoloc.models.lstm.save_model
 ### Run tests
 
 ```
-cd lib
 uv run pytest --cov-report term-missing --cov=tagnews
 ```
 
@@ -205,7 +204,7 @@ Beware that if you run the tests with the full data-set, it can take a _long_ ti
 
 If you don't already have a type-of-crime or geostring model, you will need train one (see above).
 
-Once that's completed, `cd` into the lib directory and run
+Once that's completed, run:
 
 ```
 uv run pytest --cov-report term-missing --cov=tagnews

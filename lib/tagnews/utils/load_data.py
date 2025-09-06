@@ -16,7 +16,7 @@ is load_data().
 # Caution! Modifying this in code will have no effect since the
 # default arguments are populated with this reference at creation
 # time, so post-hoc modifications will do nothing.
-__data_folder = os.path.join(os.path.split(__file__)[0], '..', 'data')
+__data_folder = os.path.join(os.path.dirname(__file__), '..', 'data')
 
 
 def clean_string(s):
@@ -395,7 +395,7 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
     # newsarticles_trainedcoding
     tc_names = ['id', 'date', 'model_info', 'relevance', 'article_id']
     tc = pd.read_csv(
-        'tagnews/data/newsarticles_trainedcoding.csv',
+        os.path.join(input_folder, 'newsarticles_trainedcoding.csv'),
         names=tc_names
     )
     tc = tc.loc[tc['article_id'].isin(chosen_indexes)]
@@ -407,7 +407,7 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
     # newsarticles_trainedcategoryrelevance
     tcr_names = ['id', 'relevance', 'category_id', 'coding_id']
     tcr = pd.read_csv(
-        'tagnews/data/newsarticles_trainedcategoryrelevance.csv',
+        os.path.join(input_folder, 'newsarticles_trainedcategoryrelevance.csv'),
         names=tcr_names
     )
     tcr = tcr.loc[tcr['coding_id'].isin(tc['id'])]
@@ -419,7 +419,7 @@ def subsample_and_resave(out_folder, n=5, input_folder=__data_folder,
     # newsarticles_trainedlocation
     tl_names = ['id', 'text', 'latitude', 'longitude', 'coding_id']
     tl = pd.read_csv(
-        'tagnews/data/newsarticles_trainedlocation.csv',
+        os.path.join(input_folder, 'newsarticles_trainedlocation.csv'),
         names=tl_names
     )
     tl = tl.loc[tl['coding_id'].isin(tc['id'])]
