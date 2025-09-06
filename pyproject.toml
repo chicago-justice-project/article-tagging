@@ -12,19 +12,25 @@ authors = [
   {name = "Matt Sweeney"},
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
-  "google-cloud-language",
-  "h5py",
-  "keras",
-  "nltk",
-  "numpy",
-  "pandas",
-  "requests",
-  "scikit-learn",
-  "scipy",
-  "shapely",
-  "tensorflow",
+  "google-cloud-language>=2.17.2",
+  "h5py>=3.14.0",
+  "keras>=2.15.0",
+  "nltk>=3.9.1",
+  "numpy>=1.26.4",
+  "pandas>=2.3.2",
+  "requests>=2.32.5",
+  "scikit-learn>=1.6.1",
+  "scipy>=1.13.1",
+  "shapely>=2.0.7",
+  "tensorflow==2.15.1",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4.2",
+  "pytest-cov>=6.2.1",
 ]
 
 [project.urls]
