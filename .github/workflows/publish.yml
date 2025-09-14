@@ -28,30 +28,27 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.8'
+        python-version-file: ".python-version"
     
-    - name: Install build dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build twine
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: "0.8.9"
 
-    - name: Install package dependencies
-      run: |
-        pip install numpy nltk scikit-learn pandas scipy tensorflow h5py keras shapely requests google-cloud-language
+    - name: Install build/package dependencies
+      run: uv sync --locked --all-extras --dev
     
     - name: Download required data files
       run: |
         # Download NLTK data
-        python -c "import nltk; nltk.download('punkt_tab'); nltk.download('wordnet')"
+        uv run python -c "import nltk; nltk.download('punkt_tab', '.venv/nltk_data'); nltk.download('wordnet', '.venv/nltk_data')"
         
         # Download geographic data
-        python -c "import requests; r = requests.get('https://data.cityofchicago.org/api/geospatial/igwz-8jzy?method=export&format=GeoJSON'); f = open('Boundaries - Community Areas (current).geojson', 'w'); f.write(r.text)"
-        mv "Boundaries - Community Areas (current).geojson" lib/tagnews/data/
+        curl "https://data.cityofchicago.org/api/geospatial/igwz-8jzy?method=export&format=GeoJSON" -o "lib/tagnews/data/Boundaries - Community Areas (current).geojson"
         
         # Download and extract GloVe
-        wget http://nlp.stanford.edu/data/glove.6B.zip --no-check-certificate
-        python -c "import zipfile; myzip = zipfile.ZipFile('glove.6B.zip'); myzip.extract('glove.6B.50d.txt')"
-        mv glove.6B.50d.txt lib/tagnews/data/
+        curl -O https://downloads.cs.stanford.edu/nlp/data/glove.6B.zip
+        unzip glove.6B.zip glove.6B.50d.txt -d lib/tagnews/data
         rm glove.6B.zip
         
         # Move test data
@@ -59,12 +56,11 @@ jobs:
     
     - name: Train and save models
       run: |
-        cd lib
-        python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
-        python -m tagnews.geoloc.models.lstm.save_model 2
-    
+        uv run python -m tagnews.crimetype.models.binary_stemmed_logistic.save_model
+        uv run python -m tagnews.geoloc.models.lstm.save_model 2
+
     - name: Build package
-      run: python -m build
+      run: uv build
 
     - name: Store the distribution packages
       uses: actions/upload-artifact@v4

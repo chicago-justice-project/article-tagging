@@ -29,7 +29,7 @@ pip install tagnews
 >>> nltk.download('wordnet')
 ```
 
-Beware, `tagnews` requires python >= 3.8.
+Beware, `tagnews` requires python >= 3.9.
 
 ## Example
 
