@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tagnews"
-version = "1.4.1"
+version = "1.5.0"
 description = "automatically tag news articles with justice-related categories and extract location information"
 authors = [
   {name = "Kevin Rose"},
